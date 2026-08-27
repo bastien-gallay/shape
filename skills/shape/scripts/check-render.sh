@@ -44,7 +44,30 @@ if grep -q '```mermaid' "$file"; then
       echo "   fallback: see references/render-targets.md — a labelled table."
       failed=1
       ;;
-    *) run_or_skip mmdc mmdc --version ;;
+    *)
+      if ! command -v mmdc >/dev/null 2>&1; then
+        printf '⚠️  %-12s NOT RUN (not installed)\n' "mmdc"
+      else
+        # ⚠️ `mmdc --version` proves the binary answers, not that the diagram
+        # renders. Each block is extracted and actually compiled.
+        block_dir="${TMPDIR:-/tmp}/shape-mermaid-$$"
+        mkdir -p "$block_dir"
+        awk -v dir="$block_dir" '
+          /^```mermaid[[:space:]]*$/ { n++; inblock = 1; next }
+          /^```[[:space:]]*$/        { inblock = 0; next }
+          inblock                    { print > (dir "/block-" n ".mmd") }
+        ' "$file"
+        for block in "$block_dir"/block-*.mmd; do
+          if mmdc -i "$block" -o "$block.svg" >/dev/null 2>&1; then
+            printf '✅ %-12s %s renders\n' "mmdc" "$(basename "$block")"
+          else
+            printf '❌ %-12s %s does not render\n' "mmdc" "$(basename "$block")"
+            failed=1
+          fi
+        done
+        rm -rf "$block_dir"
+      fi
+      ;;
   esac
 fi
 

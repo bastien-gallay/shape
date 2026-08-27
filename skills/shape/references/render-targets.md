@@ -7,7 +7,7 @@ wrong.
 
 | Target | mermaid | tables | emoji | footnotes | collapsible | anchors |
 | --- | --- | --- | --- | --- | --- | --- |
-| `github` | ✅ | ✅ | ✅ | ⛔ | ✅ `<details>` | ✅ auto |
+| `github` | ✅ | ✅ | ✅ | ✅ `[^1]` | ✅ `<details>` | ✅ auto |
 | `confluence` | ⛔ | ✅ | ✅ | ⛔ | ✅ macro | ✅ explicit |
 | `mdbook` | ✅ plugin | ✅ | ✅ | ✅ | ⛔ | ✅ auto |
 | `pdf` | ✅ pre-render | ✅ | ⚠️ font-dependent | ✅ | ⛔ | ⛔ |

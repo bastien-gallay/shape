@@ -90,6 +90,20 @@ Every script follows it, and `SKILL.md` §0.4 depends on it:
 ⚠️ 3 is the load-bearing one. *A verification you skipped is not a verification
 you passed* — a crashed linter must never read as a clean document.
 
+🛑 **The failure mode this repo keeps producing is a gate that reports a pass
+it never ran.** A code review on 2026-08-27 found it three times in five
+scripts, always the same shape: `jq` inside a process substitution, whose
+failure `set -euo pipefail` does not see. The loop reads zero rows, and the
+script prints `0/0 facts survived` / `✅ no category regressed` and exits 0.
+The rule that came out of it, and that any new script must follow:
+
+- **Run the producer in its own statement, into a real file, and check it.**
+  Never `done < <(jq …)`. Never process substitution at all — `/dev/fd` is also
+  unavailable under some sandboxes, where `diff <(…) <(…)` fails and reads as a
+  *semantic diff* on a document that is fine.
+- **Zero rows is exit 4, not exit 0.** An empty inventory is an extraction that
+  failed, not a document with nothing to protect.
+
 ## The iteration loop
 
 The protocol is improved by running it on real documents, then folding what the
@@ -147,14 +161,40 @@ after it closes.
   command-substitution assignment aborts before you can classify a non-zero as
   *findings* rather than *crash*. Both traps were paid for; do not "simplify"
   the assignments back.
+- **`verify-facts.sh` refuses a multi-line fragment rather than checking it.**
+  `grep -F` on a multi-line pattern matches an OR of its lines, not the block,
+  so a two-line protected fact whose second line was deleted reported ✅. The
+  obvious repair — `grep -qzF` — is worse than the bug here: `grep` on this
+  machine is ugrep, where `-z` means *decompress*, and it matched a fabricated
+  block. So the script enforces brief §F4 instead: the fragment lives on one
+  line. That is what `grep_fragment` is for, and `extract-facts.sh` now always
+  emits one.
+- **A fact's fragment is the distinctive token, not the source line.** §T3
+  mandates section-level edits, which reflow lines; a checker keyed to the line
+  fails a pass where nothing was lost. ⚠️ `normative` is the deliberate
+  exception — `comply.md` forbids rewording a normative sentence at all, so a
+  reflowed one *has* been modified and the strict whole-line check is right.
+- **No `\b` or `\<` in any awk regex.** The one-true-awk shipped on macOS
+  ignores them silently — which dropped every normative fact on a document that
+  had four, with no error. Use `([^A-Za-z]|$)`.
+- **`ln -sfn` does not replace a real directory.** It creates the link *inside*
+  it and exits 0. `install.sh` removes a non-symlink target first and then
+  verifies its own `readlink`, because the failure it prevents is a `✅ Skill
+  linked` over a stale copy that keeps being served.
+- **Idempotence ignores trailing whitespace only.** In Markdown, leading
+  indentation is list nesting and a blank line is a paragraph boundary;
+  `--ignore-all-space --ignore-blank-lines` called a re-nested list and two
+  merged paragraphs "whitespace-only".
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.
 
 ## State — what is open
 
-Scaffolded 2026-08-27 from `docs/shape-brief.md`. Nothing released; version
-`0.1.0` in both manifests is a placeholder.
+Scaffolded 2026-08-27 from `docs/shape-brief.md`, then hardened the same day
+after a code review of the initial commit — 11 findings, all fixed, each with a
+regression exercised by hand. Nothing released; version `0.1.0` in both
+manifests is a placeholder.
 
 - 📌 **`lucid-lint` has no `access` category** (brief §5 item 2) — heading
   informativeness, scent in the first three words, contents present, section

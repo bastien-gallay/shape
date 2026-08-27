@@ -91,22 +91,35 @@ package:
     echo "✓ built $out"
     unzip -l "$out"
 
-# Run every verification script against the fixture corpus in diagnose mode.
+# Every fixture is surveyed and a tally printed; one failing fixture must not
+# end the sweep, or the corpus only ever reports its first problem.
+# Run every verification script against the fixture corpus.
 check-fixtures:
     #!/usr/bin/env bash
-    set -euo pipefail
+    set -uo pipefail
     shopt -s nullglob
     files=(fixtures/*.md)
     if [[ ${#files[@]} -eq 0 ]]; then
         echo "no fixtures yet — see fixtures/README.md" >&2
         exit 0
     fi
+    tmp="${TMPDIR:-/tmp}/shape-fixtures-$$"
+    mkdir -p "$tmp"
+    trap 'rm -rf "$tmp"' EXIT
+    failed=0
     for f in "${files[@]}"; do
         echo "── $f"
-        skills/shape/scripts/extract-facts.sh "$f" > "${TMPDIR:-/tmp}/facts.json"
-        skills/shape/scripts/verify-facts.sh "${TMPDIR:-/tmp}/facts.json" "$f" | tail -1
-        skills/shape/scripts/check-render.sh "$f" || true
+        if ! skills/shape/scripts/extract-facts.sh "$f" > "$tmp/facts.json"; then
+            echo "   ⚠️  no fact candidates — skipped"
+            continue
+        fi
+        skills/shape/scripts/verify-facts.sh "$tmp/facts.json" "$f" | tail -1
+        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then failed=$((failed + 1)); fi
+        skills/shape/scripts/check-render.sh "$f" || failed=$((failed + 1))
     done
+    echo
+    echo "${#files[@]} fixture(s), $failed failure(s)"
+    exit $(( failed > 0 ))
 
 # Lint every markdown file in the repo.
 lint:

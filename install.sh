@@ -28,7 +28,19 @@ if [[ "${1:-}" == "--copy" ]]; then
   cp -R "$SKILL_SRC" "$TARGET"
   echo "✅ Skill copied to: $TARGET"
 else
+  # ⚠️ `ln -sfn` onto an existing REAL directory does not replace it — it
+  # creates the link inside it and exits 0. A user who ran `--copy` once and
+  # `install.sh` later would see "✅ Skill linked" while ~/.claude/skills/shape
+  # still served the stale copy.
+  if [[ -d "$TARGET" && ! -L "$TARGET" ]]; then
+    echo "Replacing the existing copy at $TARGET with a symlink."
+    rm -rf "$TARGET"
+  fi
   ln -sfn "$SKILL_SRC" "$TARGET"
+  if [[ "$(readlink "$TARGET")" != "$SKILL_SRC" ]]; then
+    echo "❌ $TARGET is not the expected symlink — install aborted" >&2
+    exit 1
+  fi
   echo "✅ Skill linked: $TARGET → $SKILL_SRC"
 fi
 
