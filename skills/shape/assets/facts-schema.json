@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bastien-gallay/shape/assets/facts-schema.json",
+  "title": "shape fact inventory",
+  "description": "Inventory of load-bearing spans extracted from a document BEFORE any edit. Every entry must survive the pass verbatim; the gate is 100%.",
+  "type": "object",
+  "required": ["version", "source", "extracted_at", "facts"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "source": { "type": "string", "description": "Path of the document, repo-relative." },
+    "source_sha": { "type": "string", "description": "git blob sha of the source at extraction time." },
+    "extracted_at": { "type": "string", "format": "date-time" },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "span", "line"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^F-[0-9]{3,}$" },
+          "kind": {
+            "enum": ["measurement", "warning", "command", "caveat", "normative", "number", "date", "link", "identifier"]
+          },
+          "span": {
+            "type": "string",
+            "description": "Verbatim text, exactly as it appears in the source."
+          },
+          "line": { "type": "integer", "minimum": 1 },
+          "grep_fragment": {
+            "type": "string",
+            "description": "A fragment of span that lives entirely on ONE line — what verify-facts.sh greps for. Defaults to span when span is single-line."
+          },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  // Prose hard-wraps at ~80 columns, but the brief's requirement tables and
+  // the report sample run wider on purpose.
+  "MD013": false,
+  // SKILL.md and the config template use <task>, <target>, <file> placeholders.
+  "MD033": false,
+  // CHANGELOG repeats "### Added" / "### Changed" per release; duplicates under
+  // the *same* parent still fail.
+  "MD024": { "siblings_only": true }
+}

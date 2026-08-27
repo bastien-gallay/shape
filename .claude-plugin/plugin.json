@@ -1,0 +1,19 @@
+{
+  "name": "shape",
+  "version": "0.1.0",
+  "description": "Improve a document for its reader's task — classify audience and task, repair access structure, and prove nothing was lost with a fact-survival gate and a cold-subagent retrieval test.",
+  "author": {
+    "name": "Bastien Gallay"
+  },
+  "homepage": "https://github.com/bastien-gallay/shape",
+  "repository": "https://github.com/bastien-gallay/shape",
+  "license": "MIT",
+  "keywords": [
+    "shape",
+    "documentation",
+    "technical-writing",
+    "access-structure",
+    "readability",
+    "editing"
+  ]
+}

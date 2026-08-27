@@ -1,0 +1,28 @@
+{
+  "name": "shape",
+  "owner": {
+    "name": "Bastien Gallay"
+  },
+  "metadata": {
+    "description": "shape — single-plugin marketplace.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "shape",
+      "source": "./",
+      "description": "Improve a document for its reader's task, and prove it rather than assert it.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "homepage": "https://github.com/bastien-gallay/shape",
+      "repository": "https://github.com/bastien-gallay/shape",
+      "category": "productivity",
+      "tags": [
+        "shape",
+        "documentation",
+        "technical-writing",
+        "access-structure"
+      ]
+    }
+  ]
+}

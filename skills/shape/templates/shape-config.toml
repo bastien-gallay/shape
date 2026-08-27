@@ -1,0 +1,39 @@
+# .shape.toml — copy to the root of a repo shape will run in.
+#
+# The skill body carries *method*. This file carries *policy*: what this repo
+# considers protected, which transforms it forbids, and what it defaults to.
+# Everything here is optional; every key shown is the built-in default.
+
+[defaults]
+mode = "diagnose"        # diagnose | access-only | restructure | condense
+task = ""                # locate | execute | decide | learn | comply — empty = infer
+audience = ""            # dev-doc | public | falc — empty = infer
+target = "github"        # see references/render-targets.md
+
+[markers]
+# May narrow the closed set in references/markers.md. May not extend it.
+allowed = ["⭐", "⚠️", "⛔", "🛑", "🔒", "📌", "✅", "❌"]
+max_per_lines = 5
+
+[protect]
+# Names that must survive verbatim — people, products, clients, trademarks.
+names = []
+# Regexes whose matches are protected verbatim wherever they appear.
+keep_patterns = [
+  "\\bv?\\d+\\.\\d+\\.\\d+\\b",   # versions
+  "\\b[A-Z]{2,}-\\d+\\b",         # ticket refs
+]
+# Paths shape never edits, even when handed one explicitly.
+never_edit = ["CHANGELOG.md", "LICENSE"]
+
+[transforms]
+# Forbidden on top of whatever the task ruleset already forbids.
+forbidden = [
+  # "depersonalise",   # ⚠️ actively wrong on a credits page or an ADR
+  # "english-only",
+]
+
+[style]
+# House style, applied only where the task ruleset leaves a choice.
+wrap_columns = 80
+heading_case = "sentence"   # sentence | title
