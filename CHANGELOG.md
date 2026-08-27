@@ -4,6 +4,22 @@
 
 Initial scaffold, written from `docs/shape-brief.md`.
 
+### Changed
+
+- **A fixture is now two files**: `<id>.md` carries the document and nothing
+  else, `<id>.key.yaml` carries the frozen answer key. 🛑 A single file put
+  `must_preserve` and the `q:`/`a:` pairs in the frontmatter of the document
+  itself, which `census.sh` reads as a block and `verify-facts.sh` greps — so a
+  cold Reader scored 100 % with no transform at all, and a fragment quoted in
+  the frontmatter satisfied the fact gate on a body that had deleted every
+  occurrence. Both instruments reported a pass they never ran.
+- `document_sha256` in the key makes "fixtures are frozen" mechanical:
+  `just check-fixtures` verifies it and refuses to run on a drifted fixture.
+- `just check-fixtures` no longer counts `fixtures/README.md` as a fixture.
+- `.markdownlint.jsonc` sets `MD025: { front_matter_title: "" }`, so the
+  `title:` + H1 convention every document in `docs/` uses is legitimate rather
+  than merely tolerated. The repo now lints clean.
+
 ### Fixed — second review, 2026-08-27
 
 13 findings, all closed, each with a positive and a negative control run by

@@ -133,6 +133,7 @@ The computable analogue of a read-and-locate test:
 4. Same questions, before and after.
 
 ⚠️ Honesty caveats, to be printed with the result:
+
 - This is a proxy for a human reader, not a human test.
 - 🛑 The agent that transformed the document must not be the agent that grades it.
 - Question derivation by the same model biases toward what that model finds salient;

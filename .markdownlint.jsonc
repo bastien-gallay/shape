@@ -6,5 +6,12 @@
   "MD033": false,
   // CHANGELOG repeats "### Added" / "### Changed" per release; duplicates under
   // the *same* parent still fail.
-  "MD024": { "siblings_only": true }
+  "MD024": { "siblings_only": true },
+  // Every document in docs/ carries a frontmatter `title:` *and* an H1 with the
+  // same text. That is deliberate: the frontmatter title is what a docs site
+  // indexes, the H1 is what a reader lands on, and shape's own access structure
+  // (F3) requires the visible title. MD025 counts the frontmatter one as a
+  // second H1 unless it is told which key holds it — setting it to "" tells
+  // markdownlint no frontmatter key is a title, so only the H1 counts.
+  "MD025": { "front_matter_title": "" }
 }

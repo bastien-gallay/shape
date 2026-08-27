@@ -57,7 +57,7 @@ Two reasons, both recorded so the decision can be revisited:
 shape v1.1 writes its structural checks as local scripts under
 `scripts/access/`. Rules are promoted outward, never imported inward:
 
-```
+```text
 local script → measured on corpus → stable across 2 releases → proposed as a lucid-lint rule
 ```
 

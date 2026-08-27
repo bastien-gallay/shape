@@ -98,7 +98,11 @@ check-fixtures:
     #!/usr/bin/env bash
     set -uo pipefail
     shopt -s nullglob
-    files=(fixtures/*.md)
+    # README.md documents the corpus; it is not a member of it.
+    files=()
+    for f in fixtures/*.md; do
+        [[ "$(basename "$f")" == "README.md" ]] || files+=("$f")
+    done
     if [[ ${#files[@]} -eq 0 ]]; then
         echo "no fixtures yet — see fixtures/README.md" >&2
         exit 0
@@ -109,6 +113,23 @@ check-fixtures:
     failed=0
     for f in "${files[@]}"; do
         echo "── $f"
+        # Control 6 of docs/shape-validation-protocol.md, enforced rather than
+        # promised: a fixture edited without re-freezing is an error, not a
+        # matter of discipline. No key yet means the fixture is not frozen.
+        key="${f%.md}.key.yaml"
+        if [[ -f "$key" ]]; then
+            want="$(sed -n 's/^document_sha256:[[:space:]]*"\{0,1\}\([0-9a-f]*\).*/\1/p' "$key")"
+            got="$(shasum -a 256 "$f" | cut -d" " -f1)"
+            if [[ -z "$want" ]]; then
+                echo "   🛑 $key has no document_sha256 — the fixture is not frozen"
+                failed=$((failed + 1)); continue
+            elif [[ "$want" != "$got" ]]; then
+                echo "   🛑 $f changed since it was frozen — NOT RUN"
+                echo "      frozen $want"
+                echo "      actual $got"
+                failed=$((failed + 1)); continue
+            fi
+        fi
         if ! skills/shape/scripts/extract-facts.sh "$f" > "$tmp/facts.json"; then
             echo "   ⚠️  no fact candidates — skipped"
             continue
