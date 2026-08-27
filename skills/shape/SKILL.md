@@ -83,8 +83,9 @@ allows; fallbacks are declared there, never improvised at edit time.
 7. **Outline pass, then section edits** — never the whole file at once.
 8. **Verify** — every gate in §5, each by its script, each exit status read.
 9. **Report** — §6 — and 🛑 always write the ledger, whatever the mode:
-   `scripts/ledger.sh … --not-measured "<reasons>|none"`, never empty by
-   omission.
+   `scripts/ledger.sh … --facts f --facts-survived N --not-measured
+   "<reasons>|none"`. Neither is optional: an inventory without its survival
+   count stores the question and discards the answer.
 
 ## 4. Reader-task verification — the primary metric
 

@@ -42,6 +42,9 @@ than a word count.
   means closed: `.shape.toml` may narrow it, never extend it.
 - **`skills/shape/scripts/*.sh`** — one script per verification, each with an
   exit-code contract stated in its header comment. See the contract below.
+- **`skills/shape/scripts/lib.sh`** — `jq_rows` and `jq_value`, the two guarded
+  ways to read the census. 🛑 Sourced by every `access/` check; adding a sixth
+  check means sourcing it too, not hand-rolling a sixth producer.
 - **`skills/shape/assets/facts-schema.json`** — the fact-inventory schema that
   `extract-facts.sh` emits and `verify-facts.sh` consumes. The two must move
   together.
@@ -55,10 +58,13 @@ than a word count.
 - **`skills/shape/scripts/access/`** — the structural rules, owned here rather
   than imported from lucid-lint. Rules are promoted *outward* once measured;
   see that directory's README for the promotion bar.
-- **`skills/shape/scripts/ledger.sh`** — appends `runs/<date>-<doc>.json` on
-  every pass. This is the instrument that makes both open questions answerable
-  by accumulation instead of by argument, so a pass that skips it costs
-  evidence that cannot be recovered later.
+- **`skills/shape/scripts/ledger.sh`** — writes `runs/<date>-<doc>.json` on
+  every pass, and ⚠️ never overwrites: a same-day rerun takes a `-2` suffix,
+  because two passes over one document in one day is the normal loop and the
+  second silently replacing the first destroys the evidence. `--facts` requires
+  `--facts-survived`. This is the instrument that makes both open questions
+  answerable by accumulation instead of by argument, so a pass that skips it
+  costs evidence that cannot be recovered later.
 - **`skills/shape/references/calibration.md`** — how a threshold is earned, and
   both falsification conditions. Read before changing any number anywhere.
 - **`fixtures/`** — the regression corpus (brief §T6) and the calibration
@@ -110,18 +116,31 @@ Every script follows it, and `SKILL.md` §0.4 depends on it:
 you passed* — a crashed linter must never read as a clean document.
 
 🛑 **The failure mode this repo keeps producing is a gate that reports a pass
-it never ran.** A code review on 2026-08-27 found it three times in five
-scripts, always the same shape: `jq` inside a process substitution, whose
-failure `set -euo pipefail` does not see. The loop reads zero rows, and the
-script prints `0/0 facts survived` / `✅ no category regressed` and exits 0.
-The rule that came out of it, and that any new script must follow:
+it never ran.** Two code reviews on 2026-08-27 found it **eight** times: three
+in the first five scripts, then five more in the v1.1 increment — the four
+`access/` checks, and `check-render.sh` discarding lychee status with
+`|| true`. Always the same shape: a producer whose failure `set -euo pipefail`
+cannot see. The loop reads zero rows, and the script prints `0/0 facts
+survived` / `✅ headings carry scent` and exits 0.
+
+⚠️ **It came back in the very increment that documented it.** Writing the rule
+here did not prevent it; a shared guard did. The rule any new script must
+follow:
 
 - **Run the producer in its own statement, into a real file, and check it.**
   Never `done < <(jq …)`. Never process substitution at all — `/dev/fd` is also
   unavailable under some sandboxes, where `diff <(…) <(…)` fails and reads as a
   *semantic diff* on a document that is fine.
 - **Zero rows is exit 4, not exit 0.** An empty inventory is an extraction that
-  failed, not a document with nothing to protect.
+  failed, not a document with nothing to protect. ⚠️ With one deliberate
+  exception, stated in `access/README.md`: a *selection* that legitimately
+  matches nothing — no headings, no tables — is not a failed extraction. Those
+  checks print "nothing to check" and exit 0. They never print ✅.
+- **Read the status of every script in its own statement, including in the
+  `justfile`.** `check.sh … | jq` reads jq's status, so a check that exited 4
+  printed nothing and read as clean. `just profile` was doing exactly this.
+- **Source `lib.sh`.** `jq_rows` for a row stream, `jq_value` for a scalar.
+  Hand-rolling the pattern is how it got written four more times.
 
 ## The iteration loop
 
@@ -223,6 +242,20 @@ after it closes.
   indentation is list nesting and a blank line is a paragraph boundary;
   `--ignore-all-space --ignore-blank-lines` called a re-nested list and two
   merged paragraphs "whitespace-only".
+- **A metric that cannot be computed reports `null`, never its best value.**
+  V2 returned `0` — the ideal score — on any document shorter than its window,
+  so a short dense wall of prose graded perfect. ⚠️ The direction of the error
+  is what matters: a metric that fails *towards* a pass is worse than one that
+  fails loudly, because nothing downstream ever asks again.
+- **No apostrophe inside a single-quoted `awk` or `jq` program.** It closes the
+  string, and the shell then parses the program body as shell. Cost twice on
+  2026-08-27, both times as `syntax error near unexpected token` pointing at a
+  line that was fine. Write "the opening line of a block", not "the block's
+  opening line".
+- **Zero rows means different things in different checks.** An empty *fact
+  inventory* is an extraction that failed — exit 4. An empty *selection* (no
+  headings in this document) is a real document — exit 0, and never a ✅.
+  Collapsing the two either hides a broken extractor or fails clean documents.
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.

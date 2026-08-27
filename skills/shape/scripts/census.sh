@@ -12,8 +12,12 @@
 # consumer must treat `chars` as a byte count, which is what the rendered-line
 # estimate in metrics.sh assumes.
 #
-# Exit: 0 census written · 1 nothing parsed (empty or unreadable content)
-#       · 2 usage/unreadable file
+# ⚠️ `source` is stored as an absolute path. Consumers resolve line spans back
+# against it (access/contents-present.sh does), and a cwd-relative path turns
+# "run from another directory" into a silent finding.
+#
+# Exit: 0 census written · 2 usage/unreadable file
+#       · 4 nothing parsed — an extraction that failed, not an empty document
 
 set -euo pipefail
 
@@ -22,6 +26,9 @@ if [[ -z "$file" || ! -r "$file" ]]; then
   echo "usage: census.sh <readable-file>" >&2
   exit 2
 fi
+
+# Absolute, so a consumer resolving spans is not bound to our cwd.
+src_abs="$(cd "$(dirname "$file")" && pwd)/$(basename "$file")"
 
 rows="${TMPDIR:-/tmp}/shape-census-$$.tsv"
 trap 'rm -f "$rows"' EXIT
@@ -35,20 +42,24 @@ function flush(   n) {
   lasttype = btype
   btype = ""; blevel = ""; bchars = 0; markers = ""
 }
-function scan_markers(line,   out, i, g) {
-  out = ""
+# 🛑 Accumulates into `markers`, and every line of the block is scanned. An
+# earlier revision scanned only the opening line of a block, so a marker in the
+# second sentence of a paragraph vanished — which is where most markers in the
+# docs of this repo sit. V7 and the markers.md density budget are both computed
+# from this field, so a truncated set silently understates both.
+function add_markers(line,   i, g) {
   split("⭐ ⚠️ ⛔ 🛑 🔒 📌 ✅ ❌", G, " ")
   for (i = 1; i <= 8; i++) {
     g = G[i]
-    if (index(line, g) > 0) out = (out == "" ? g : out " " g)
+    if (index(line, g) > 0 && index(" " markers " ", " " g " ") == 0)
+      markers = (markers == "" ? g : markers " " g)
   }
-  return out
 }
 function open(t, lvl) {
   btype = t; blevel = lvl; start = NR; end = NR
-  bchars = length($0); markers = scan_markers($0)
+  bchars = length($0); markers = ""; add_markers($0)
 }
-function extend() { end = NR; bchars += length($0) }
+function extend() { end = NR; bchars += length($0); add_markers($0) }
 
 BEGIN { idx = 0; btype = ""; path = ""; lasttype = ""; infm = 0; incode = 0 }
 
@@ -120,12 +131,13 @@ incode {
 END { flush() }
 ' "$file" > "$rows"
 
+# Zero rows is an extraction that failed, not a document with nothing in it.
 if [[ ! -s "$rows" ]]; then
-  echo "census parsed no blocks in $file" >&2
-  exit 1
+  echo "🛑 census parsed no blocks in $file — the census did not run" >&2
+  exit 4
 fi
 
-jq -Rn --arg source "$file" '
+jq -Rn --arg source "$src_abs" '
   [inputs | split("\t") | {
      i:       (.[0] | tonumber),
      type:    .[1],

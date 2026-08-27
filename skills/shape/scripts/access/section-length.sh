@@ -10,6 +10,8 @@
 # Exit: 0 clean · 1 findings · 2 usage · 4 the check did not run
 
 set -euo pipefail
+# shellcheck source=../lib.sh
+. "$(dirname "${BASH_SOURCE[0]}")/../lib.sh"
 
 blocks="${1:-}"
 max=8
@@ -23,7 +25,7 @@ if ! jq -e '.blocks | length > 0' "$blocks" >/dev/null 2>&1; then
   exit 4
 fi
 
-findings="$(jq -r --argjson max "$max" '
+jq_value findings section-length --argjson max "$max" '
   [.blocks[] | select(.type == "heading" and .level <= 2) | .i] as $heads
   | .blocks as $b
   | [ range(0; ($heads | length)) as $k
@@ -35,7 +37,7 @@ findings="$(jq -r --argjson max "$max" '
          blocks: ([$b[] | select(.i > $h and .i < $next)] | length),
          subheads: ([$b[] | select(.i > $h and .i < $next and .type == "heading")] | length)}
       | select(.blocks > $max and .subheads == 0) ]
-  | .[] | "line \(.start) — \(.blocks) blocks, no subheading: \(.path)"' "$blocks")"
+  | .[] | "line \(.start) — \(.blocks) blocks, no subheading: \(.path)"' "$blocks"
 
 if [[ -n "$findings" ]]; then
   printf '%s\n' "$findings"

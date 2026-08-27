@@ -13,6 +13,8 @@
 # Exit: 0 clean · 1 findings · 2 usage · 4 the check did not run
 
 set -euo pipefail
+# shellcheck source=../lib.sh
+. "$(dirname "${BASH_SOURCE[0]}")/../lib.sh"
 
 blocks="${1:-}"
 src="${2:-}"
@@ -36,6 +38,19 @@ tokens() {
     | sort -u
 }
 
+rows="${TMPDIR:-/tmp}/shape-restate-$$.tsv"
+trap 'rm -f "$rows" "${TMPDIR:-/tmp}/shape-tbl-$$" "${TMPDIR:-/tmp}/shape-pro-$$"' EXIT
+jq_rows "$rows" prose-restates-table '
+  .blocks as $b
+  | [ $b[] | select(.type == "table") ][]
+  | .i as $ti | .start as $ts | .end as $te
+  | [ $b[] | select(.type == "paragraph" and (.i == $ti - 1 or .i == $ti + 1)) ][]?
+  | [$ts, $te, .start, .end] | @tsv' "$blocks"
+if rows_empty "$rows"; then
+  echo "⚠️  no table with an adjacent paragraph — nothing to check"
+  exit 0
+fi
+
 findings=0
 while IFS=$'\t' read -r t_start t_end p_start p_end; do
   tbl="${TMPDIR:-/tmp}/shape-tbl-$$"; pro="${TMPDIR:-/tmp}/shape-pro-$$"
@@ -52,12 +67,7 @@ while IFS=$'\t' read -r t_start t_end p_start p_end; do
     fi
   fi
   rm -f "$tbl" "$pro"
-done < <(jq -r '
-  .blocks as $b
-  | [ $b[] | select(.type == "table") ][]
-  | .i as $ti | .start as $ts | .end as $te
-  | [ $b[] | select(.type == "paragraph" and (.i == $ti - 1 or .i == $ti + 1)) ][]?
-  | [$ts, $te, .start, .end] | @tsv' "$blocks")
+done < "$rows"
 
 if [[ $findings -gt 0 ]]; then
   printf '\n%d redundancy finding(s) — threshold %s is unvalidated\n' "$findings" "$overlap"

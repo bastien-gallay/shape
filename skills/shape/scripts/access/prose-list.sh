@@ -14,6 +14,8 @@
 # Exit: 0 clean · 1 findings · 2 usage · 4 the check did not run
 
 set -euo pipefail
+# shellcheck source=../lib.sh
+. "$(dirname "${BASH_SOURCE[0]}")/../lib.sh"
 
 blocks="${1:-}"
 src="${2:-}"
@@ -24,6 +26,15 @@ fi
 if ! jq -e '.blocks | length > 0' "$blocks" >/dev/null 2>&1; then
   echo "🛑 $blocks unreadable or empty — prose-list did not run" >&2
   exit 4
+fi
+
+rows="${TMPDIR:-/tmp}/shape-proselist-$$.tsv"
+trap 'rm -f "$rows"' EXIT
+jq_rows "$rows" prose-list \
+  '.blocks[] | select(.type == "paragraph") | [.start, .end] | @tsv' "$blocks"
+if rows_empty "$rows"; then
+  echo "⚠️  no paragraphs in the census — nothing to check"
+  exit 0
 fi
 
 findings=0
@@ -45,7 +56,7 @@ while IFS=$'\t' read -r start end; do
     printf '⚠️  lines %s-%s — %s parallel clauses, likely a list\n' "$start" "$end" "$semis"
     findings=$((findings + 1))
   fi
-done < <(jq -r '.blocks[] | select(.type == "paragraph") | [.start, .end] | @tsv' "$blocks")
+done < "$rows"
 
 if [[ $findings -gt 0 ]]; then
   printf '\n%d prose-list finding(s) — each proposes, none converts\n' "$findings"

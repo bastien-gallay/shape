@@ -44,26 +44,41 @@ run_or_skip markdownlint markdownlint "$file"
 if ! command -v lychee >/dev/null 2>&1; then
   printf '⚠️  %-12s NOT RUN (not installed)\n' "lychee"
 else
-  lychee_out="$(lychee --no-progress "$file" 2>&1)" || true
+  # 🛑 The status is read in its own statement. An earlier revision discarded
+  # it with `|| true` and classified from stdout alone, so a lychee that died
+  # on a bad config printed no errors and was read as ✅ pass — a crashed
+  # checker reporting a clean document.
+  lychee_status=0
+  lychee_out="$(lychee --no-progress "$file" 2>&1)" || lychee_status=$?
 
-  # NOT RUN only when EVERY error is a transport failure. ⚠️ Matching the
-  # transport pattern anywhere is not enough: lychee words a 404 as "Network
-  # error: 404", so a loose pattern reports a genuinely dead link as a check
-  # that did not run — the false negative this branch exists to prevent, made
-  # worse. Measured 2026-08-27 against a stubbed lychee.
-  err_total="$(printf '%s\n' "$lychee_out" | grep -cE '^[[:space:]]*\[ERROR\]' || true)"
-  err_transport="$(printf '%s\n' "$lychee_out" \
-    | grep -E '^[[:space:]]*\[ERROR\]' \
-    | grep -ciE 'TLS certificate|connection refused|dns error|failed to lookup|operation timed out|proxy|invalid response data|malformed response' || true)"
-
-  if [[ "$err_total" -gt 0 && "$err_total" -eq "$err_transport" ]]; then
-    printf '⚠️  %-12s NOT RUN (network unreachable or intercepted)\n' "lychee"
-  elif printf '%s' "$lychee_out" | grep -qE '[1-9][0-9]* Errors'; then
-    printf '❌ %-12s fail\n' "lychee"
-    printf '%s\n' "$lychee_out" | grep -E '^\[ERROR\]' | sed 's/^/   /'
-    failed=1
+  # No summary line means lychee never got as far as checking anything.
+  if ! printf '%s\n' "$lychee_out" | grep -qE '[0-9]+ Total'; then
+    printf '⚠️  %-12s NOT RUN (exited %s with no summary)\n' "lychee" "$lychee_status"
+    printf '%s\n' "$lychee_out" | head -3 | sed 's/^/   /'
   else
-    printf '✅ %-12s pass\n' "lychee"
+
+    # NOT RUN only when EVERY error is a transport failure. ⚠️ Matching the
+    # transport pattern anywhere is not enough, twice over: lychee words a 404 as
+    # "Network error: 404", and the URL itself is on the [ERROR] line — so
+    # https://example.com/proxy-guide returning 404 matched `proxy` and a dead
+    # link was reported as a check that did not run. The URL is stripped before
+    # the reason is matched. Measured 2026-08-27 against a stubbed lychee.
+    err_lines="${TMPDIR:-/tmp}/shape-lychee-$$.txt"
+    printf '%s\n' "$lychee_out" | grep -E '^[[:space:]]*\[ERROR\]' > "$err_lines" || true
+    err_total="$(wc -l < "$err_lines" | tr -d ' ')"
+    err_transport="$(sed -E 's#https?://[^[:space:]]+##g' "$err_lines" \
+      | grep -ciE 'TLS certificate|connection refused|dns error|failed to lookup|operation timed out|proxy|invalid response data|malformed response' || true)"
+
+    if [[ "$err_total" -gt 0 && "$err_total" -eq "$err_transport" ]]; then
+      printf '⚠️  %-12s NOT RUN (network unreachable or intercepted)\n' "lychee"
+    elif printf '%s' "$lychee_out" | grep -qE '[1-9][0-9]* Errors'; then
+      printf '❌ %-12s fail\n' "lychee"
+      sed 's/^/   /' "$err_lines"
+      failed=1
+    else
+      printf '✅ %-12s pass\n' "lychee"
+    fi
+    rm -f "$err_lines"
   fi
 fi
 

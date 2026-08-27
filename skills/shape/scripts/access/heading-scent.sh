@@ -13,6 +13,8 @@
 # Exit: 0 clean · 1 findings · 2 usage · 4 the check did not run
 
 set -euo pipefail
+# shellcheck source=../lib.sh
+. "$(dirname "${BASH_SOURCE[0]}")/../lib.sh"
 
 blocks="${1:-}"
 if [[ -z "$blocks" || ! -r "$blocks" ]]; then
@@ -27,6 +29,16 @@ fi
 # Topic nouns that name a subject instead of answering a question.
 STOPLIST="overview|introduction|background|details|analysis|discussion|notes|misc|miscellaneous|general|information|about|other|summary|conclusion|appendix|architecture|design|implementation|usage|configuration|reference"
 
+rows="${TMPDIR:-/tmp}/shape-scent-$$.tsv"
+trap 'rm -f "$rows"' EXIT
+jq_rows "$rows" heading-scent \
+  '.blocks[] | select(.type == "heading")
+   | [(.start | tostring), (.path | split(" > ") | last)] | @tsv' "$blocks"
+if rows_empty "$rows"; then
+  echo "⚠️  no headings in the census — nothing to check"
+  exit 0
+fi
+
 findings=0
 while IFS=$'\t' read -r line text; do
   lower="$(printf '%s' "$text" | tr '[:upper:]' '[:lower:]')"
@@ -39,8 +51,7 @@ while IFS=$'\t' read -r line text; do
     printf '⚠️  line %s — no scent in the first three words: "%s"\n' "$line" "$text"
     findings=$((findings + 1))
   fi
-done < <(jq -r '.blocks[] | select(.type == "heading")
-                | [(.start | tostring), (.path | split(" > ") | last)] | @tsv' "$blocks")
+done < "$rows"
 
 if [[ $findings -gt 0 ]]; then
   printf '\n%d heading finding(s) — each proposes, none converts\n' "$findings"

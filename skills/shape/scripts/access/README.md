@@ -29,6 +29,17 @@ the text of the spans the census points at — ⛔ no re-parse (spec §4).
 Exit contract, per T4: `0` clean · `1` findings · `2` usage · `4` the check did
 not run.
 
+🛑 Every census read goes through `jq_rows` or `jq_value` in `../lib.sh`, never
+through a process substitution and never through a bare `x="$(jq …)"`. Both
+run the producer in its own statement and turn a failed one into exit 4. This
+is not style: the same defect — a crashed producer, a loop over zero rows, and
+a cheerful ✅ — has been written four times in this repo.
+
+⚠️ Zero rows is *not* an error here. A document with no headings, no tables or
+no paragraphs is a real document; the census guard has already established that
+the parse itself worked. But zero rows is never a ✅ either — the check says
+"nothing to check" and exits 0.
+
 ## Before promoting a rule
 
 A rule leaves this directory only with: the corpus it was measured on, its size

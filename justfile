@@ -126,6 +126,10 @@ lint:
     markdownlint '**/*.md' --ignore node_modules
 
 # Census + F12 metrics + the access checks for one document. Report-only.
+#
+# Every script status is read in its own statement. Piping a check into `jq` or
+# `sed` reads the *formatter's* status, so a check that exited 4 — did not run
+# — printed nothing and read as a clean document.
 profile FILE:
     #!/usr/bin/env bash
     set -uo pipefail
@@ -133,16 +137,40 @@ profile FILE:
     tmp="${TMPDIR:-/tmp}/shape-profile-$$"
     mkdir -p "$tmp"
     trap 'rm -rf "$tmp"' EXIT
-    "$S/census.sh" "{{FILE}}" > "$tmp/blocks.json" || exit 1
+
+    st=0; "$S/census.sh" "{{FILE}}" > "$tmp/blocks.json" || st=$?
+    if [[ $st -ne 0 ]]; then
+        echo "🛑 census exited $st — nothing downstream can be trusted" >&2
+        exit "$st"
+    fi
     echo "── census"
     jq -r '.blocks | group_by(.type) | map("   \(.[0].type): \(length)") | .[]' "$tmp/blocks.json"
+
     echo "── F12 (unvalidated — see references/calibration.md)"
-    "$S/metrics.sh" "$tmp/blocks.json" | jq -r '
-      .metrics | to_entries[] | "   \(.key): \(.value.value)"'
+    st=0; "$S/metrics.sh" "$tmp/blocks.json" > "$tmp/metrics.json" || st=$?
+    if [[ $st -ne 0 ]]; then
+        echo "   🛑 metrics NOT RUN (exit $st)"
+    else
+        jq -r '.metrics | to_entries[] | "   \(.key): \(.value.value)"' "$tmp/metrics.json"
+    fi
+
     echo "── access"
+    worst=0
+    run_check() {
+        local name="$1"; shift
+        local out="$tmp/$name.txt" cst=0
+        "$@" > "$out" 2>&1 || cst=$?
+        sed 's/^/   /' "$out"
+        case "$cst" in
+            0) ;;
+            1) [[ $worst -lt 1 ]] && worst=1 ;;
+            *) echo "   🛑 $name NOT RUN (exit $cst)"; worst=4 ;;
+        esac
+    }
     for c in heading-scent contents-present section-length; do
-        "$S/access/$c.sh" "$tmp/blocks.json" | sed 's/^/   /'
+        run_check "$c" "$S/access/$c.sh" "$tmp/blocks.json"
     done
     for c in prose-list prose-restates-table; do
-        "$S/access/$c.sh" "$tmp/blocks.json" "{{FILE}}" | sed 's/^/   /'
+        run_check "$c" "$S/access/$c.sh" "$tmp/blocks.json" "{{FILE}}"
     done
+    exit "$worst"

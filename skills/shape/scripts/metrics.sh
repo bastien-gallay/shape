@@ -13,6 +13,11 @@
 # the output and must be printed in the report.
 #
 # Exit: 0 metrics written · 2 usage/unreadable · 4 census unreadable or empty
+#
+# ⚠️ A metric that cannot be computed reports null, never its best value. V2 on
+# a document shorter than the window and V6 on a document with one section are
+# *not measurable*, and reporting 0 for the first would hand a dense wall of
+# prose the ideal score.
 
 set -euo pipefail
 
@@ -21,9 +26,22 @@ wrap=80
 window=45
 shift || true
 while [[ $# -gt 0 ]]; do
+  # 🛑 A missing option value is a usage error. `shift 2` on a single remaining
+  # argument returns non-zero, and under `set -e` the script died with exit 1 —
+  # which this repo's contract reads as "the document failed the gate".
   case "$1" in
-    --wrap)   wrap="${2:-80}";   shift 2 ;;
-    --window) window="${2:-45}"; shift 2 ;;
+    --wrap|--window)
+      if [[ $# -lt 2 ]]; then
+        echo "usage: metrics.sh <blocks.json> [--wrap N] [--window N] — $1 needs a value" >&2
+        exit 2
+      fi
+      if [[ ! "$2" =~ ^[0-9]+$ || "$2" -eq 0 ]]; then
+        echo "usage: $1 takes a positive integer, got '$2'" >&2
+        exit 2
+      fi
+      if [[ "$1" == "--wrap" ]]; then wrap="$2"; else window="$2"; fi
+      shift 2
+      ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
 done
@@ -56,10 +74,13 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
   | ([$r[].rendered] | add // 0) as $total_rendered
   | ([ $r[] | if .type == "paragraph" then .rendered else 0 end ]) as $prose
   | ([$r[].rendered]) as $all
+  # ⚠️ null, not 0, when no window reaches $window rendered lines. 0 is the
+  # best possible score, so a short dense document used to report the ideal.
   | ([ range(0; ($all | length)) as $i
        | [ foreach range($i; $all | length) as $j ({n: 0, p: 0};
              {n: (.n + $all[$j]), p: (.p + $prose[$j])})
-           | select(.n >= $window) | (.p / .n) ] | first // empty ] | max // 0) as $v2
+           | select(.n >= $window) | (.p / .n) ] | first // empty ]
+     | if length == 0 then null else max end) as $v2
 
   # V3 — first screen: is the reader oriented in the first 40 source lines?
   | ([ $b[] | select(.start <= 40) ]) as $first
@@ -81,10 +102,15 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
        | ([ $b[] | select(.type == "caption" or .type == "paragraph")
             | (.i - $fi) | fabs ] | min // 999) ]) as $v5_each
 
-  # V6 — coefficient of variation of section length at depth 2.
+  # V6 — coefficient of variation of section length at depth 2. ⚠️ The last
+  # section closes at the last line of the document, not at 0: emitting 0 for
+  # it and filtering it out computed the CV over n−1 sections, and returned
+  # null on any document with exactly two.
   | ([ $b[] | select(.type == "heading" and .level == 2) | .start ]) as $h2
-  | ([ range(0; ($h2 | length)) | if . + 1 < ($h2 | length)
-        then $h2[. + 1] - $h2[.] else 0 end ] | map(select(. > 0))) as $seclens
+  | ([ $b[].end ] | max) as $doc_end
+  | ([ range(0; ($h2 | length))
+       | (if . + 1 < ($h2 | length) then $h2[. + 1] else $doc_end + 1 end) - $h2[.] ]
+     | map(select(. > 0))) as $seclens
   | (if ($seclens | length) > 1
      then ($seclens | add / length) as $mu
        | (($seclens | map(pow(. - $mu; 2)) | add / length | sqrt) / $mu)
@@ -109,7 +135,9 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
       window: $window,
       metrics: {
         V1_longest_prose_run:    {value: $v1, unit: "rendered lines"},
-        V2_screen_density:       {value: (($v2 * 100 | round) / 100), unit: "max prose share"},
+        V2_screen_density:       {value: (if $v2 == null then null else (($v2 * 100 | round) / 100) end),
+                                  unit: "max prose share",
+                                  note: (if $v2 == null then "document shorter than the window — not measurable" else null end)},
         V3_first_screen:         {value: $v3, unit: "presence"},
         V4_block_type_run:       {value: $v4, unit: "blocks"},
         V5_figure_mention:       {value: ($v5_each | max // null), unit: "blocks", per_figure: $v5_each},

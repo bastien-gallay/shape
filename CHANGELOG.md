@@ -4,6 +4,37 @@
 
 Initial scaffold, written from `docs/shape-brief.md`.
 
+### Fixed — second review, 2026-08-27
+
+13 findings, all closed, each with a positive and a negative control run by
+hand.
+
+- 🛑 **Five more gates that reported a pass they never ran.** The four
+  `access/` checks fed their loop from `done < <(jq …)`, and
+  `check-render.sh` discarded lychee status with `|| true`. Every census read
+  now goes through `jq_rows`/`jq_value` in the new `scripts/lib.sh`.
+- 🛑 **`check-render.sh` reported a dead link as a check that did not run.**
+  The transport-failure pattern was matched against the whole `[ERROR]` line,
+  URL included, so a 404 on `…/proxy-guide` matched `proxy`. The URL is
+  stripped before the reason is matched.
+- 🛑 **`ledger.sh` lost the evidence it exists to collect.** `exit 4` inside a
+  command substitution ended the subshell only and left a truncated entry; a
+  same-day rerun overwrote the previous one; and `survived` was hard-coded
+  `null`, so fact survival — the one gate that is not tunable — was never
+  recorded. Inputs are now validated up front, entries are built into a temp
+  file and moved, reruns take a `-2` suffix, and `--facts` requires
+  `--facts-survived`.
+- **`census.sh` lost every marker past a block first line**, which is where
+  most markers sit; V7 and the density budget were computed from a truncated
+  set. `source` is now absolute, and an empty parse exits 4 rather than 1.
+- **V2 reported its best possible value** on a document shorter than the
+  window, and **V6 dropped the final section**, returning `null` at two
+  sections. Both now report `null` when not measurable.
+- **`metrics.sh --wrap` with no value exited 1** — "the document failed the
+  gate" — instead of 2.
+- **`just profile` read the status of `jq` and `sed`, not of the checks**, so a
+  check that exited 4 printed nothing and read as clean.
+
 ### Added
 
 - `skills/shape/SKILL.md` — the protocol: always-on directives, four modes, the
