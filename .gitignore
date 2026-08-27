@@ -3,3 +3,5 @@
 dist/
 node_modules/
 .impeccable/
+runs/
+.shape-baseline.json

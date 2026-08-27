@@ -24,9 +24,12 @@ file got.
 4. **Repairs access structure** as a unit: title, one-line purpose, audience,
    TL;DR, contents, informative headings, anchors.
 5. **Verifies** — fact survival at 100 %, a cold-subagent retrieval test before
-   and after, per-category lint delta, idempotence, render checks.
+   and after, idempotence, render checks.
 6. **Reports** what changed, what was removed by category, and **what could not
-   be measured, and why**.
+   be measured, and why** — plus the signals: the lint delta, the visual-rhythm
+   profile, the structural findings, the word count.
+7. **Writes a ledger entry**, whatever the mode, so the open questions get
+   answered by accumulation rather than by argument.
 
 🛑 A fact that did not survive fails the pass. It is not reported as a
 trade-off.
@@ -71,6 +74,23 @@ Drop a `.shape.toml` at your repo root to set defaults, protected names, and
 forbidden transforms — see `skills/shape/templates/shape-config.toml`. The
 skill body carries *method*; your repo carries *policy*.
 
+## Two things it deliberately does not do
+
+🛑 **It does not gate on a score.** Not the word count, not the lucid-lint
+score, not any of the seven visual-rhythm metrics. A prose linter's categories
+are intra-sentential, so a document written well sentence by sentence and
+unusable structurally scores high — gating on that would validate exactly what
+`shape` exists to reject. Every score is a signal in the report, and
+`references/calibration.md` states what would earn one a gate.
+
+🛑 **It does not ship a number it has not measured.** The visual-rhythm metrics
+are labelled `unvalidated` and gate nothing; thresholds live in `.shape.toml`
+beside the corpus size and the date they were derived from. `corpus_size = 0`
+says plainly that none of them has been calibrated yet. Both changes carry a
+written falsification condition — if no metric separates documents readers
+struggle with from documents they don't, the whole metric set reverts to
+advisory prose and ships no numbers at all.
+
 ## The primary metric
 
 Not the word count, and not the lint score. A **cold subagent** — fresh
@@ -98,7 +118,7 @@ All optional; each absent tool reports **not run**, never *passed*.
 
 | Tool | Used for |
 | --- | --- |
-| [`lucid-lint`](https://github.com/bastien-gallay/lucid-lint) | per-category prose score and delta |
+| [`lucid-lint`](https://github.com/bastien-gallay/lucid-lint) | per-category prose score and delta — a signal, never a gate |
 | `jq` | fact inventory |
 | `pandoc` | analysis AST for non-Markdown sources |
 | `markdownlint`, `lychee`, `mmdc` | render checks |

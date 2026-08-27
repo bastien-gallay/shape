@@ -35,7 +35,37 @@ run_or_skip() {
 }
 
 run_or_skip markdownlint markdownlint "$file"
-run_or_skip lychee       lychee --no-progress "$file"
+
+# ⚠️ Link checking has a third outcome, and conflating it with the second is
+# the whole doctrine failing quietly. A blocked or TLS-intercepted network
+# makes every URL "fail" — that is the checker not reaching the network, not
+# the document carrying dead links. Measured 2026-08-27: behind a filtering
+# proxy, lychee reported both live URLs in README.md as errors.
+if ! command -v lychee >/dev/null 2>&1; then
+  printf '⚠️  %-12s NOT RUN (not installed)\n' "lychee"
+else
+  lychee_out="$(lychee --no-progress "$file" 2>&1)" || true
+
+  # NOT RUN only when EVERY error is a transport failure. ⚠️ Matching the
+  # transport pattern anywhere is not enough: lychee words a 404 as "Network
+  # error: 404", so a loose pattern reports a genuinely dead link as a check
+  # that did not run — the false negative this branch exists to prevent, made
+  # worse. Measured 2026-08-27 against a stubbed lychee.
+  err_total="$(printf '%s\n' "$lychee_out" | grep -cE '^[[:space:]]*\[ERROR\]' || true)"
+  err_transport="$(printf '%s\n' "$lychee_out" \
+    | grep -E '^[[:space:]]*\[ERROR\]' \
+    | grep -ciE 'TLS certificate|connection refused|dns error|failed to lookup|operation timed out|proxy|invalid response data|malformed response' || true)"
+
+  if [[ "$err_total" -gt 0 && "$err_total" -eq "$err_transport" ]]; then
+    printf '⚠️  %-12s NOT RUN (network unreachable or intercepted)\n' "lychee"
+  elif printf '%s' "$lychee_out" | grep -qE '[1-9][0-9]* Errors'; then
+    printf '❌ %-12s fail\n' "lychee"
+    printf '%s\n' "$lychee_out" | grep -E '^\[ERROR\]' | sed 's/^/   /'
+    failed=1
+  else
+    printf '✅ %-12s pass\n' "lychee"
+  fi
+fi
 
 if grep -q '```mermaid' "$file"; then
   case "$target" in

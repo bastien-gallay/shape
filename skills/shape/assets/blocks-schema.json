@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bastien-gallay/shape/assets/blocks-schema.json",
+  "title": "shape block census",
+  "description": "The block sequence of a document, produced by one parse. Every F12 metric is a pure function over this output; no metric re-parses the source (spec v1.1 §4).",
+  "type": "object",
+  "required": ["version", "source", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "source": { "type": "string" },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["i", "type", "level", "start", "end", "lines", "chars", "path", "markers"],
+        "additionalProperties": false,
+        "properties": {
+          "i": { "type": "integer", "minimum": 0, "description": "Index in document order." },
+          "type": {
+            "enum": ["heading", "paragraph", "list", "table", "code", "quote", "figure",
+                     "admonition", "caption", "rule", "frontmatter", "html"]
+          },
+          "level": { "type": ["integer", "null"], "minimum": 1, "maximum": 6,
+                     "description": "Heading depth; null for every other type." },
+          "start": { "type": "integer", "minimum": 1 },
+          "end": { "type": "integer", "minimum": 1 },
+          "lines": { "type": "integer", "minimum": 1 },
+          "chars": { "type": "integer", "minimum": 0,
+                     "description": "BYTES, not characters. macOS awk has no UTF-8 length; the rendered-line estimate assumes bytes." },
+          "path": { "type": "string", "description": "Heading ancestry, ' > '-joined." },
+          "markers": { "type": "array", "items": { "type": "string" },
+                       "description": "Closed-set marker glyphs found in the block's first line." }
+        }
+      }
+    }
+  }
+}

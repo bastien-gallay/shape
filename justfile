@@ -124,3 +124,25 @@ check-fixtures:
 # Lint every markdown file in the repo.
 lint:
     markdownlint '**/*.md' --ignore node_modules
+
+# Census + F12 metrics + the access checks for one document. Report-only.
+profile FILE:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    S=skills/shape/scripts
+    tmp="${TMPDIR:-/tmp}/shape-profile-$$"
+    mkdir -p "$tmp"
+    trap 'rm -rf "$tmp"' EXIT
+    "$S/census.sh" "{{FILE}}" > "$tmp/blocks.json" || exit 1
+    echo "── census"
+    jq -r '.blocks | group_by(.type) | map("   \(.[0].type): \(length)") | .[]' "$tmp/blocks.json"
+    echo "── F12 (unvalidated — see references/calibration.md)"
+    "$S/metrics.sh" "$tmp/blocks.json" | jq -r '
+      .metrics | to_entries[] | "   \(.key): \(.value.value)"'
+    echo "── access"
+    for c in heading-scent contents-present section-length; do
+        "$S/access/$c.sh" "$tmp/blocks.json" | sed 's/^/   /'
+    done
+    for c in prose-list prose-restates-table; do
+        "$S/access/$c.sh" "$tmp/blocks.json" "{{FILE}}" | sed 's/^/   /'
+    done

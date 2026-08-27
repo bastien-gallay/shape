@@ -5,13 +5,25 @@
 #   lint-delta.sh --baseline <file> [--profile dev-doc|public|falc]
 #   lint-delta.sh --compare  <file> [--profile dev-doc|public|falc]
 #
-# ⚠️ The score is evidence, never the objective. A pass that raises the score
-# while lowering retrieval accuracy has failed.
+# 🛑 SIGNAL, NOT A GATE (spec v1.1 §A1). This script never fails a pass on the
+# score. Two reasons, recorded so the decision can be revisited:
 #
-# 📌 lucid-lint has no `access` category yet (brief §5 item 2). Until it does,
-# access structure is judged, not measured, and the report says so.
+#   - False green. The five current categories are intra-sentential. A document
+#     written well sentence by sentence and unusable structurally scores high;
+#     gating on it would validate exactly what shape exists to reject.
+#   - Goodhart, direct. Converting prose to tables shortens units mechanically
+#     and raises the score whether or not anything improved. shape would hold a
+#     lever on its own grade.
 #
-# Exit: 0 ok or improved · 1 a category regressed · 2 usage
+# 🔒 Falsification condition. If the score turns out to track locate cost on the
+# corpus, this change was wrong and the gate comes back — with the correlation
+# and the corpus size stated. The ledger (scripts/ledger.sh) is what makes that
+# answerable: it stores the score next to the retrieval result on every pass.
+#
+# ⛔ shape does not wait for a lucid-lint `access` category. Structural checks
+# are owned locally under scripts/access/ and promoted outward once measured.
+#
+# Exit: 0 the signal was produced (regression or not) · 2 usage
 #       · 3 lucid-lint absent, errored, or drifted — the check is NOT RUN
 #       · 4 the comparison itself did not run (unreadable or empty scores)
 
@@ -101,12 +113,15 @@ case "$mode" in
       printf '%-14s %3d → %3d (%s%d)\n' "$cat" "$before" "$after" "$sign" "$delta"
       if [[ $delta -lt 0 ]]; then regressed=1; fi
     done < "$rows"
+    # ⚠️ Reported, never returned as a failure: this is a signal (§A1). The
+    # exit code says the signal was produced, not that the document is good.
     if [[ $regressed -eq 1 ]]; then
-      echo "❌ a category regressed" >&2
+      echo "⚠️  a category regressed — signal only, this does not fail the pass"
     else
       echo "✅ no category regressed"
     fi
-    exit "$regressed"
+    echo "📌 informational: the score is evidence, never the objective."
+    exit 0
     ;;
   *)
     echo "usage: lint-delta.sh --baseline|--compare <file> [--profile P]" >&2

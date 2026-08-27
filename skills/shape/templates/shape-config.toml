@@ -37,3 +37,37 @@ forbidden = [
 # House style, applied only where the task ruleset leaves a choice.
 wrap_columns = 80
 heading_case = "sentence"   # sentence | title
+
+[render]
+# ⚠️ The assumed render width, in columns. V2 counts *rendered* lines, so this
+# is part of the metric's unit: it is printed in every report, and a metric
+# whose unit is implicit is not reproducible.
+wrap_columns = 80
+# Sliding window for V2, in rendered lines — roughly one screen.
+window_lines = 45
+
+[thresholds]
+# 🛑 EVERY VALUE HERE IS A HYPOTHESIS, NOT A SETTING.
+#
+# No threshold may be hard-coded in a script. Each one lives here with the
+# corpus it came from and the date it was derived, and both are printed in the
+# report beside the number. A number with no provenance is not a threshold.
+#
+# 📌 corpus_size = 0 means: none of these has been calibrated. Until the
+# protocol in references/calibration.md has run, every F12 metric and every
+# scripts/access/ check is REPORT-ONLY and gates nothing.
+corpus_size = 0
+derived_on = ""
+
+# F12 — see references/f12-visual-rhythm.md. Expect two or three of the seven
+# to survive calibration; dropping the rest is the protocol working.
+v1_longest_prose_run = 8      # rendered lines
+v2_screen_density = 1.0       # max prose share in any window
+v4_block_type_run = 3         # consecutive blocks of one non-prose type
+v5_figure_mention = 0         # blocks between a figure and its mention
+# v6 and v7 ship report-only on purpose; they have no threshold.
+
+# scripts/access/ — local structural rules, promoted into lucid-lint only after
+# a corpus has measured them.
+section_max_blocks = 8        # blocks in a section with no subheading
+table_restatement_overlap = 0.6

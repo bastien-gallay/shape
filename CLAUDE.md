@@ -16,6 +16,10 @@ than a word count.
 
 ## Files that matter
 
+- **`docs/shape-spec-v1.1.md`** — the evolution spec, and the amendment in
+  force: lucid-lint stops being a gate, visual rhythm becomes a measured
+  property, every pass writes a ledger. It amends the brief's §5 and §6 and
+  adds F12. Where the two disagree, the spec wins.
 - **`docs/shape-brief.md`** — the requirements brief the skill is written
   *from*. It is the spec, not the skill body, and it is addressed to the skill
   author. Every design question already answered lives here; read it before
@@ -45,8 +49,22 @@ than a word count.
   into their repos. Its section names (`[defaults]`, `[markers]`, `[protect]`,
   `[transforms]`, `[style]`) are parsed by `SKILL.md` §3.1; renaming one is a
   breaking change.
-- **`fixtures/`** — the regression corpus (brief §T6). Currently empty; that
-  gap is the main thing standing between this scaffold and a v1.
+- **`skills/shape/scripts/census.sh`** — one parse, many metrics. ⛔ Nothing
+  downstream re-parses the document; `metrics.sh` and the `access/` checks are
+  functions over its output. Its schema is `assets/blocks-schema.json`.
+- **`skills/shape/scripts/access/`** — the structural rules, owned here rather
+  than imported from lucid-lint. Rules are promoted *outward* once measured;
+  see that directory's README for the promotion bar.
+- **`skills/shape/scripts/ledger.sh`** — appends `runs/<date>-<doc>.json` on
+  every pass. This is the instrument that makes both open questions answerable
+  by accumulation instead of by argument, so a pass that skips it costs
+  evidence that cannot be recovered later.
+- **`skills/shape/references/calibration.md`** — how a threshold is earned, and
+  both falsification conditions. Read before changing any number anywhere.
+- **`fixtures/`** — the regression corpus (brief §T6) and the calibration
+  corpus (spec §5). Currently empty; that gap is now the main thing standing
+  between this repo and a v1, because it is what every unvalidated number is
+  waiting on.
 - **`install.sh`** — symlinks (default) or copies `skills/shape` into
   `~/.claude/skills/shape`. Symlink is the intended mode so edits propagate
   live without reinstalling.
@@ -54,6 +72,7 @@ than a word count.
 ## Commands
 
 ```sh
+just profile <file>      # census + F12 + access checks for one document
 just lint                # markdownlint over every .md
 just check-versions      # plugin.json and marketplace.json agree
 just check-fixtures      # run the scripts over fixtures/*.md
@@ -136,6 +155,25 @@ after it closes.
 - **Word count is informational, permanently.** The prototype's own
   2026-08-25 measurement — a restructuring that felt large and measured
   −4.8 % — is why. The report must not credit effort.
+- **lucid-lint is a signal, not a gate, and shape does not wait for it.** Two
+  reasons, both recorded so the decision can be revisited: the five categories
+  are intra-sentential, so a document written well sentence by sentence and
+  unusable structurally scores high — gating on it would validate exactly what
+  shape rejects; and converting prose to tables raises the score mechanically,
+  which hands shape a lever on its own grade. The dependency arrow is inverted
+  with it: structural rules are written locally under `scripts/access/` and
+  promoted outward once a corpus has measured them, because a deterministic
+  rule is badly designed in the abstract.
+- **Every number ships unvalidated, and says so.** The v1.1 increment delivers
+  a census, a metric set and a calibration protocol — not thresholds. Expect
+  two or three of the seven F12 metrics to survive; that is the protocol
+  working, not the increment failing. ⚠️ And when they are calibrated, n ≈ 12
+  and one author: a locally useful setting, never a finding.
+- **Both changes carry a written falsification condition.** If the lint score
+  turns out to track locate cost, the gate comes back. If no F12 metric
+  separates high-cost from low-cost documents, F12 reverts to advisory prose
+  and ships no numbers. Neither condition may be quietly dropped — they are
+  what makes the increment a claim rather than a preference.
 - **The transforming agent never grades.** Retrieval scoring runs in a cold
   subagent with fresh context. This is not caution; a self-graded retrieval
   test measures nothing.
@@ -196,16 +234,20 @@ after a code review of the initial commit — 11 findings, all fixed, each with 
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
 
-- 📌 **`lucid-lint` has no `access` category** (brief §5 item 2) — heading
-  informativeness, scent in the first three words, contents present, section
-  length, prose-list tells, prose restating an adjacent table. This is the gap
-  the whole skill is chasing, and it is currently measured by nothing. The
-  brief's recommendation is that it lands **inside** lucid-lint as a 6th
-  category, not in a separate analyser. Until then, `lint-delta.sh` pins
-  lucid-lint's JSON schema at v2 and fails loudly on drift, and access
-  structure is judged rather than measured — the report must say so.
-- 📌 **`fixtures/` is empty.** No idempotence regression, no diagnose
-  regression. The ruleset files can be changed today with nothing to catch it.
+- ✅ **Settled 2026-08-27 — the lucid-lint dependency is inverted.** shape no
+  longer waits for an `access` category; the six structural rules are
+  implemented under `scripts/access/`, each with a positive and a negative
+  control. Promotion into lucid-lint is now an outward move gated on corpus
+  evidence, not a blocking import.
+- 📌 **`fixtures/` is empty, and it is now the critical path.** It blocks the
+  idempotence regression, the diagnose regression, *and* every threshold in
+  `.shape.toml`. Steps 4–6 of the calibration protocol — corpus, retrieval
+  tests, thresholds — cannot start without it. Nothing else in the repo is
+  waiting on as many things.
+- 📌 **The v1.1 increment is implemented through step 3 of its own sequencing.**
+  Census, metrics and ledger exist and run. Steps 4–6 (corpus, calibration,
+  gates) are untouched, by construction: they need documents and cold-subagent
+  retrieval runs, not code.
 - 📌 **The shared norm layer with `glance` is not extracted** (brief §9 item 2).
   `glance` is this norm applied to Claude's output; `shape` is the same norm
   applied to files on disk. They currently carry two independent definitions of

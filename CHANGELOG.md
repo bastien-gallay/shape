@@ -59,6 +59,42 @@ running the code, all fixed.
 - `just check-fixtures` aborted at the first failing fixture; it now surveys
   the corpus and prints a tally.
 
+### Changed — spec v1.1
+
+Implements `docs/shape-spec-v1.1.md` through step 3 of its own sequencing
+(§9). Steps 4–6 — corpus, calibration, gates — need documents and retrieval
+runs, not code, and are deliberately untouched.
+
+- **lucid-lint is a signal, not a gate.** The `access`-score row is gone from
+  the acceptance gates; `lint-delta.sh --compare` reports a regression and
+  exits 0. Two reasons, both recorded: the five categories are intra-sentential,
+  so a structurally unusable document can score high; and converting prose to
+  tables raises the score mechanically. 🔒 If the score turns out to track
+  locate cost on the corpus, the gate comes back.
+- **The dependency arrow is inverted.** shape no longer waits for a lucid-lint
+  `access` category. The six structural rules live in `scripts/access/`
+  — heading scent, contents present, section length, prose-list, prose
+  restating a table — each with a positive and a negative control. Promotion
+  outward requires a corpus, a false-positive rate, and two stable releases.
+- **F12 — visual rhythm.** `census.sh` emits the block sequence
+  (`assets/blocks-schema.json`); `metrics.sh` computes V1–V7 as pure functions
+  over it. ⛔ No metric re-parses the document. 🛑 Every value ships labelled
+  `unvalidated` and gates nothing. The wrap width is part of the unit and is
+  printed with the result.
+- **Every pass writes a ledger.** `ledger.sh` appends `runs/<date>-<doc>.json`
+  with the classification applied, census and metrics before/after, retrieval,
+  lint score, facts, word count, and a mandatory `not_measured` field that may
+  not be empty by omission. This is what makes both open questions answerable
+  by accumulation rather than by argument.
+- **Thresholds moved to `.shape.toml`** under `[thresholds]`, each beside
+  `corpus_size` and `derived_on`. `corpus_size = 0` states plainly that nothing
+  has been calibrated yet. 🛑 No threshold is hard-coded in a script.
+- `just profile <file>` runs the census, the metrics and the access checks over
+  one document.
+- SKILL.md absorbed F12, the census and the ledger while staying under the
+  §T4 ceiling: the anti-patterns table moved to `references/anti-patterns.md`,
+  and the F12 detail to `references/f12-visual-rhythm.md`. Body 144 lines.
+
 ### Notes
 
 - Named `shape`, bare, per the brief's settled decision — one free autocomplete
