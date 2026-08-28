@@ -68,9 +68,11 @@ than a word count.
 - **`skills/shape/references/calibration.md`** — how a threshold is earned, and
   both falsification conditions. Read before changing any number anywhere.
 - **`fixtures/`** — the regression corpus (brief §T6) and the calibration
-  corpus (spec §5). Currently empty; that gap is now the main thing standing
-  between this repo and a v1, because it is what every unvalidated number is
-  waiting on.
+  corpus (spec §5). Two files per fixture, never one: `<id>.md` is all any
+  instrument or Reader sees, `<id>.key.yaml` holds the answers and the frozen
+  `document_sha256`. ⚠️ `T2-topology-01a`/`-01b` are an **A/B pair** — same
+  content, table vs graph — and scoring one arm without the other reintroduces
+  the blindness the pair exists to measure.
 - **`install.sh`** — symlinks (default) or copies `skills/shape` into
   `~/.claude/skills/shape`. Symlink is the intended mode so edits propagate
   live without reinstalling.
@@ -277,11 +279,13 @@ manifests is a placeholder.
   implemented under `scripts/access/`, each with a positive and a negative
   control. Promotion into lucid-lint is now an outward move gated on corpus
   evidence, not a blocking import.
-- 📌 **`fixtures/` is empty, and it is now the critical path.** It blocks the
-  idempotence regression, the diagnose regression, *and* every threshold in
-  `.shape.toml`. Steps 4–6 of the calibration protocol — corpus, retrieval
-  tests, thresholds — cannot start without it. Nothing else in the repo is
-  waiting on as many things.
+- 📌 **`fixtures/` holds one A/B pair, and needs more.** The first two
+  documents landed 2026-08-28 and produced the first two real ledger entries.
+  Still blocked on more fixtures: the idempotence regression, the diagnose
+  regression, and every threshold in `.shape.toml`. ⭐ The next one should be a
+  **longer** topology — 20 services, dependencies split across sections —
+  because the first pair was small enough that form had little room to cost
+  anything.
 - 📌 **The v1.1 increment is implemented through step 3 of its own sequencing.**
   Census, metrics and ledger exist and run. Steps 4–6 (corpus, calibration,
   gates) are untouched, by construction: they need documents and cold-subagent
@@ -297,9 +301,12 @@ manifests is a placeholder.
   documents carrying 27 tables and zero figures; a later non-`shape` pass added
   15 mermaid diagrams to the same documents because they were unreadable. ⚠️ No
   accumulation of runs will surface this — the instrument that would record the
-  evidence is the one that cannot perceive it. Full entry and the three exit
-  conditions in `references/calibration.md`. 📌 It is why the first fixture
-  should be a topology document.
+  evidence is the one that cannot perceive it. **Tested 2026-08-28 on the A/B
+  pair: 24/24 both arms, blocks opened 2.67 vs 3.00, all six access checks
+  identical.** Locate cost was the candidate companion measure and it did not
+  move either. Only `V8_table_share` and `V5_figure_mention` separated the two
+  forms. Full entry, the three limits of that measurement, and the exit
+  conditions in `references/calibration.md`.
 - 📌 **The cold-subagent retrieval loop (brief §F7) is specified, not
   scripted.** It is the primary metric and the only gate with no script behind
   it.

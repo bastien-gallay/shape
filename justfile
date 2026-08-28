@@ -111,6 +111,7 @@ check-fixtures:
     mkdir -p "$tmp"
     trap 'rm -rf "$tmp"' EXIT
     failed=0
+    not_run=0
     for f in "${files[@]}"; do
         echo "── $f"
         # Control 6 of docs/shape-validation-protocol.md, enforced rather than
@@ -136,11 +137,22 @@ check-fixtures:
         fi
         skills/shape/scripts/verify-facts.sh "$tmp/facts.json" "$f" | tail -1
         if [[ ${PIPESTATUS[0]} -ne 0 ]]; then failed=$((failed + 1)); fi
-        skills/shape/scripts/check-render.sh "$f" || failed=$((failed + 1))
+        # ⚠️ 3 is NOT RUN, not a failing document. Counting it as a failure
+        # would say the fixture is broken when the machine is.
+        render_st=0
+        skills/shape/scripts/check-render.sh "$f" || render_st=$?
+        case "$render_st" in
+            0) ;;
+            3) not_run=$((not_run + 1)) ;;
+            *) failed=$((failed + 1)) ;;
+        esac
     done
     echo
-    echo "${#files[@]} fixture(s), $failed failure(s)"
-    exit $(( failed > 0 ))
+    echo "${#files[@]} fixture(s), $failed failure(s), $not_run not run"
+    if [[ $not_run -gt 0 ]]; then
+        echo "🛑 $not_run check(s) did not run — this is not a clean corpus report" >&2
+    fi
+    exit $(( failed > 0 || not_run > 0 ))
 
 # Lint every markdown file in the repo.
 lint:

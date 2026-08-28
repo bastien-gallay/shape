@@ -36,4 +36,17 @@ satisfies the 100 % gate even when the body deleted every occurrence. See
   carry someone's identifiers in its own corpus.
 - A fixture is committed with its expected `diagnose` output, so a ruleset
   change shows up as a diff rather than as a judgement call.
-- 📌 Empty for now. The corpus is the gap between this scaffold and a v1.
+- ⚠️ **An A/B pair is scored as a pair.** `T2-topology-01a` / `-01b` are the
+  same content in two forms. Reporting one arm without the other reintroduces
+  the form-blindness the pair exists to measure.
+
+## What is in it
+
+| Fixture | Task | Form | Why it exists |
+| --- | --- | --- | --- |
+| `T2-topology-01a` | locate | table | the misfit no script can catch — a graph given as rows |
+| `T2-topology-01b` | locate | mermaid graph | the comparator arm, identical content |
+
+📌 **First result, 2026-08-28.** Both arms scored 24/24 on retrieval at k = 3,
+with identical blocks opened and identical verdicts from all six access checks.
+Only two census numbers moved. See `references/calibration.md`.

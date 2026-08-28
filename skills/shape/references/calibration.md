@@ -95,6 +95,47 @@ it is the reason the first fixture should be a topology document.
 score measurably worse on retrieval than their figure-bearing versions. One
 dossier is not a corpus; it is the reason to build one.
 
+### Measured on the A/B pair, 2026-08-28 — no separation
+
+`fixtures/T2-topology-01a` (dependency graph as a **table**) and `-01b` (the
+same content as a **mermaid graph**) differ in one section and nothing else.
+Eight hand-authored questions, five of them needing two or three edges. Cold
+subagents, k = 3 per arm, isolated directory, key unreachable.
+
+| Measure | A — table | B — graph | Separates? |
+| --- | --- | --- | --- |
+| Answers correct | 24/24 | 24/24 | ❌ no |
+| Blocks opened, mean | 2.67 | 3.00 | ❌ no — and the wrong way |
+| Reader tokens, mean | 23 976 | 24 167 | ❌ no |
+| Access checks (6) | identical verdicts | identical verdicts | ❌ no |
+| `V8_table_share` | 0.75 | 0.50 | ✅ yes |
+| `V5_figure_mention` | `null` | 1 | ✅ yes |
+
+🛑 **The second row is the finding.** Locate cost was the candidate companion
+measure, and it did not move. On this pair, the retrieval loop cannot grade
+form at all — not through accuracy, and not through cost. Per the table above,
+that is the middle row: **say so in the report contract, and stop implying the
+gate covers form.**
+
+⚠️ **What this measurement cannot settle.** Three limits, stated so the number
+is not over-read:
+
+- **n = 3 per arm, one fixture, one model family.** A locally useful reading,
+  not a finding — the same caveat that governs every threshold in this file.
+- **The Reader is not the population.** An LLM issuing `sed` ranges does not
+  pay the visual scan cost a human pays on a nine-row dependency table. The
+  claim the protocol cares about is about human readers; this instrument
+  cannot reach them.
+- **The document is small.** 538 words, one screen per section. Both arms were
+  answerable from two or three opens, so there was little cost for form to
+  move. ⭐ A longer topology — 20 services, dependencies split across sections
+  — is the next fixture, and the real test of the hypothesis.
+
+📌 **What survives.** Two census numbers moved and everything model-facing did
+not. `V8_table_share` and `V5_figure_mention` are, so far, the only instruments
+in this repo that can see the defect the user reported. That is a reason to
+calibrate them, and not yet a reason to trust them.
+
 ## Falsified — `table-misfit`, the definition rule, 2026-08-28
 
 **Hypothesis.** A two-column table whose second column averages ≥ 10 words is a
@@ -119,3 +160,22 @@ across this repo.
 **What would revive it.** A corpus measurement showing that readers of
 two-column sentence tables have higher locate cost than readers of the
 equivalent bullets. Not a preference, and not a second list.
+
+## 📌 Observed on the first fixture — `contents-present` cannot see a way in inside the first section
+
+Both arms of `T2-topology-01` open on a `## Where to start` section whose whole
+body is a two-column scan table. `contents-present.sh` reports ❌ on both: its
+rule is that the way in must precede the first depth-2 heading, and this one
+*is* the first depth-2 heading.
+
+⚠️ **Not changed.** One document is not evidence for moving a rule — the same
+bar that removed the `table-misfit` definition rule. The rule also fires on
+this repo's own `README.md` and `SKILL.md`, and does not fire on the three
+files in `docs/`, so the disagreement is real and repeated rather than a
+one-off.
+
+**What would settle it.** Retrieval runs on a pair differing only in whether
+the scan table sits above the first heading or inside it. If locate cost is
+identical, the rule is measuring a preference and should be relaxed to *a way
+in within the first section*; if it separates them, the rule is right as
+written and the fixture is the document that is wrong.

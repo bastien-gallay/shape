@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Added — 2026-08-28 (fixtures)
+
+- `fixtures/T2-topology-01a` / `-01b` — the first fixtures. An A/B pair: one
+  dependency topology given as a table, the same content given as a mermaid
+  graph, differing in one section and nothing else. Two files per fixture, key
+  frozen by `document_sha256`.
+- First measurement of the pair, recorded in `references/calibration.md`:
+  retrieval 24/24 on both arms at k = 3, blocks opened 2.67 vs 3.00, all six
+  access checks identical. Only `V8_table_share` and `V5_figure_mention`
+  separate the forms.
+- `runs/` gains its first two real ledger entries.
+
+### Fixed — 2026-08-28 (fixtures)
+
+- `check-render.sh` no longer reports a valid mermaid diagram as broken when
+  the headless browser `mmdc` drives is unavailable. That path now exits **3 —
+  NOT RUN**, per the exit-code contract. Found by the first fixture.
+- `just check-fixtures` counts NOT RUN separately from failures, so a missing
+  tool no longer reads as a failing document.
+
 Initial scaffold, written from `docs/shape-brief.md`.
 
 ### Added — from measurement, 2026-08-28

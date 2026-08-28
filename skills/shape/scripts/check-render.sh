@@ -7,6 +7,7 @@
 # verification you passed.
 #
 # Exit: 0 all checks that ran passed · 1 a check failed · 2 usage
+#       3 a check could not run — the tool is present but its runtime is not
 
 set -euo pipefail
 
@@ -19,6 +20,7 @@ if [[ -z "$file" || ! -r "$file" ]]; then
 fi
 
 failed=0
+render_not_run=0
 
 run_or_skip() {
   local tool="$1"; shift
@@ -185,11 +187,25 @@ if grep -q '```mermaid' "$file"; then
           /^```[[:space:]]*$/        { inblock = 0; next }
           inblock                    { print > (dir "/block-" n ".mmd") }
         ' "$file"
+        # 🛑 `mmdc` present is not `mmdc` able to run. It drives headless
+        # Chrome through puppeteer, and a missing or mis-cached browser exits
+        # non-zero with the diagram untouched — which read as "this diagram
+        # does not render" on a diagram that is fine. Measured 2026-08-28 on
+        # fixtures/T2-topology-01b.md, the first fixture in the corpus: a valid
+        # 9-edge graph reported ❌ because Chrome was not installed. The
+        # verdict was a statement about the machine.
         for block in "$block_dir"/block-*.mmd; do
-          if mmdc -i "$block" -o "$block.svg" >/dev/null 2>&1; then
+          mmdc_status=0
+          mmdc_out="$(mmdc -i "$block" -o "$block.svg" 2>&1)" || mmdc_status=$?
+          if [[ $mmdc_status -eq 0 ]]; then
             printf '✅ %-12s %s renders\n' "mmdc" "$(basename "$block")"
+          elif printf '%s' "$mmdc_out" | grep -qiE 'could not find chrome|puppeteer|failed to launch|browser was not found|ENOENT|no usable sandbox'; then
+            printf '⚠️  %-12s NOT RUN (%s — the browser mmdc drives is unavailable)\n' \
+              "mmdc" "$(basename "$block")"
+            render_not_run=1
           else
             printf '❌ %-12s %s does not render\n' "mmdc" "$(basename "$block")"
+            printf '%s\n' "$mmdc_out" | head -3 | sed "s/^/   /"
             failed=1
           fi
         done
@@ -199,4 +215,8 @@ if grep -q '```mermaid' "$file"; then
   esac
 fi
 
+if [[ $failed -eq 0 && $render_not_run -eq 1 ]]; then
+  echo "🛑 a diagram was NOT RENDERED — this is not a clean render report" >&2
+  exit 3
+fi
 exit "$failed"
