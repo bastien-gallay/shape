@@ -6,6 +6,17 @@ Initial scaffold, written from `docs/shape-brief.md`.
 
 ### Changed
 
+- `ledger.sh` gains a `calibration` block — `--fixture-id`,
+  `--ruleset-version`, `--run-index`, `--reader-family` — and names fixture
+  runs `<date>-<fixture>-<ruleset>-r<k>.json`. Without these the §9 attribution
+  matrix was unreconstructable and the k = 3 replicates of one fixture differed
+  only by a collision-breaking filename suffix. `--fixture-id` without
+  `--ruleset-version` is refused.
+- Control 2 of the validation protocol asked for a different model *family*,
+  which no implementation here can select — so it was breached on every run,
+  undetected. It now matches brief §F7, and the family that ran is recorded
+  either way rather than the risk being silently discharged.
+
 - **A fixture is now two files**: `<id>.md` carries the document and nothing
   else, `<id>.key.yaml` carries the frozen answer key. 🛑 A single file put
   `must_preserve` and the `q:`/`a:` pairs in the frontmatter of the document

@@ -34,7 +34,90 @@ run_or_skip() {
   fi
 }
 
-run_or_skip markdownlint markdownlint "$file"
+# ⚠️ Markdown linting is cwd-sensitive and tool-sensitive, and BOTH failures
+# report as ❌ fail rather than as NOT RUN — the exact inversion this script
+# exists to prevent.
+#
+#   - markdownlint-cli v1 resolves .markdownlint.json from the CURRENT
+#     DIRECTORY, not from the linted file's. Invoked as `markdownlint <file>`
+#     from anywhere but the config's own directory it finds no config, applies
+#     defaults, and MD013 alone reddens any document whose repo disabled it.
+#     Measured 2026-08-28 on markdownlint-cli 0.46.0: 17 MD013 findings on a
+#     document that lints clean under its own repo's config, from a cwd one
+#     directory below the config. The verdict was a statement about the cwd.
+#
+#   - markdownlint-cli2 reads .markdownlint-cli2.jsonc and its own ignore
+#     config, so it is preferred wherever present. Its trap is the inverse and
+#     it is silent: "Linting: 0 files" exits 0. The FILE COUNT is read, never
+#     the exit status alone.
+#
+# So: walk up from the FILE to find the config, run the linter from that
+# directory, and say in the label which tool ran and whether a config was
+# found. A lint with no config is a different proposition from a lint with one.
+
+md_config_dir() {
+  local dir; dir="$(cd "$(dirname "$1")" && pwd)"
+  while :; do
+    for name in .markdownlint-cli2.jsonc .markdownlint-cli2.yaml .markdownlint-cli2.cjs \
+                .markdownlint.json .markdownlint.jsonc .markdownlint.yaml .markdownlintrc; do
+      [[ -r "$dir/$name" ]] && { printf '%s\n' "$dir"; return 0; }
+    done
+    [[ "$dir" == "/" ]] && return 1
+    dir="$(dirname "$dir")"
+  done
+}
+
+lint_markdown() {
+  local f="$1" root rel out status label n
+  if root="$(md_config_dir "$f")"; then
+    label="config"
+  else
+    root="$(cd "$(dirname "$f")" && pwd)"
+    label="no-config"
+  fi
+  rel="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"
+  rel="${rel#"$root"/}"
+
+  if command -v markdownlint-cli2 >/dev/null 2>&1; then
+    status=0
+    out="$(cd "$root" && markdownlint-cli2 "$rel" 2>&1)" || status=$?
+    # 🛑 The count, not the status. `Linting: 0 files` exits 0 having linted
+    # nothing — a gate reporting a clean document it never opened.
+    n="$(printf '%s\n' "$out" | sed -nE 's/^Linting: ([0-9]+) files?.*/\1/p' | head -1)"
+    if [[ -z "$n" ]]; then
+      printf '⚠️  %-12s NOT RUN (no "Linting: N files" line, exited %s)\n' "cli2" "$status"
+      printf '%s\n' "$out" | head -3 | sed 's/^/   /'
+    elif [[ "$n" -eq 0 ]]; then
+      printf '⚠️  %-12s NOT RUN (Linting: 0 files — ignored or unmatched)\n' "cli2"
+    elif [[ "$status" -eq 0 ]]; then
+      printf '✅ %-12s pass (%s file(s), %s)\n' "cli2" "$n" "$label"
+    else
+      printf '❌ %-12s fail (%s)\n' "cli2" "$label"
+      printf '%s\n' "$out" | grep -E 'MD[0-9]+' | head -10 | sed 's/^/   /'
+      failed=1
+    fi
+    return
+  fi
+
+  if command -v markdownlint >/dev/null 2>&1; then
+    status=0
+    out="$(cd "$root" && markdownlint "$rel" 2>&1)" || status=$?
+    if [[ "$status" -eq 0 ]]; then
+      printf '✅ %-12s pass (%s)\n' "markdownlint" "$label"
+    else
+      printf '❌ %-12s fail (%s)\n' "markdownlint" "$label"
+      printf '%s\n' "$out" | head -10 | sed 's/^/   /'
+      [[ "$label" == "no-config" ]] && \
+        printf '   ⚠️  no config found above the file — these are DEFAULT rules\n'
+      failed=1
+    fi
+    return
+  fi
+
+  printf '⚠️  %-12s NOT RUN (neither markdownlint-cli2 nor markdownlint installed)\n' "markdown"
+}
+
+lint_markdown "$file"
 
 # ⚠️ Link checking has a third outcome, and conflating it with the second is
 # the whole doctrine failing quietly. A blocked or TLS-intercepted network

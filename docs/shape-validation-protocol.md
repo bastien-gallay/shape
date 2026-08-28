@@ -145,12 +145,24 @@ protocol.
 | # | Control | Why |
 | --- | --- | --- |
 | 1 | Reader gets a **fresh context**, no knowledge of the edit | Otherwise it grades its own work |
-| 2 | Reader and transformer are **different models**, ideally different families | Self-preference |
+| 2 | Reader is a **different model family whenever one is available**; ⚠️ record which family ran, every time | Self-preference |
 | 3 | Every transform runs **k = 3** with different seeds | Variance is itself a defect signal |
 | 4 | Referee sees A/B **stripped of provenance**, order randomised and counterbalanced | Position bias |
 | 5 | Reader reports **which sections it opened**, not only the answer | Locate cost |
 | 6 | Fixtures are **frozen**; the harness verifies `document_sha256` and exits 4 on a mismatch | Prevents silent goalpost drift |
 | 7 | The `.key.yaml` never reaches a Reader context or an instrument input | The answer key is not evidence |
+
+⚠️ **Control 2 is weaker than it reads, and says so on purpose.** A subagent
+spawned from this skill runs the same model, and no config key selects another
+family — so *must be a different family* would be breached on every run,
+undetected. A numbered control that is always breached teaches the reader to
+skip the list. Brief §F7 asks for a fresh context and *ideally* a different
+model; this matches it, and control 1 carries the weight.
+
+🛑 **Which family ran is recorded whichever way it goes.** Same-family runs are
+not thereby discharged: they are same-family evidence, and the §2 threat stays
+open above them. Numbers pooled across families without the label cannot be
+re-read later when a second family becomes available.
 
 ⚠️ **Instability counts as failure.** If k = 3 runs on one fixture disagree on the
 output shape, the ruleset is underdetermined — record the variance and treat it as a
@@ -246,7 +258,19 @@ To adjust without dogfooding, you need to know *which* change did what.
   fragments and breaks on document-level structure — the most common shape of
   regression here.
 - Record the ablation in the ledger (spec v1.1 §6) so the matrix accumulates rather
-  than being rebuilt each time.
+  than being rebuilt each time. `ledger.sh` carries the four keys the matrix is
+  built from:
+
+```sh
+ledger.sh --fixture-id T1-locate-004 --ruleset-version v1.1 --run-index 2 \
+          --reader-family <family> …
+```
+
+  🛑 `--fixture-id` without `--ruleset-version` is refused: an unattributable
+  calibration run is worse than an absent one, because it still looks like
+  evidence in the pile. A fixture run also names its own file
+  (`<date>-<fixture>-<ruleset>-r<k>.json`), so the k = 3 replicates no longer
+  differ only by a collision-breaking suffix.
 
 ---
 
