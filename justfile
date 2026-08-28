@@ -191,7 +191,7 @@ profile FILE:
     for c in heading-scent contents-present section-length; do
         run_check "$c" "$S/access/$c.sh" "$tmp/blocks.json"
     done
-    for c in prose-list prose-restates-table; do
+    for c in prose-list prose-restates-table table-misfit; do
         run_check "$c" "$S/access/$c.sh" "$tmp/blocks.json" "{{FILE}}"
     done
     exit "$worst"

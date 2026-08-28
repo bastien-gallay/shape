@@ -2,7 +2,10 @@
 
 The reader is choosing between options and needs the criteria side by side.
 
-**Target shape** — an option table or a decision tree, with criteria as columns.
+**Target shape** — an option table **when options share criteria**, a decision
+tree when the choice is a sequence of conditions. ⚠️ The two are not
+interchangeable: a tree flattened into a table loses the branching, which is
+the thing the reader came for.
 
 **Signature rule** — the recommendation carries ⭐; every discarded option keeps
 at least one line saying why it was discarded.

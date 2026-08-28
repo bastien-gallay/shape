@@ -54,6 +54,30 @@ shape, with no image analysis.
 🛑 Detection **proposes**; it never converts. Conversion is a judgement call and
 stays with the model, per §T1.
 
+### The reverse direction — a table that is the wrong form
+
+⭐ **Tables carry a comparison; they cannot carry a topology, a proportion or
+two orders of magnitude.**
+
+🛑 Measured 2026-08-28, and the reason this section exists: a dossier of seven
+documents passed all five access checks — 35/35 — carrying 27 tables, 216 table
+rows and zero figures. A later pass replaced four of those tables with mermaid
+diagrams and added eleven more. Nothing in `shape` had looked at an *existing*
+table; the matrix above only ever asked what prose should become.
+
+| The table is really | Target form | Who decides |
+| --- | --- | --- |
+| A chronology — a column of dates | Timeline, or an ordered list | `scripts/access/table-misfit.sh` |
+| A proportion — values summing to a whole | Pie, or a labelled bar | `table-misfit.sh` |
+| A quantitative series — every column but the key numeric | Chart; ⚠️ two orders of magnitude do not read as digits | `table-misfit.sh` |
+| A topology — entities and the links between them | Flowchart or graph | ⛔ the model — not mechanically decidable |
+
+⚠️ **A left column that is a scannable index is not a misfit.** `Risk |
+Mitigation`, `Construct | Unavailable → use` are mappings a `locate` reader
+scans by that column; demoting them to a definition list destroys the
+affordance. A fourth rule that flagged them was implemented, measured and
+removed the same hour — see `calibration.md`.
+
 ⚠️ The trigger is the shape of the content, never the length of the passage. A
 long passage is not a reason for a figure.
 

@@ -128,6 +128,18 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
            | add / length)
      else null end) as $marker_density
 
+  # V8 — share of the display blocks that are tables. 🛑 Added 2026-08-28 from
+  # measurement, not from theory: a dossier of 7 documents passed all five
+  # access checks with 27 tables and zero figures, and needed 15 diagrams to
+  # become readable. V4 caps *consecutive* same-type runs, so a document
+  # alternating table and paragraph scores perfectly while every table is the
+  # wrong form. Nothing in F12 could see that until now.
+  | ([ $b[] | select(.type == "table" or .type == "list" or .type == "figure"
+                     or .type == "code" or .type == "admonition"
+                     or .type == "quote") ]) as $display
+  | ([ $display[] | select(.type == "table") ] | length) as $tables
+  | ([ $display[] | select(.type == "figure") ] | length) as $figures
+
   | {
       version: 1,
       unvalidated: true,
@@ -143,6 +155,11 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
         V5_figure_mention:       {value: ($v5_each | max // null), unit: "blocks", per_figure: $v5_each},
         V6_section_length_cv:    {value: (if $v6 == null then null else (($v6 * 100 | round) / 100) end),
                                   unit: "coefficient of variation", note: "report only, no threshold"},
+        V8_table_share:          {value: (if ($display | length) == 0 then null
+                                          else ((($tables / ($display | length)) * 100 | round) / 100) end),
+                                  unit: "share of display blocks",
+                                  tables: $tables, figures: $figures,
+                                  note: "a table carries a comparison, not a topology, a proportion or two orders of magnitude"},
         V7_differential_air:     {value: (if $marker_density == null then null
                                           else ((($marker_density - $doc_density) * 100 | round) / 100) end),
                                   unit: "density delta vs document mean",

@@ -4,6 +4,31 @@
 
 Initial scaffold, written from `docs/shape-brief.md`.
 
+### Added — from measurement, 2026-08-28
+
+- `scripts/access/table-misfit.sh` — the sixth structural check, and ⭐ the
+  first derived from measurement rather than from reasoning. Three rules, each
+  observed on a real pass: a chronology in a grid, a proportion, a quantitative
+  series. ⛔ Topology is deliberately absent — "this table is really a graph" is
+  not mechanically decidable and stays with the model.
+- `metrics.sh` gains **V8**, the share of display blocks that are tables, with
+  the table and figure counts beside it. V4 caps only *consecutive* same-type
+  runs, so a document alternating table and paragraph scored perfectly while
+  every table was the wrong form.
+- `references/f12-visual-rhythm.md` gains *the reverse direction*: the matrix
+  there only ever asked what prose should become, never whether an existing
+  table was the right form.
+
+### Removed — falsified, 2026-08-28
+
+- 🛑 A fourth `table-misfit` rule — two columns whose second carries sentences
+  — was implemented, measured and deleted the same hour. It fired 7 times on
+  this repo, every one a legitimate mapping (`Risk | Mitigation`,
+  `Construct | Unavailable → use`) whose left column is the scannable index a
+  `locate` reader needs. The scan that suggested it had filed those cases as
+  *borderline*; borderline is not evidence. Recorded in
+  `references/calibration.md`.
+
 ### Changed
 
 - `ledger.sh` gains a `calibration` block — `--fixture-id`,

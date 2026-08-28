@@ -22,6 +22,7 @@ justified by evidence rather than a blocking dependency.
 | `section-length.sh` | no section runs long without a subheading | 📌 local, unmeasured |
 | `prose-list.sh` | prose-list tells — `(1)…(2)…`, 3+ parallel clauses | 📌 local, unmeasured |
 | `prose-restates-table.sh` | a paragraph restating the table beside it | 📌 local, unmeasured |
+| `table-misfit.sh` | a table carrying a chronology, a proportion or a series | ⭐ local, **observed** on 4 real passes 2026-08-28 |
 
 Each reads `blocks.json` from `census.sh` for structure and the source only for
 the text of the spans the census points at — ⛔ no re-parse (spec §4).
@@ -39,6 +40,13 @@ a cheerful ✅ — has been written four times in this repo.
 no paragraphs is a real document; the census guard has already established that
 the parse itself worked. But zero rows is never a ✅ either — the check says
 "nothing to check" and exits 0.
+
+⚠️ **`table-misfit.sh` is the only rule here derived from measurement rather
+than from reasoning**, and it is also the only one that has already had a rule
+removed from it. A fourth tell — two columns whose second carries sentences —
+fired 7 times on this repo, every one a legitimate mapping. It was deleted the
+hour it was written. ⭐ That is the promotion bar working in the direction it is
+usually not tested in.
 
 ## Before promoting a rule
 

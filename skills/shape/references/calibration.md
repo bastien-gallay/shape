@@ -56,3 +56,28 @@ releases of stability.
 restated its adjacent table term for term; the same check fired at 0.5. One
 document is not evidence for moving the number — it is evidence that the number
 was picked in the abstract, which is what this protocol exists to fix.
+
+## Falsified — `table-misfit`, the definition rule, 2026-08-28
+
+**Hypothesis.** A two-column table whose second column averages ≥ 10 words is a
+definition list wearing table clothes, and reads better as bold lead-in bullets.
+
+**Where it came from.** A scan of four real `shape` passes filed four such
+tables as *borderline*, alongside four measured misfits. The rule was written
+because it was on the list, not because the scan supported it. ⚠️ Borderline is
+not evidence, and a list is not a measurement.
+
+**Measurement.** Implemented and run over every document in this repo: 7 hits.
+`Risk | Mitigation`, `Construct | Unavailable → use`, `✅ Keep | Why it is
+right`, `Finding | …`, `Mode | …`, `Agreement | …`. Every one is a mapping whose
+left column is a scannable index — the exact affordance a `locate` reader needs.
+Converting them to a definition list would remove it.
+
+**Verdict.** 🛑 Removed the same hour. The three surviving rules — chronology,
+proportion, series — were each observed as a table that a later pass actually
+replaced with a figure. They fire on the controls and produce **zero** findings
+across this repo.
+
+**What would revive it.** A corpus measurement showing that readers of
+two-column sentence tables have higher locate cost than readers of the
+equivalent bullets. Not a preference, and not a second list.

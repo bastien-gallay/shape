@@ -4,7 +4,8 @@ The reader arrives knowing what they want and needs to find it without reading
 the document.
 
 **Target shape** — access structure first: informative headings, a contents or
-scan line, tables over paragraphs, a stable section order the reader can learn.
+scan line, a stable section order the reader can learn, and ⚠️ the form that
+fits the information — a table only where the content is cases × attributes.
 
 **Signature rule** — ⭐ scent in the **first three words** of every heading and
 every link. `Verification with positive controls` passes; `More about testing`
@@ -15,7 +16,9 @@ fails.
 - Add or repair title · one-line purpose · audience · TL;DR · contents ·
   anchors.
 - Rewrite headings to answer a reader's question instead of naming a topic.
-- Turn a paragraph that enumerates parallel items into a table or list.
+- Turn a paragraph that enumerates parallel items into a table **when the
+  items share ≥ 2 attributes**, a list when they do not. ⛔ Never default to
+  the table: see `references/f12-visual-rhythm.md`, *the reverse direction*.
 - Reorder sections into a stable, announced order.
 - Split a section running long without a subheading.
 
