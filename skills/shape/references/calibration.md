@@ -57,6 +57,44 @@ restated its adjacent table term for term; the same check fired at 0.5. One
 document is not evidence for moving the number — it is evidence that the number
 was picked in the abstract, which is what this protocol exists to fix.
 
+## 🛑 The primary metric is form-blind — measured 2026-08-28
+
+**What was measured.** Four real `shape` passes were scanned. One was an
+`access-only` pass over a dossier of seven documents. It scored **35/35** on all
+five access checks and **8/8 on retrieval, at 2.125 files per question**,
+carrying 27 tables, 216 table rows and **zero figures**. A later pass — not a
+`shape` pass — added 15 mermaid diagrams and 3 ASCII figures to those same seven
+documents, because they were not readable.
+
+**What it means.** The cold-subagent retrieval test is what brief §F7 calls *the
+primary metric*, and §5 makes it an acceptance gate. It cannot see this class of
+defect. A reader that answers the question correctly answers it correctly
+whether the comparison is a table or the topology is a table. Retrieval accuracy
+is **form-blind by construction**.
+
+⚠️ **This is not a threshold to tune, and no accumulation of runs will surface
+it.** Every other open question in this file is answerable by letting the ledger
+fill up. This one is not: the instrument that would record the evidence is the
+instrument that cannot perceive it. That is why it is written here rather than
+left to be discovered.
+
+**The candidate companion measure.** Control 5 of the validation protocol
+already asks the Reader which sections it opened. **Locate cost may be
+form-sensitive where accuracy is not** — a topology given as a graph may be
+reachable in fewer opened blocks than the same topology given as a table, at
+identical accuracy. 📌 That is a hypothesis, not a finding. It is untested, and
+it is the reason the first fixture should be a topology document.
+
+| Finding | Action |
+| --- | --- |
+| Locate cost separates the diagram version from the table version, accuracy does not | ⭐ locate cost joins retrieval as a reported measure; §F7 gains a second number |
+| Neither separates them | 🛑 the retrieval loop cannot grade form at all — say so in the report contract, and stop implying the gate covers it |
+| Accuracy itself separates them | the blindness was an artefact of that one dossier — record the counter-measurement here and keep the single metric |
+
+**Falsification of this entry.** A corpus in which documents needing figures
+score measurably worse on retrieval than their figure-bearing versions. One
+dossier is not a corpus; it is the reason to build one.
+
 ## Falsified — `table-misfit`, the definition rule, 2026-08-28
 
 **Hypothesis.** A two-column table whose second column averages ≥ 10 words is a

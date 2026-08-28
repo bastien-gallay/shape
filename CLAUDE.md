@@ -256,6 +256,11 @@ after it closes.
   inventory* is an extraction that failed — exit 4. An empty *selection* (no
   headings in this document) is a real document — exit 0, and never a ✅.
   Collapsing the two either hides a broken extractor or fails clean documents.
+- **Instrumentation has a saturation point, and this repo reached it on
+  2026-08-28.** Eight F12 metrics and six access checks, none calibrated. ⛔ Do
+  not add a ninth number or a seventh check before a corpus exists. The
+  `table-misfit` definition rule was caught only because a real document set
+  was available to run it against; without one, the next bad rule ships.
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.
@@ -286,6 +291,15 @@ manifests is a placeholder.
   applied to files on disk. They currently carry two independent definitions of
   the marker set and the heading rule. `glance/build.sh` already generates
   surfaces from one `prompt.md`, so a third surface is a known move.
+- 🛑 **The primary metric is form-blind — measured 2026-08-28, and it is the
+  most consequential thing known about this protocol.** An `access-only` pass
+  scored 35/35 on the access checks and 8/8 on retrieval over a dossier of 7
+  documents carrying 27 tables and zero figures; a later non-`shape` pass added
+  15 mermaid diagrams to the same documents because they were unreadable. ⚠️ No
+  accumulation of runs will surface this — the instrument that would record the
+  evidence is the one that cannot perceive it. Full entry and the three exit
+  conditions in `references/calibration.md`. 📌 It is why the first fixture
+  should be a topology document.
 - 📌 **The cold-subagent retrieval loop (brief §F7) is specified, not
   scripted.** It is the primary metric and the only gate with no script behind
   it.
