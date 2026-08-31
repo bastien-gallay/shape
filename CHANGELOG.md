@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Added — 2026-08-31 (the external regime)
+
+- `ledger.sh --external <id>` — record a run over a document this repository may
+  not describe. The entry keeps every count and every metric; `doc`,
+  `census.source` and the heading text in `census.blocks[].path` are replaced by
+  an opaque id. 🛑 Without it a ledger entry reconstructs the outline of the
+  document verbatim, which made the ledger unusable over anything confidential.
+- The scrub refuses to write when a filesystem path or a component of the source
+  path survives anywhere in the entry — including in a `--not-measured` reason
+  or a retrieval note — and exercises a positive and a negative control on every
+  invocation.
+- `--fixture-id` and `--external` are exclusive; the id ↔ path mapping is
+  appended to `$SHAPE_EXTERNAL_MAP` (default `~/.shape/external-map.tsv`), and a
+  map path inside the worktree is refused.
+- `fixtures/README.md` documents the two regimes, and how to derive an in-repo
+  fixture from a document that cannot ship: regenerate from the skeleton, never
+  anonymise in place.
+
 ### Added — 2026-08-28 (fixtures)
 
 - `fixtures/T2-topology-01a` / `-01b` — the first fixtures. An A/B pair: one

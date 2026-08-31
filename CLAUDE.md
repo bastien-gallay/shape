@@ -65,6 +65,10 @@ than a word count.
   `--facts-survived`. This is the instrument that makes both open questions
   answerable by accumulation instead of by argument, so a pass that skips it
   costs evidence that cannot be recovered later.
+  `--external <id>` is the regime for a document that may not be described
+  here: counts and metrics survive, `doc` / `census.source` / every heading in
+  `census.blocks[].path` are replaced by an opaque id, and the entry is refused
+  if a path survives anywhere in it. ⛔ Exclusive with `--fixture-id`.
 - **`skills/shape/references/calibration.md`** — how a threshold is earned, and
   both falsification conditions. Read before changing any number anywhere.
 - **`fixtures/`** — the regression corpus (brief §T6) and the calibration
