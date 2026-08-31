@@ -283,13 +283,19 @@ manifests is a placeholder.
   implemented under `scripts/access/`, each with a positive and a negative
   control. Promotion into lucid-lint is now an outward move gated on corpus
   evidence, not a blocking import.
-- 📌 **`fixtures/` holds one A/B pair, and needs more.** The first two
-  documents landed 2026-08-28 and produced the first two real ledger entries.
-  Still blocked on more fixtures: the idempotence regression, the diagnose
-  regression, and every threshold in `.shape.toml`. ⭐ The next one should be a
-  **longer** topology — 20 services, dependencies split across sections —
-  because the first pair was small enough that form had little room to cost
-  anything.
+- 📌 **`fixtures/` holds an A/B pair and an A/B/C triple; none of the triple is
+  measured yet.** `T2-topology-01a`/`-01b` landed 2026-08-28 with the first two
+  ledger entries. `T2-topology-02a`/`-02b`/`-02c` landed 2026-08-31: 20 services,
+  30 edges, ~950 words, ten frozen questions of which four need a reverse edge.
+  ⭐ Its three arms separate the two variables `01` confounded — `a → b` is
+  consolidation, `b → c` is form — and 🛑 no arm is evidence on its own.
+  **The k = 3 cold-subagent runs have not been done.** Still blocked on more
+  fixtures beyond topology: the idempotence regression, the diagnose regression,
+  and every threshold in `.shape.toml`.
+- ⚠️ **`01` restates its own topology in prose**, in `Deploy order` and
+  `On call`. Found 2026-08-31. It is a third live explanation for the `01` null
+  result and it is left in place — the document is frozen and its two ledger
+  entries would be discarded by a re-cut. `02` does not reproduce it.
 - 📌 **The v1.1 increment is implemented through step 3 of its own sequencing.**
   Census, metrics and ledger exist and run. Steps 4–6 (corpus, calibration,
   gates) are untouched, by construction: they need documents and cold-subagent

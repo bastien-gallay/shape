@@ -104,6 +104,24 @@ derive the counts, never the map.
 | --- | --- | --- | --- |
 | `T2-topology-01a` | locate | table | the misfit no script can catch — a graph given as rows |
 | `T2-topology-01b` | locate | mermaid graph | the comparator arm, identical content |
+| `T2-topology-02a` | locate | scattered | 30 edges stated only inside 20 per-service entries |
+| `T2-topology-02b` | locate | table | the same 30 edges consolidated into one table |
+| `T2-topology-02c` | locate | mermaid graph | the same 30 edges as a graph — the comparator |
+
+⚠️ **`02` is a triple, not a pair, and the third arm is the point.** `a → b`
+varies consolidation, `b → c` varies form. The `01` pair confounded the two, so
+its null result had two live explanations and could not tell them apart.
+
+🛑 **A defect in `01`, found while writing `02`.** Its `Deploy order` section
+restates the topology — "`object-store` and `token-cache` — no dependencies"
+answers question 3 outright — and `On call` names dependency facts too. That is a
+**third** explanation for the `01` null result, alongside "the loop cannot grade
+form" and "the document was too small": both arms may simply have been answerable
+from prose that neither form was needed for. ⚠️ It is not fixed in `01` — the
+document is frozen and re-cutting it would discard the two ledger entries — but
+it is not reproduced in `02`, where Deploy order states the rule and not the
+sequence, On call names ownership and not dependencies, and no failure mode names
+a path.
 
 📌 **First result, 2026-08-28.** Both arms scored 24/24 on retrieval at k = 3,
 with identical blocks opened and identical verdicts from all six access checks.

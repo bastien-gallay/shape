@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Added — 2026-08-31 (the long topology)
+
+- `fixtures/T2-topology-02a` / `-02b` / `-02c` — 20 services, 30 edges, ~950
+  words, ten hand-authored questions frozen with the arms. ⭐ A triple, not a
+  pair: `a` states each edge only inside its own per-service entry, `b`
+  consolidates them into one table, `c` into one mermaid graph. `a → b` varies
+  consolidation and `b → c` varies form, which the `01` pair confounded.
+- Every answer was re-derived from the arm-b table by script rather than by eye,
+  and the three arms are byte-identical outside the one section that varies.
+- 🛑 Recorded, not fixed: `01` restates its own topology in `Deploy order` and
+  `On call`, which answers some of its questions from prose. That is a third
+  live explanation for its null result. `02` does not reproduce it.
+
 ### Added — 2026-08-31 (the external regime)
 
 - `ledger.sh --external <id>` — record a run over a document this repository may
