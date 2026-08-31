@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Measured — 2026-08-31 (the triple)
+
+- k = 3 cold-subagent runs over all three arms of `T2-topology-02`. 30/30 on
+  every arm; blocks opened 1.67 / 1.67 / 2.00; reader tokens within 0.7 %.
+- 🛑 **The result is a property of the instrument, not of the documents.** All
+  nine Readers loaded the whole document and not one issued a `grep`. *Blocks
+  opened* counts navigation, and this Reader ingests rather than navigates, so
+  it is an **invalid** measure of locate cost rather than an insensitive one.
+- Discharges two rival explanations for the `01` null result: the document was
+  not too small, and `01`'s prose restatement of its topology was not the cause.
+- `references/calibration.md` records the measurement, the mechanism, and a
+  concrete exit condition — a Reader that cannot hold the document, or a human
+  first-screen test.
+- `runs/` gains three more ledger entries.
+
 ### Added — 2026-08-31 (the long topology)
 
 - `fixtures/T2-topology-02a` / `-02b` / `-02c` — 20 services, 30 edges, ~950

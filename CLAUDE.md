@@ -289,9 +289,10 @@ manifests is a placeholder.
   30 edges, ~950 words, ten frozen questions of which four need a reverse edge.
   ⭐ Its three arms separate the two variables `01` confounded — `a → b` is
   consolidation, `b → c` is form — and 🛑 no arm is evidence on its own.
-  **The k = 3 cold-subagent runs have not been done.** Still blocked on more
-  fixtures beyond topology: the idempotence regression, the diagnose regression,
-  and every threshold in `.shape.toml`.
+  Measured 2026-08-31: **30/30 on all three arms**, 1.67 / 1.67 / 2.00 blocks
+  opened, reader tokens within 0.7 %. Still blocked on more fixtures beyond
+  topology: the idempotence regression, the diagnose regression, and every
+  threshold in `.shape.toml`.
 - ⚠️ **`01` restates its own topology in prose**, in `Deploy order` and
   `On call`. Found 2026-08-31. It is a third live explanation for the `01` null
   result and it is left in place — the document is frozen and its two ledger
@@ -305,8 +306,19 @@ manifests is a placeholder.
   applied to files on disk. They currently carry two independent definitions of
   the marker set and the heading rule. `glance/build.sh` already generates
   surfaces from one `prompt.md`, so a third surface is a known move.
-- 🛑 **The primary metric is form-blind — measured 2026-08-28, and it is the
-  most consequential thing known about this protocol.** An `access-only` pass
+- 🛑 **The primary metric does not measure locate cost at all — the mechanism
+  was found 2026-08-31, and it is the most consequential thing known about this
+  protocol.** Across the `02` triple, **all nine cold Readers loaded the whole
+  document and not one issued a single `grep`.** *Blocks opened* counts
+  navigation; this Reader does not navigate, it ingests. ⛔ So the measure is
+  **invalid, not insensitive** — no larger k, no further arm and no document of
+  this size can rescue it. Two rival explanations for the earlier null result
+  are discharged with it: the document was not too small (1.8× longer, 3.3× the
+  edges, less separation), and `01`'s prose restatement of its own topology was
+  not what did it (`02` has none and still scored perfectly). The exit
+  condition is now concrete — a Reader that cannot hold the document, or a human
+  first-screen test — and is written in `references/calibration.md`.
+- 🛑 **The earlier form-blindness entry — measured 2026-08-28.** An `access-only` pass
   scored 35/35 on the access checks and 8/8 on retrieval over a dossier of 7
   documents carrying 27 tables and zero figures; a later non-`shape` pass added
   15 mermaid diagrams to the same documents because they were unreadable. ⚠️ No

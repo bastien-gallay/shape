@@ -130,11 +130,81 @@ is not over-read:
   answerable from two or three opens, so there was little cost for form to
   move. ⭐ A longer topology — 20 services, dependencies split across sections
   — is the next fixture, and the real test of the hypothesis.
+  **Done 2026-08-31; see the next section. It did not rescue the measure.**
 
 📌 **What survives.** Two census numbers moved and everything model-facing did
 not. `V8_table_share` and `V5_figure_mention` are, so far, the only instruments
 in this repo that can see the defect the user reported. That is a reason to
 calibrate them, and not yet a reason to trust them.
+
+### Measured on the A/B/C triple, 2026-08-31 — the measure is invalid, not insensitive
+
+`fixtures/T2-topology-02a` (30 edges stated only inside 20 per-service entries),
+`-02b` (the same edges consolidated into one table) and `-02c` (the same edges as
+a mermaid graph). ~950 words, ten hand-authored questions of which four need a
+reverse edge and four need a path of two hops or more. Cold subagents, k = 3 per
+arm, isolated directory, neutral filename, key unreachable.
+
+Three arms rather than two, because the `01` pair varied consolidation and form
+at once: `a → b` is consolidation, `b → c` is form.
+
+| Measure | A — scattered | B — table | C — graph | Separates? |
+| --- | --- | --- | --- | --- |
+| Answers correct | 30/30 | 30/30 | 30/30 | ❌ no |
+| Blocks opened, mean | 1.67 | 1.67 | 2.00 | ❌ no |
+| Reader tokens, mean | 46 486 | 46 668 | 46 805 | ❌ no — 0.7 % spread |
+| `V8_table_share` | 1 | 1 | 0.67 | ⚠️ b vs c only |
+| `V5_figure_mention` | `null` | `null` | 1 | ⚠️ b vs c only |
+| `V6_section_length_cv` | 1.27 | 0.85 | 0.80 | ⚠️ a vs b only |
+
+🛑 **The finding is not in the table, it is in what the readers did.** All nine
+loaded the **whole document** — `Read`, `cat`, `cat -n`, or a `head` and a `sed`
+covering every line. **Not one issued a single `grep` or targeted search.**
+
+⭐ That makes *blocks opened* an invalid measure of locate cost, not merely an
+insensitive one. The measure counts navigation, and this reader does not
+navigate: it ingests. A document it can hold entire costs the same to read
+whatever shape it is in, and no amount of k, no third arm, and no further
+fixture of this size will change that. **The instrument was never measuring the
+quantity its name claims.**
+
+📌 **Two live explanations for the `01` null result are discharged.**
+
+- *"The document was too small for form to cost anything."* The document is now
+  1.8× longer with 3.3× the edges, and every measure moved less than before.
+- *"`01` restates its own topology in prose, so neither form was needed."* `02`
+  does not — Deploy order states the rule and not the sequence, On call names
+  ownership and not dependencies, no failure mode names a path — and all three
+  arms still scored perfectly.
+
+What is left is the mechanism above, and it is a property of the Reader rather
+than of the documents.
+
+⚠️ **What this still cannot settle.** One model family, k = 3, one document
+family. And the claim the protocol cares about — that form costs a *human*
+reader something — remains untouched by any of this.
+
+### 🛑 Consequence for the protocol
+
+The cold-subagent retrieval loop (brief §F7) grades **fact retrievability**. It
+does not grade form, it cannot be made to grade form by enlarging the document,
+and the report contract must say so rather than let the gate imply coverage it
+does not have.
+
+⭐ The exit condition, stated so it can be met rather than argued: an instrument
+earns the right to grade form when it separates two arms of a frozen A/B pair
+whose content is identical. Two candidates, neither built:
+
+1. **A Reader that cannot ingest the whole document** — a corpus large enough,
+   or a context budget tight enough, that navigation is forced rather than
+   optional. Only then does *blocks opened* count what it is named after.
+2. **A human first-screen test**, which is the population the claim is about,
+   and which `docs/shape-validation-protocol.md` §2 already budgets at ~20
+   minutes per release.
+
+Until one exists, `V8_table_share` and `V5_figure_mention` remain the only
+instruments here that have ever seen a form difference — measured twice now,
+across five documents — and they are census numbers, not gates.
 
 ## Falsified — `table-misfit`, the definition rule, 2026-08-28
 
