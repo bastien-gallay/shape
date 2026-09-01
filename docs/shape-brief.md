@@ -186,6 +186,8 @@ The skill body carries **method**; the repo carries **policy**.
 | Prose restating an adjacent table | Does this diagram earn its space? |
 
 This is also what keeps SKILL.md small enough to be read reliably.
+⚠️ The line ceiling this sentence justified is ⛔ withdrawn (§T4, 2026-09-01);
+the deterministic/judgement split below stands on its own.
 
 ### T2 — Format independence
 
@@ -205,6 +207,11 @@ disappear.
 ### T4 — Packaging
 
 - `SKILL.md` ≤ ~150 lines: trigger · classification procedure · pointers.
+  ⛔ **Withdrawn 2026-09-01.** The number was never measured, and a *line* is
+  not a unit here — the file wraps at 80 columns, so a line is a wrap artifact
+  rather than a piece of content. A limit worth carrying is an attention budget
+  and must come from the skill reading itself, not from a proxy. `references/`
+  still exists for the reason it always did: detail loaded on demand.
 - `references/` — task rulesets, capability matrix, marker legend.
 - `scripts/` — one script per verification, each with a clean exit-code contract.
   ⚠️ Read every exit status in its own statement; in a pipe you read `tail`'s status.

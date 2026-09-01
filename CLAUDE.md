@@ -27,9 +27,10 @@ than a word count.
   reference scheme `SKILL.md` and `CHANGELOG.md` cite.
 - **`skills/shape/SKILL.md`** — the canonical protocol and the only prose file
   Claude executes. YAML frontmatter (`name`, `description`, `argument-hint`)
-  drives discovery and triggering; the body is the pass. 🛑 Keep it **≤ 150
-  lines** (brief §T4) — that ceiling is what keeps it read reliably, and it is
-  the reason detail lives in `references/` rather than inline.
+  drives discovery and triggering; the body is the pass. ⛔ The **150-line
+  ceiling (brief §T4) is withdrawn since 2026-09-01** — unmeasured, and a line
+  is a wrap artifact at 80 columns, not a unit of content. Detail still lives in
+  `references/` because it is loaded on demand, not to hit a number.
 - **`skills/shape/references/tasks/<task>.md`** — one ruleset per reader task,
   loaded on demand. Each declares target shape · allowed transforms ·
   **forbidden** transforms · acceptance questions. The five slugs
@@ -158,8 +159,8 @@ run exposed back into the prose:
 1. Run `shape` on a real document; capture friction verbatim as it happens.
 2. Decide where it belongs. **Anything mechanically decidable is a linter rule,
    not a prompt instruction** (brief §T1) — that split is what keeps `SKILL.md`
-   under its line ceiling. Deterministic detections go down into `lucid-lint`;
-   only judgement calls stay in the skill body.
+   a set of judgement calls rather than a rulebook. Deterministic detections go
+   down into `lucid-lint`; only judgement calls stay in the skill body.
 3. Fold it: a task ruleset, an always-on directive in §0, or an anti-pattern in
    §8. Record the *why* under `## Design decisions worth not re-litigating`, so
    the reasoning does not live only in git history.
@@ -305,11 +306,15 @@ cover form.
    `references/calibration.md` — a Reader that cannot hold the document whole,
    or the human first-screen test the validation protocol already budgets for.
    Neither is built. ⚠️ Not ticketed: this repo has no tracker.
-2. **`SKILL.md` is 159 lines against a 🛑 150 ceiling**, since the v1.1
-   increment, and nothing checks it. ⚠️ Not ticketed, same reason.
-3. **The corpus is five documents and all five are `locate`.** The idempotence
+2. **The corpus is five documents and all five are `locate`.** The idempotence
    regression, the diagnose regression and every `.shape.toml` threshold are
    still blocked on fixtures for the other four tasks.
+3. **What limit, if any, `SKILL.md` should carry — open since the ceiling was
+   withdrawn 2026-09-01, and the way in is dogfooding.** Run `shape` on
+   `SKILL.md` itself and let the protocol name its own constraint, instead of a
+   proxy chosen by the author. 🛑 `diagnose` only, or against a copy: the install
+   is a symlink, so a mutating pass edits the protocol while it is executing.
+   ⚠️ Not ticketed, same reason.
 
 **What will look like a contradiction and is not.**
 

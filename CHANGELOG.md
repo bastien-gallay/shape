@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Changed — 2026-09-01 (a proxy withdrawn)
+
+- The **150-line ceiling on `SKILL.md` is withdrawn**, in `CLAUDE.md`, in
+  `.wrap.md` (the Seiso `wc -l` check goes with it) and in `docs/shape-brief.md`
+  §T4 and §T1 — ⛔ retracted in place there, never rewritten. Three reasons, none
+  of them the body getting longer: the number was never measured; a *line* is a
+  wrap artifact at 80 columns rather than a unit of content; and the rationale
+  it rested on ("small enough to be read reliably") is a claim about attention,
+  which line count is a proxy for and does not measure. The repo already applies
+  this standard to *blocks opened*.
+- 📌 It was never breached under its own convention: the v1.1 increment counted
+  the body after the frontmatter — 144 lines then, 145 now, against 150. The
+  159 that `CLAUDE.md` reported counted the frontmatter too.
+- **What limit `SKILL.md` should carry is now open**, ranked 3 in
+  `CLAUDE.md` `### Start here`. The way in is dogfooding: run `shape` on
+  `SKILL.md` itself. 🛑 `diagnose` only, or against a copy — the install is a
+  symlink.
+
 ### Changed — 2026-08-31 (reconciled to the measurement)
 
 - The locate-cost gate is **withdrawn** everywhere it was still enforced or
