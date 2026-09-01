@@ -2,6 +2,10 @@
 # check-render.sh — markdown, links and mermaid, per render target.
 #
 # Usage: check-render.sh <file> [--target github|confluence|mdbook|pdf|terminal|plain]
+#                               [--out-dir DIR]
+#
+# --out-dir keeps the rendered mermaid SVGs instead of discarding them, so a
+# human can look at the diagram the check just compiled. It changes no verdict.
 #
 # ⚠️ Every absent tool reports NOT RUN. A verification you skipped is not a
 # verification you passed.
@@ -14,15 +18,87 @@ set -euo pipefail
 
 file="${1:-}"
 target="github"
-[[ "${2:-}" == "--target" && -n "${3:-}" ]] && target="$3"
-if [[ -z "$file" || ! -r "$file" ]]; then
-  echo "usage: check-render.sh <file> [--target T]" >&2
+out_dir=""
+shift || true
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --target)  target="${2:-}";  shift 2 || true ;;
+    --out-dir) out_dir="${2:-}"; shift 2 || true ;;
+    *) echo "usage: check-render.sh <file> [--target T] [--out-dir DIR]" >&2; exit 2 ;;
+  esac
+done
+if [[ -z "$file" || ! -r "$file" || -z "$target" ]]; then
+  echo "usage: check-render.sh <file> [--target T] [--out-dir DIR]" >&2
+  exit 2
+fi
+if [[ -n "$out_dir" ]] && ! mkdir -p "$out_dir" 2>/dev/null; then
+  echo "usage: --out-dir $out_dir is not creatable" >&2
   exit 2
 fi
 
 failed=0
 render_not_run=0
 md_not_run=0
+
+# ⚠️ `mmdc` is a Node wrapper around headless Chrome, and the Chrome it wants is
+# a revision pinned by the puppeteer bundled inside mermaid-cli — not any Chrome
+# on the machine. Measured 2026-09-01: mermaid-cli 11.13.0 demanded 131.0.6778.204
+# on a machine whose puppeteer cache held 148 and 152, and every mermaid fixture
+# reported NOT RUN on a diagram that renders. So resolve a browser here rather
+# than leaving the pin to decide, in this order:
+#
+#   1. SHAPE_PUPPETEER_CONFIG — a puppeteer config file, when this machine needs
+#      one the discovery below cannot guess.
+#   2. PUPPETEER_EXECUTABLE_PATH — a browser named by the environment.
+#   3. the newest chrome-headless-shell, then the newest chrome, in
+#      ${PUPPETEER_CACHE_DIR:-$HOME/.cache/puppeteer}.
+#
+# ⚠️ Nothing here is installed and nothing is downloaded. Finding no browser
+# leaves mmdc to fail its own way, which still reports NOT RUN — that classification
+# is what must not change, whatever this resolution does.
+mermaid_puppeteer_config=""
+
+resolve_mermaid_browser() {
+  local cache exe newest headless
+  if [[ -n "${SHAPE_PUPPETEER_CONFIG:-}" && -r "${SHAPE_PUPPETEER_CONFIG}" ]]; then
+    mermaid_puppeteer_config="$SHAPE_PUPPETEER_CONFIG"
+    return 0
+  fi
+
+  exe="${PUPPETEER_EXECUTABLE_PATH:-}"
+  if [[ -z "$exe" ]]; then
+    cache="${PUPPETEER_CACHE_DIR:-$HOME/.cache/puppeteer}"
+    for flavour in chrome-headless-shell chrome; do
+      [[ -d "$cache/$flavour" ]] || continue
+      # The producer runs in its own statement, into a real file. Zero lines is
+      # "this flavour is not installed", not a failure — the next one is tried.
+      local listing="${TMPDIR:-/tmp}/shape-browsers-$$.txt"
+      find "$cache/$flavour" -maxdepth 3 -type f -name "$flavour" -perm -111 \
+        > "$listing" 2>/dev/null || true
+      newest="$(sort -V "$listing" | tail -1)"
+      rm -f "$listing"
+      [[ -n "$newest" && -x "$newest" ]] && { exe="$newest"; break; }
+    done
+  fi
+  [[ -n "$exe" && -x "$exe" ]] || return 1
+
+  # ⚠️ `"headless": "shell"` is the old headless mode, and it belongs to the
+  # chrome-headless-shell binary alone — a full Chrome refuses it.
+  headless=true
+  [[ "$(basename "$exe")" == "chrome-headless-shell" ]] && headless='"shell"'
+
+  # --no-sandbox because Chrome's own sandbox is what a CI container and this
+  # repo's own agent sandbox both refuse; the input is a local .mmd file.
+  mermaid_puppeteer_config="${TMPDIR:-/tmp}/shape-puppeteer-$$.json"
+  cat > "$mermaid_puppeteer_config" <<EOF
+{
+  "executablePath": "$exe",
+  "headless": $headless,
+  "args": ["--no-sandbox", "--disable-gpu"]
+}
+EOF
+  printf '   ℹ️  mermaid browser: %s\n' "$exe"
+}
 
 run_or_skip() {
   local tool="$1"; shift
@@ -224,22 +300,48 @@ if grep -q '```mermaid' "$file"; then
         # fixtures/T2-topology-01b.md, the first fixture in the corpus: a valid
         # 9-edge graph reported ❌ because Chrome was not installed. The
         # verdict was a statement about the machine.
+        resolve_mermaid_browser || true
+        mmdc_args=()
+        [[ -n "$mermaid_puppeteer_config" ]] && mmdc_args=(-p "$mermaid_puppeteer_config")
         for block in "$block_dir"/block-*.mmd; do
+          if [[ -n "$out_dir" ]]; then
+            svg="$out_dir/$(basename "${file%.md}")-$(basename "$block" .mmd).svg"
+          else
+            svg="$block.svg"
+          fi
           mmdc_status=0
-          mmdc_out="$(mmdc -i "$block" -o "$block.svg" 2>&1)" || mmdc_status=$?
+          # ⚠️ bash 3.2 — the shell macOS ships — treats an empty array as
+          # unbound under `set -u`, so the expansion is guarded.
+          mmdc_out="$(mmdc ${mmdc_args[@]+"${mmdc_args[@]}"} -i "$block" -o "$svg" 2>&1)" \
+            || mmdc_status=$?
           if [[ $mmdc_status -eq 0 ]]; then
             printf '✅ %-12s %s renders\n' "mmdc" "$(basename "$block")"
-          elif printf '%s' "$mmdc_out" | grep -qiE 'could not find chrome|puppeteer|failed to launch|browser was not found|ENOENT|no usable sandbox'; then
+            if [[ -n "$out_dir" ]]; then printf '   👁  %s\n' "$svg"; fi
+          # ⚠️ Same trap as lychee's, and it bites harder here: mmdc renders in
+          # the browser, so a mermaid PARSE ERROR carries a stack trace whose
+          # every frame names a puppeteer file. Matching `puppeteer` anywhere in
+          # the output reported NOT RUN on a diagram that is genuinely broken —
+          # measured 2026-09-01 on a deliberately malformed block. So the stack
+          # frames and the file paths are stripped before the reason is matched.
+          elif printf '%s\n' "$mmdc_out" \
+               | grep -vE '^[[:space:]]*at ' \
+               | sed -E 's#(file://)?/[^[:space:]]+##g' \
+               | grep -qiE 'could not find chrome|puppeteer|failed to launch|browser was not found|ENOENT|no usable sandbox'; then
             printf '⚠️  %-12s NOT RUN (%s — the browser mmdc drives is unavailable)\n' \
               "mmdc" "$(basename "$block")"
             render_not_run=1
           else
             printf '❌ %-12s %s does not render\n' "mmdc" "$(basename "$block")"
-            printf '%s\n' "$mmdc_out" | head -3 | sed "s/^/   /"
+            # The progress line and the stack frames are not the reason.
+            printf '%s\n' "$mmdc_out" \
+              | grep -vE '^[[:space:]]*(at |$)|^Generating ' | head -4 | sed "s/^/   /"
             failed=1
           fi
         done
         rm -rf "$block_dir"
+        if [[ -n "$mermaid_puppeteer_config" && "$mermaid_puppeteer_config" != "${SHAPE_PUPPETEER_CONFIG:-}" ]]; then
+          rm -f "$mermaid_puppeteer_config"
+        fi
       fi
       ;;
   esac

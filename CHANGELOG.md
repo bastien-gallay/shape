@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### Fixed — 2026-09-01 (a mermaid diagram is finally rendered, not skipped)
+
+- `check-render.sh` **resolves the browser `mmdc` drives** instead of leaving
+  the choice to the revision mermaid-cli pins — the newest
+  `chrome-headless-shell`, else the newest `chrome`, under
+  `${PUPPETEER_CACHE_DIR:-~/.cache/puppeteer}` — and prints which one it used.
+  Nothing is downloaded. Overrides, in precedence order:
+  `SHAPE_PUPPETEER_CONFIG`, then `PUPPETEER_EXECUTABLE_PATH`.
+- 🛑 The pin was the whole blockage: mermaid-cli 11.13.0 demanded Chrome
+  **131.0.6778.204** on a machine holding 148 and 152, so both mermaid arms of
+  the corpus reported **NOT RUN** on diagrams that render. `just check-fixtures`
+  now runs **7 fixtures, 0 failure, 0 not run**; the caveat in `CLAUDE.md` that
+  a clean corpus could exit non-zero is closed for its mermaid instance.
+- 🛑 **And the classifier was wrong, which only a working browser could show.**
+  A failed `mmdc` was read as *browser unavailable* whenever its output matched
+  `puppeteer` — but mermaid parses inside the browser, so a genuine **parse
+  error** carries a stack whose every frame names a puppeteer file. A malformed
+  block reported NOT RUN. Stack frames and file paths are now stripped before
+  the reason is matched, as lychee already strips the URL, and the ❌ line
+  carries the parse error rather than the progress banner.
+- ⚠️ The three outcomes are controlled by hand: a valid fixture ✅ exit 0, a
+  malformed block ❌ exit 1, an empty `PUPPETEER_CACHE_DIR` ⚠️ NOT RUN exit 3.
+  A diagram that was never rendered is still never a diagram that renders.
+- **`--out-dir DIR`** keeps the compiled SVGs and prints their paths, so a human
+  can *look at* the diagram the check just graded. It changes no verdict.
+- Setup, the two overrides and `--out-dir` are documented in
+  `references/render-targets.md`.
+
 ### Added — 2026-09-01 (the corpus reaches `execute` and `decide`)
 
 - `fixtures/T2-runbook-01` — an `execute` fixture: a certificate-rotation

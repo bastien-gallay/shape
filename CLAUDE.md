@@ -282,6 +282,15 @@ after it closes.
   2026-08-27, both times as `syntax error near unexpected token` pointing at a
   line that was fine. Write "the opening line of a block", not "the block's
   opening line".
+- **A stack trace is not a reason.** `check-render.sh` classified a failed
+  `mmdc` as *the browser is unavailable* whenever its output matched
+  `puppeteer` — and mermaid renders inside the browser, so a genuine **parse
+  error** carries a stack whose every frame names a puppeteer file. Found
+  2026-09-01, the moment a browser was actually available to fail properly: a
+  deliberately malformed block reported NOT RUN. Stack frames and file paths are
+  stripped before the reason is matched, exactly as lychee strips the URL. ⚠️ The
+  bug was invisible while nothing rendered — a classifier is only exercised once
+  the thing it classifies can succeed.
 - **Zero rows means different things in different checks.** An empty *fact
   inventory* is an extraction that failed — exit 4. An empty *selection* (no
   headings in this document) is a real document — exit 0, and never a ✅.
@@ -361,9 +370,11 @@ cover form.
   for the ledger, never for a score — which is deliberate and says so.
 - `just check-fixtures` can exit non-zero on a corpus with nothing wrong with
   it. ⚠️ That is a property of the machine, not of the fixtures: any check that
-  reports **NOT RUN** raises the count, and here `mmdc` has no browser, so the
-  two mermaid arms report it. The exit-code contract forbids reading a NOT RUN
-  as a pass.
+  reports **NOT RUN** raises the count. The exit-code contract forbids reading a
+  NOT RUN as a pass. ✅ **The mermaid instance of it is closed 2026-09-01** —
+  `check-render.sh` now resolves a browser out of the puppeteer cache instead of
+  honouring the revision mermaid-cli pins, and the corpus runs **0 not run** on
+  this machine. Setup and the two overrides in `references/render-targets.md`.
 - ⚠️ **`runs/` is gitignored.** The five ledger entries exist only on this
   machine, and they are un-reproducible measurements. Whether the accumulation
   the ledger exists for should be committed is an open question that the

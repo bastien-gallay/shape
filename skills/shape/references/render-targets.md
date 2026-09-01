@@ -29,3 +29,35 @@ wrong.
 
 `terminal` and `plain` assume 80 columns. A table wider than that is a
 definition list instead — decided here, not at edit time.
+
+## Rendering mermaid locally
+
+`check-render.sh` compiles every mermaid block rather than trusting that `mmdc`
+answers `--version`. `mmdc` drives headless Chrome through puppeteer, so the
+check needs a browser as well as the binary:
+
+```sh
+brew install mermaid-cli                       # or: npm i -g @mermaid-js/mermaid-cli
+npx puppeteer browsers install chrome-headless-shell
+```
+
+The script finds that browser itself — the newest `chrome-headless-shell`, else
+the newest `chrome`, under `${PUPPETEER_CACHE_DIR:-~/.cache/puppeteer}` — and
+prints which one it used. ⚠️ It does **not** use the revision mermaid-cli pins:
+that pin is what made every mermaid fixture report NOT RUN on a machine holding
+two newer Chromes. Two overrides, in order of precedence:
+
+| Variable | Use it when |
+| --- | --- |
+| `SHAPE_PUPPETEER_CONFIG` | a puppeteer config file this machine needs — proxy, extra flags |
+| `PUPPETEER_EXECUTABLE_PATH` | a browser outside the puppeteer cache |
+
+To *look at* the diagrams rather than only grade them, pass `--out-dir`; the
+rendered SVGs are kept and their paths printed:
+
+```sh
+skills/shape/scripts/check-render.sh doc.md --target github --out-dir /tmp/svg
+```
+
+🛑 With no browser reachable the check still reports **NOT RUN** and exits 3. A
+diagram that was never rendered is not a diagram that renders.
