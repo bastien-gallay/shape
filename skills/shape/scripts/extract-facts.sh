@@ -35,10 +35,16 @@ now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 # One candidate per line: LINE<TAB>KIND<TAB>SPAN<TAB>FRAGMENT
 candidates="$(
   awk '
-    function emit(kind, re,   s) {
-      if (match($0, re)) {
-        s = substr($0, RSTART, RLENGTH)
+    function emit(kind, re,   rest, off, s) {
+      # Every occurrence on the line, not just the first: two Jira keys in one
+      # sentence used to inventory as one, and the second was unprotected.
+      rest = $0
+      off  = 0
+      while (rest != "" && match(rest, re)) {
+        s = substr(rest, RSTART, RLENGTH)
         printf "%d\t%s\t%s\t%s\n", NR, kind, $0, s
+        off  = (RLENGTH > 0) ? RSTART + RLENGTH : RSTART + 1
+        rest = substr(rest, off)
       }
     }
     {
@@ -47,7 +53,7 @@ candidates="$(
       emit("date",       "[0-9]{4}-[0-9]{2}-[0-9]{2}")
       emit("link",       "https?://[^ )>]+")
       emit("identifier", "v?[0-9]+\\.[0-9]+\\.[0-9]+")
-      emit("identifier", "[A-Z]{2,}-[0-9]+")
+      emit("identifier", "[A-Z][A-Z0-9]+-[0-9]+")
       emit("measurement","[-+~]?[0-9][0-9 ,.]*[ ]?%")
       emit("measurement","[-+~]?[0-9][0-9 ,.]*[ ]?(ms|s|m|h|KB|MB|GB|TB|px|k)([^A-Za-z0-9]|$)")
       emit("measurement","[-+~]?[0-9][0-9 ,.]*[ ]?(second|minute|hour|day|week|month|year|word|line|file|commit|run|token)s?([^A-Za-z]|$)")
