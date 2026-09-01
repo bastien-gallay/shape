@@ -354,6 +354,14 @@ yields 21, because procedures and topologies carry their facts as commands,
 identifiers and digits. The blindness is specific to argued prose — which is
 `decide` and much of `learn`, the two tasks the corpus had never contained.
 
+⛔ **The counts in that paragraph are entry counts — retracted 2026-09-01**, the
+same day, by *The fact-survival denominator counted entries, not facts* below:
+the five `locate` fixtures yield **9–21 distinct fragments**, not 29–79, and
+`T2-runbook-01` yields **14**, not 21. ⚠️ The finding stands and the gap narrows
+rather than closing — 2 against 9–21 is still the difference between a document
+the gate protects and one it cannot see into. The numbers are left in place
+because the entry was written against them.
+
 🛑 **Not fixed here, deliberately.** A spelled-out-number extractor is a new
 producer on the path of a gate, and this repo's rule is that a producer whose
 failure is invisible is how the pass-it-never-ran bug returns. It needs its own

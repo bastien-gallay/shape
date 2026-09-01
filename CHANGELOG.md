@@ -36,7 +36,8 @@
 - 🛑 The pin was the whole blockage: mermaid-cli 11.13.0 demanded Chrome
   **131.0.6778.204** on a machine holding 148 and 152, so both mermaid arms of
   the corpus reported **NOT RUN** on diagrams that render. `just check-fixtures`
-  now runs **7 fixtures, 0 failure, 0 not run**; the caveat in `CLAUDE.md` that
+  now runs **7 fixtures, 0 failure, 0 not run** — ⚠️ outside an agent's command
+  sandbox, inside which headless Chrome cannot launch at all; the caveat in `CLAUDE.md` that
   a clean corpus could exit non-zero is closed for its mermaid instance.
 - 🛑 **And the classifier was wrong, which only a working browser could show.**
   A failed `mmdc` was read as *browser unavailable* whenever its output matched

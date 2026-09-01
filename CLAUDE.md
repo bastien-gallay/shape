@@ -320,13 +320,25 @@ after a code review of the initial commit — 11 findings, all fixed, each with 
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
 
-### Start here — as of 2026-08-31
+### Start here — as of 2026-09-01
 
 **Settled.** The locate-cost half of the primary metric is withdrawn: *blocks
 opened* counts navigation and the cold Reader ingests instead of navigating, so
 it is an invalid measure rather than an insensitive one. `SKILL.md` §5 says so
 where the gate stood, and the report contract now states that the gates do not
 cover form.
+
+**Settled 2026-09-01, and both are the same defect in two instruments.** The
+fact gate counted inventory entries, not distinct fragments — a
+`50/50 facts survived` was nine strings — and `check-render.sh` honoured the
+Chrome revision mermaid-cli pins, so every mermaid diagram reported NOT RUN on a
+machine holding two newer Chromes. ⭐ Both were a number that read as a verdict
+and was a statement about something else. The corpus now runs **7 fixtures, 0
+failure, 0 not run**, with fact counts of 9–21 where they read 29–79.
+⚠️ **Outside an agent's command sandbox.** Inside one the same command still
+reports **2 not run** and exits 1, because headless Chrome cannot launch under
+seatbelt — a statement about the sandbox, not about the corpus. `.wrap.md`
+carries the rule.
 
 **Open, ranked.**
 
@@ -378,7 +390,15 @@ cover form.
 - ⚠️ **`runs/` is gitignored.** The five ledger entries exist only on this
   machine, and they are un-reproducible measurements. Whether the accumulation
   the ledger exists for should be committed is an open question that the
-  `--external` scrub now makes answerable.
+  `--external` scrub now makes answerable. 📌 Their fact counts are **entry**
+  counts — the old denominator — and are not comparable with anything measured
+  after 2026-09-01. Their survival figures stand; every one was 100 %.
+- **Two documents still carry the pre-2026-09-01 numbers on purpose.** The
+  `CHANGELOG.md` entry recording *5 fixtures, 0 failures, 2 NOT RUN* and the
+  fact counts *29–79* in `references/calibration.md` are both dated records of
+  what was true when written, each superseded in place rather than rewritten.
+  ⚠️ A changelog is history by construction — reading an old entry as current
+  status is the misread to expect, not a defect to fix.
 
 Nothing was deleted in the pass that wrote this, so there is no provenance
 record to follow.
