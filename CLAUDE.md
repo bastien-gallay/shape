@@ -243,6 +243,19 @@ after it closes.
   block. So the script enforces brief §F4 instead: the fragment lives on one
   line. That is what `grep_fragment` is for, and `extract-facts.sh` now always
   emits one.
+- **A Jira key is not all-caps, and `emit()` matched once per line.** Two
+  independent holes in `extract-facts.sh`, found 2026-09-01 from a session
+  report on a document with five Jira keys and zero `identifier` facts.
+  `[A-Z]{2,}-[0-9]+` cannot match `CN2-598` — a project key may carry digits
+  after its first letter — and `emit()` used a bare `match()`, so only the
+  *first* occurrence of a kind on a line was inventoried: `PROJ-12 and ABC-9`
+  protected one of two. ⚠️ The reported cause was macOS awk ignoring `{2,}`
+  intervals; that is **wrong** — one-true-awk 20200816 applies them, verified
+  directly. It is the sibling of the `\b` rule below and reads identically
+  from outside, which is why it must be checked rather than assumed. Fixed to
+  `[A-Z][A-Z0-9]+-[0-9]+` and a scanning loop; fact counts rose 68 → 113 on
+  this repo's own brief. 🛑 Every one of those 45 was a fact the 100 % gate was
+  reporting as protected while never looking at it.
 - **A fact's fragment is the distinctive token, not the source line.** §T3
   mandates section-level edits, which reflow lines; a checker keyed to the line
   fails a pass where nothing was lost. ⚠️ `normative` is the deliberate
@@ -318,9 +331,19 @@ cover form.
    of the win is narrow — the questions need the topology and the instrument
    rewards the arm that put it above the fold, which is nearly tautological.
    Full entry and limits in `references/calibration.md`.
-2. **The corpus is five documents and all five are `locate`.** The idempotence
-   regression, the diagnose regression and every `.shape.toml` threshold are
-   still blocked on fixtures for the other four tasks.
+2. **The corpus is seven documents and covers three of the five tasks.**
+   `T2-runbook-01` (`execute`) and `T2-adr-01` (`decide`) landed 2026-09-01,
+   each planting one defect per acceptance question of its own ruleset, listed
+   in the key under `planted:`. ⚠️ Neither is an A/B arm and neither measures
+   form. Still missing: `learn` and `comply`. The idempotence regression, the
+   diagnose regression and every `.shape.toml` threshold remain unbuilt — the
+   fixtures now exist to build them against, which they did not before.
+   🛑 **And widening the corpus immediately found an instrument defect**, which
+   is what widening it was for: `extract-facts.sh` is blind to a quantity
+   written in words, so `T2-adr-01` yields **2 facts** and the 100 % gate
+   reports a green 2/2 over a document whose every number it cannot see. Failing
+   towards a pass, again. Entry and the reason it is not patched yet in
+   `references/calibration.md`.
 3. **What limit, if any, `SKILL.md` should carry — open since the ceiling was
    withdrawn 2026-09-01, and the way in is dogfooding.** Run `shape` on
    `SKILL.md` itself and let the protocol name its own constraint, instead of a

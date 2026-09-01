@@ -108,6 +108,27 @@ derive the counts, never the map.
 | `T2-topology-02a` | locate | scattered | 30 edges stated only inside 20 per-service entries |
 | `T2-topology-02b` | locate | table | the same 30 edges consolidated into one table |
 | `T2-topology-02c` | locate | mermaid graph | the same 30 edges as a graph — the comparator |
+| `T2-runbook-01` | execute | numbered steps | the four `execute.md` defects, one per acceptance question |
+| `T2-adr-01` | decide | prose | four options as prose, an unmarked hedged recommendation, one option rejected without a reason |
+
+📌 **The two singles are not arms, and nothing here measures form.** They exist
+so that `execute.md` and `decide.md` are exercised at all — the corpus was five
+documents and all five were `locate`, so two of the five rulesets had never been
+run against anything. Each plants one defect per acceptance question of its
+ruleset, recorded in the key under `planted:`, so a `diagnose` run that misses
+one names the question it failed instead of reporting a clean document.
+
+⚠️ **Both keys carry the same caveat, and it is the `02` tautology again.** One
+author chose both what is hidden and what is asked. It bites less here — several
+questions ask about defects a repaired document would not have, so repair
+improves the answer — but a null result on either is not evidence that the
+ruleset is sound.
+
+⭐ **`T2-adr-01` Q5 is a trap on purpose.** The cron-and-table option is
+dismissed with "We did not pursue it" and no reason. The obvious repair is an
+option table, and the obvious way to tidy that table is to drop the option —
+which `decide.md` forbids. A repaired document must still answer Q5, and must
+still answer it `INSUFFICIENT` rather than with an invented reason.
 
 ⚠️ **`02` is a triple, not a pair, and the third arm is the point.** `a → b`
 varies consolidation, `b → c` varies form. The `01` pair confounded the two, so

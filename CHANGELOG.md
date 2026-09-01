@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+### Added — 2026-09-01 (the corpus reaches `execute` and `decide`)
+
+- `fixtures/T2-runbook-01` — an `execute` fixture: a certificate-rotation
+  procedure carrying one planted defect per acceptance question of
+  `references/tasks/execute.md` — a step with two actions, a conditional step
+  whose action precedes its condition, a prerequisite that only surfaces at the
+  step needing it, and a step with no expected result.
+- `fixtures/T2-adr-01` — a `decide` fixture: four options as four prose
+  paragraphs, an unmarked and hedged recommendation, and one option rejected
+  without a reason. ⭐ Its Q5 is a trap — the obvious repair is an option table,
+  and tidying that table means dropping the reasonless option, which
+  `decide.md` forbids.
+- ⚠️ Both are single documents, not A/B arms. They measure whether `diagnose`
+  finds what its own ruleset says to find; they do not measure form. Both keys
+  record the tautology caveat: one author chose what is hidden and what is asked.
+- The corpus is now 7 documents over 3 of the 5 reader tasks. `learn` and
+  `comply` remain unrepresented.
+
+### Found — 2026-09-01 (`extract-facts.sh` is blind to numbers written in words)
+
+- Surfaced by the widening itself. `T2-adr-01` is 868 words of argued prose and
+  yields **2 facts**; `verify-facts.sh` reports a green **2/2 survived**.
+- 🛑 Every quantity the document argues from is spelled out — *two hundred and
+  forty euros a month*, *nine thousand batches a day*, *twelve duplicate rows* —
+  and the extractor keys on digits and code spans. The gate does not report a
+  loss it cannot see; it reports a pass.
+- ⚠️ Specific to argued prose, which is `decide` and much of `learn`. The
+  `locate` fixtures yield 29–79 facts and `T2-runbook-01` yields 21.
+- Not patched here: a new producer in front of the 100 % gate needs its own
+  controls first. Entry in `references/calibration.md`.
+
 ### Measured — 2026-09-01 (the truncated Reader, #8)
 
 - k = 3 cold subagents per arm of the frozen triple, each handed **only** the

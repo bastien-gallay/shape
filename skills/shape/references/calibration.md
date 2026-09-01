@@ -329,3 +329,36 @@ hold the document whole, or a human first-screen test. Recorded as it stood: if
 locate cost were identical the rule would be measuring a preference and should
 relax to *a way in within the first section*; if it separated them the rule
 would be right as written.
+
+## 🛑 `extract-facts.sh` is blind to a quantity written in words — 2026-09-01
+
+**How it surfaced.** Widening the corpus past `locate`. `T2-adr-01` is 868 words
+of decision prose, and the extractor found **two** facts in it: one code span and
+one ISO date. `verify-facts.sh` then reported **2/2 survived ✅**.
+
+**What it missed.** Every quantity the document argues from, because each is
+spelled out: *two hundred and forty euros a month*, *nine thousand batches a
+day*, *twelve duplicate rows*, *one batch in fifty*, *four times current peak*,
+*another five times*. The extractor keys on digits and code spans, so a document
+that writes its numbers as words has almost nothing to protect.
+
+⚠️ **The direction is the dangerous one.** This is the failure this repo keeps
+paying for, in a new place: the gate does not report a loss it cannot see, it
+reports a **pass**. A `condense` run could delete the cost estimate, the volume
+and the duplicate count from that document and the 100 % fact-survival gate
+would stay green — and 100 % of two is exactly as green as 100 % of seventy-nine.
+
+📌 **What it does not mean.** The gate is not broken for the documents it was
+built on. The five `locate` fixtures yield 29–79 facts each, and `T2-runbook-01`
+yields 21, because procedures and topologies carry their facts as commands,
+identifiers and digits. The blindness is specific to argued prose — which is
+`decide` and much of `learn`, the two tasks the corpus had never contained.
+
+🛑 **Not fixed here, deliberately.** A spelled-out-number extractor is a new
+producer on the path of a gate, and this repo's rule is that a producer whose
+failure is invisible is how the pass-it-never-ran bug returns. It needs its own
+positive and negative controls, and a decision about what counts as a quantity,
+before it goes in front of the 100 % gate. ⭐ The cheap interim signal is already
+available and costs nothing: **the fact count itself**. A tier-2 document
+yielding fewer than ~5 facts is a document the gate is not protecting, and the
+report should say so rather than print a green 2/2.
