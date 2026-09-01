@@ -82,8 +82,23 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
            | select(.n >= $window) | (.p / .n) ] | first // empty ]
      | if length == 0 then null else max end) as $v2
 
-  # V3 — first screen: is the reader oriented in the first 40 source lines?
-  | ([ $b[] | select(.start <= 40) ]) as $first
+  # V3 — first screen: is the reader oriented before the fold, and what is
+  # above it?
+  #
+  # ⚠️ Measured in RENDERED lines against $window, like V2. It was `.start <= 40`
+  # — source lines, hardcoded — until 2026-09-01, which counted a 400-character
+  # paragraph as one line and disagreed with the window every other metric uses.
+  # 📌 That changes the value on documents whose prose wraps; the five ledger
+  # entries written before this date are not comparable on V3.
+  #
+  # A block is above the fold when the rendered lines BEFORE it have not yet
+  # filled the window, so the first block always qualifies and a block longer
+  # than the window is included and cut rather than dropped. `blocks_in_window`
+  # is what `first-window.sh` slices the document on.
+  | ([ foreach $r[] as $x ({before: 0, keep: null};
+         {before: (.before + $x.rendered),
+          keep:   (if .before < $window then $x else null end)})
+       | .keep | select(. != null) ]) as $first
   | { purpose:  ([ $first[] | select(.type == "paragraph") ] | length > 0),
       audience: ([ $first[] | select(.type == "frontmatter" or .type == "table"
                                      or .type == "admonition") ] | length > 0),
@@ -150,7 +165,9 @@ jq --argjson wrap "$wrap" --argjson window "$window" '
         V2_screen_density:       {value: (if $v2 == null then null else (($v2 * 100 | round) / 100) end),
                                   unit: "max prose share",
                                   note: (if $v2 == null then "document shorter than the window — not measurable" else null end)},
-        V3_first_screen:         {value: $v3, unit: "presence"},
+        V3_first_screen:         {value: $v3, unit: "presence",
+                                  blocks_in_window: [$first[].i],
+                                  window_rendered_lines: $window},
         V4_block_type_run:       {value: $v4, unit: "blocks"},
         V5_figure_mention:       {value: ($v5_each | max // null), unit: "blocks", per_figure: $v5_each},
         V6_section_length_cv:    {value: (if $v6 == null then null else (($v6 * 100 | round) / 100) end),

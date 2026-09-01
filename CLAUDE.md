@@ -56,6 +56,12 @@ than a word count.
 - **`skills/shape/scripts/census.sh`** — one parse, many metrics. ⛔ Nothing
   downstream re-parses the document; `metrics.sh` and the `access/` checks are
   functions over its output. Its schema is `assets/blocks-schema.json`.
+- **`skills/shape/scripts/first-window.sh`** — emits the document as far as the
+  fold and nothing after it, on `V3_first_screen.blocks_in_window`. ⭐ It is the
+  material for a **truncated-input** retrieval run: a Reader handed only this
+  cannot ingest the whole document, because it was never given the whole
+  document. ⚠️ It selects and grades nothing — a verdict here would make it the
+  seventh check, which the saturation rule forbids.
 - **`skills/shape/scripts/access/`** — the structural rules, owned here rather
   than imported from lucid-lint. Rules are promoted *outward* once measured;
   see that directory's README for the promotion bar.

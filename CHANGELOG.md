@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+### Added — 2026-09-01 (an instrument that can see form, #8)
+
+- **`scripts/first-window.sh`** emits the source text of the blocks above the
+  fold. ⭐ It exists to make a **truncated-input** retrieval run possible: hand a
+  cold subagent this slice and the task's acceptance questions, and it cannot
+  ingest the whole document because it was never given it. That is the exit
+  condition from `references/calibration.md` — *a Reader that cannot ingest the
+  whole document* — obtained by capping the input rather than policing the
+  Reader, so there is nothing to enforce.
+- **`V3_first_screen` is raised, not duplicated.** Its window is now the first
+  `--window` **rendered** lines rather than the first 40 *source* lines — a
+  400-character paragraph is one source line and eight rendered ones, and the
+  hardcoded 40 disagreed with the window every other metric uses. It also emits
+  `blocks_in_window`, which is what `first-window.sh` slices on. 🛑 Deliberately
+  not a seventh access check: the saturation rule holds, and the count stays at
+  8 metrics and 6 checks. 📌 Ledger entries written before this date are not
+  comparable on V3.
+- **The instrument separates the frozen triple before any Reader runs.** Above
+  the fold: `02a` carries **7 of 20** services, `02b` the **complete** 22-row
+  dependency table, `02c` **all 30** mermaid edges. The ten frozen questions —
+  four needing a reverse edge, four needing a two-hop path — are answerable from
+  the fold of `b` and `c` and not from that of `a`. ⚠️ That is a mechanical
+  prediction, not a result: no Reader has been run under truncation yet.
+- Controls exercised by hand: metrics dead → exit 3/4 with an **empty** slice,
+  never the whole file; census naming an unreadable source → exit 2; a document
+  shorter than the window → emitted whole; a smaller window → a shorter slice.
+
 ### Fixed — 2026-09-01 (two scripts read and write in the wrong place, #7)
 
 - **`check-render.sh` names the config it linted with**, and a **no-config

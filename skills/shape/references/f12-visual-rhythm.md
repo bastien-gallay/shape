@@ -27,7 +27,7 @@ re-parses the document.
 | --- | --- | --- | --- |
 | `V1` longest-prose-run | Max consecutive rendered lines in paragraph blocks with no other block type between | 8 lines | ⭐ high — best proxy for *wall of text* |
 | `V2` screen-density | Over each sliding window of 45 rendered lines, share of lines in paragraph blocks; the max is reported | no window at 100 % | ⭐ high |
-| `V3` first-screen | Within the first 40 lines: purpose · audience · ≥ 1 non-prose block | all three present | ⭐ high — cheapest and most consequential |
+| `V3` first-screen | Above the fold — the first `--window` **rendered** lines: purpose · audience · ≥ 1 non-prose block. Also emits `blocks_in_window`. | all three present | ⭐ high — cheapest and most consequential |
 | `V4` block-type-run | Max consecutive blocks of the same non-prose type | 3 | medium — three tables in a row are as monotone as a wall of prose |
 | `V5` figure-mention-distance | Blocks between a figure and its nearest caption or mention | 0 | medium — Mayer contiguity |
 | `V6` section-length-CV | Coefficient of variation of section lengths at one heading depth | report only | ⚠️ low — likely noise |

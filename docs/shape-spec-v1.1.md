@@ -117,6 +117,13 @@ to be replaced by §5 output.
 | `V1` longest-prose-run | Max consecutive lines belonging to paragraph blocks with no other block type between | 8 lines | ⭐ high — best proxy for *wall of text* |
 | `V2` screen-density | Over each sliding window of 45 rendered lines, share of lines in paragraph blocks; report the max | no window at 100 % | ⭐ high |
 | `V3` first-screen | Within the first 40 lines: purpose sentence · audience · ≥ 1 non-prose block | all three present | ⭐ high — cheapest and most consequential check |
+
+⚠️ **Amended 2026-09-01.** V3's window is the first `--window` **rendered**
+lines, not the first 40 source lines: a 400-character paragraph is one source
+line and eight rendered ones, and the hardcoded 40 disagreed with the window
+every other metric uses. V3 now also emits `blocks_in_window`, which
+`scripts/first-window.sh` slices the document on. 📌 Ledger entries written
+before that date are not comparable on V3.
 | `V4` block-type-run | Max consecutive blocks of the same non-prose type | 3 | medium — three tables in a row are as monotone as a wall of prose |
 | `V5` figure-mention-distance | Lines between a figure and its first textual mention | 0 (same block group) | medium — Mayer contiguity |
 | `V6` section-length-CV | Coefficient of variation of section lengths at one heading depth | report only, no threshold | ⚠️ low — likely noise |
