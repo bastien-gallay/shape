@@ -29,6 +29,10 @@
 # Exit: 0 the signal was produced (regression or not) · 2 usage
 #       · 3 lucid-lint absent, errored, or drifted — the check is NOT RUN
 #       · 4 the comparison itself did not run (unreadable or empty scores)
+#
+# The baseline is written under $SHAPE_BASELINE_DIR (default $TMPDIR), never
+# into the working tree. Its path is printed by --baseline and named by
+# --compare when it is missing.
 
 set -euo pipefail
 
@@ -41,12 +45,28 @@ mode="${1:-}"
 file="${2:-}"
 profile="dev-doc"
 if [[ "${3:-}" == "--profile" && -n "${4:-}" ]]; then profile="$4"; fi
-baseline=".shape-baseline.json"
 
 if [[ -z "$file" || ! -r "$file" ]]; then
   echo "usage: lint-delta.sh --baseline|--compare <file> [--profile P]" >&2
   exit 2
 fi
+
+# 🛑 The baseline never lands in the working tree. It used to be
+# `.shape-baseline.json` relative to the cwd, so a pass run from a repo root
+# dropped an untracked file there — invisible in this repo, which gitignores
+# it, and in a shared checkout that is how a stray file ends up in someone
+# else's commit. Measured 2026-08-31 on a client repo.
+#
+# ⚠️ Keyed by the document's ABSOLUTE path and the profile, because the store
+# is now shared across repos: one file per repo root already collided between
+# two documents, and a `falc` baseline compared against a `dev-doc` run is the
+# same silent wrong answer one level up. Override the directory with
+# SHAPE_BASELINE_DIR.
+doc_abs="$(cd "$(dirname "$file")" && pwd)/$(basename "$file")"
+baseline_dir="${SHAPE_BASELINE_DIR:-${TMPDIR:-/tmp}}"
+baseline_key="$(printf '%s\n' "$doc_abs" | cksum | tr -d ' \n' | cut -c1-12)"
+baseline_name="$(basename "$file" | sed -e 's/\.[^.]*$//' -e 's/[^A-Za-z0-9_-]/-/g')"
+baseline="$baseline_dir/shape-baseline-$baseline_name-$profile-$baseline_key.json"
 
 if ! command -v lucid-lint >/dev/null 2>&1; then
   echo "⚠️ lucid-lint not installed — lint check NOT RUN (not passed)" >&2

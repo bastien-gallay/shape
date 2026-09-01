@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+### Fixed — 2026-09-01 (two scripts read and write in the wrong place, #7)
+
+- **`check-render.sh` names the config it linted with**, and a **no-config
+  failure is now NOT RUN (exit 3), never ❌**. The walk-up from the file already
+  existed since 2026-08-28; what was missing is that a document held in a
+  scratchpad — which is how shape edits a copy — has no config above it at all,
+  so MD013 and MD041 fired although the governing repo disables both. That
+  verdict was a statement about where the file sat, the same class as `mmdc`
+  without a browser. ⚠️ A no-config *pass* stays ✅: stock rules are stricter
+  than a config that disables some. `SHAPE_MD_CONFIG` names the governing
+  config when the document is linted away from the repo that owns it.
+- **`lint-delta.sh` no longer writes into the working tree.** The baseline was
+  `.shape-baseline.json` relative to the cwd; it now lands under
+  `$SHAPE_BASELINE_DIR` (default `$TMPDIR`), keyed by the document's absolute
+  path **and** the profile. 🛑 The keying is part of the fix, not a flourish: one
+  file per repo root already collided between two documents, and a shared store
+  makes that certain — while a `falc` baseline compared against a `dev-doc` run
+  is the same silent wrong answer one level up. Both the write and the
+  missing-baseline error print the path.
+- Controls exercised by hand on both: config found / absent / overridden /
+  absent-but-clean, and a baseline round trip with two documents and two
+  profiles. `just check-fixtures` unchanged — 5 fixtures, 0 failures, 2 NOT RUN
+  for the absent mermaid browser.
+
 ### Changed — 2026-09-01 (a proxy withdrawn)
 
 - The **150-line ceiling on `SKILL.md` is withdrawn**, in `CLAUDE.md`, in

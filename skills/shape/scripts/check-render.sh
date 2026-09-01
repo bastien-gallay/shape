@@ -7,7 +7,8 @@
 # verification you passed.
 #
 # Exit: 0 all checks that ran passed · 1 a check failed · 2 usage
-#       3 a check could not run — the tool is present but its runtime is not
+#       3 a check could not run — the tool is present but its runtime, its
+#         browser, its network or its config is not
 
 set -euo pipefail
 
@@ -21,6 +22,7 @@ fi
 
 failed=0
 render_not_run=0
+md_not_run=0
 
 run_or_skip() {
   local tool="$1"; shift
@@ -54,15 +56,32 @@ run_or_skip() {
 #     the exit status alone.
 #
 # So: walk up from the FILE to find the config, run the linter from that
-# directory, and say in the label which tool ran and whether a config was
-# found. A lint with no config is a different proposition from a lint with one.
+# directory, and PRINT THE CONFIG PATH. A lint whose config is implicit is not
+# reproducible, and a lint with no config is a different proposition from a
+# lint with one.
+#
+# 🛑 And a no-config FAILURE is NOT RUN, never ❌. Measured 2026-08-31: a
+# document held in a scratchpad — which is how shape edits a copy — has no
+# config above it, so MD013 and MD041 fired although the governing repo
+# disables both. The verdict was a statement about where the file sat. Same
+# class as mmdc without a browser and lychee without a network, and treated
+# the same way. ⚠️ A no-config PASS stays ✅: stock rules are stricter than a
+# config that disables some, so passing them passes the repo's too.
+#
+# Set SHAPE_MD_CONFIG to name the governing config when the document is being
+# linted away from the repo that owns it.
 
-md_config_dir() {
-  local dir; dir="$(cd "$(dirname "$1")" && pwd)"
+md_config_file() {
+  local dir
+  if [[ -n "${SHAPE_MD_CONFIG:-}" ]]; then
+    [[ -r "$SHAPE_MD_CONFIG" ]] || return 1
+    printf '%s\n' "$SHAPE_MD_CONFIG"; return 0
+  fi
+  dir="$(cd "$(dirname "$1")" && pwd)"
   while :; do
     for name in .markdownlint-cli2.jsonc .markdownlint-cli2.yaml .markdownlint-cli2.cjs \
                 .markdownlint.json .markdownlint.jsonc .markdownlint.yaml .markdownlintrc; do
-      [[ -r "$dir/$name" ]] && { printf '%s\n' "$dir"; return 0; }
+      [[ -r "$dir/$name" ]] && { printf '%s\n' "$dir/$name"; return 0; }
     done
     [[ "$dir" == "/" ]] && return 1
     dir="$(dirname "$dir")"
@@ -70,11 +89,13 @@ md_config_dir() {
 }
 
 lint_markdown() {
-  local f="$1" root rel out status label n
-  if root="$(md_config_dir "$f")"; then
-    label="config"
+  local f="$1" root rel out status label n cfg
+  if cfg="$(md_config_file "$f")"; then
+    root="$(cd "$(dirname "$cfg")" && pwd)"
+    label="config $cfg"
   else
     root="$(cd "$(dirname "$f")" && pwd)"
+    cfg=""
     label="no-config"
   fi
   rel="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"
@@ -93,6 +114,11 @@ lint_markdown() {
       printf '⚠️  %-12s NOT RUN (Linting: 0 files — ignored or unmatched)\n' "cli2"
     elif [[ "$status" -eq 0 ]]; then
       printf '✅ %-12s pass (%s file(s), %s)\n' "cli2" "$n" "$label"
+    elif [[ -z "$cfg" ]]; then
+      printf '⚠️  %-12s NOT RUN (findings under DEFAULT rules — no config above the file)\n' "cli2"
+      printf '%s\n' "$out" | grep -E 'MD[0-9]+' | head -10 | sed 's/^/   /'
+      printf '   ⚠️  advisory only. Set SHAPE_MD_CONFIG to the governing config.\n'
+      md_not_run=1
     else
       printf '❌ %-12s fail (%s)\n' "cli2" "$label"
       printf '%s\n' "$out" | grep -E 'MD[0-9]+' | head -10 | sed 's/^/   /'
@@ -106,11 +132,15 @@ lint_markdown() {
     out="$(cd "$root" && markdownlint "$rel" 2>&1)" || status=$?
     if [[ "$status" -eq 0 ]]; then
       printf '✅ %-12s pass (%s)\n' "markdownlint" "$label"
+    elif [[ -z "$cfg" ]]; then
+      printf '⚠️  %-12s NOT RUN (findings under DEFAULT rules — no config above the file)\n' \
+        "markdownlint"
+      printf '%s\n' "$out" | head -10 | sed 's/^/   /'
+      printf '   ⚠️  advisory only. Set SHAPE_MD_CONFIG to the governing config.\n'
+      md_not_run=1
     else
       printf '❌ %-12s fail (%s)\n' "markdownlint" "$label"
       printf '%s\n' "$out" | head -10 | sed 's/^/   /'
-      [[ "$label" == "no-config" ]] && \
-        printf '   ⚠️  no config found above the file — these are DEFAULT rules\n'
       failed=1
     fi
     return
@@ -217,6 +247,10 @@ fi
 
 if [[ $failed -eq 0 && $render_not_run -eq 1 ]]; then
   echo "🛑 a diagram was NOT RENDERED — this is not a clean render report" >&2
+  exit 3
+fi
+if [[ $failed -eq 0 && $md_not_run -eq 1 ]]; then
+  echo "🛑 markdown findings came from DEFAULT rules — this is not a lint of this document" >&2
   exit 3
 fi
 exit "$failed"
