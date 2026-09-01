@@ -400,8 +400,11 @@ carries the rule.
   ⚠️ A changelog is history by construction — reading an old entry as current
   status is the misread to expect, not a defect to fix.
 
-Nothing was deleted in the pass that wrote this, so there is no provenance
-record to follow.
+No document was deleted or consolidated in the passes that wrote this, so there
+is no provenance record to follow. The 2026-09-01 wrap removed one dead function
+— `run_or_skip()` in `check-render.sh`, callerless since `78775c6` — and
+`.DS_Store` plus `docs/.DS_Store`. ⚠️ Those two were never tracked, so their
+removal leaves no trace in git. Nothing that carried evidence.
 
 - ✅ **Settled 2026-08-27 — the lucid-lint dependency is inverted.** shape no
   longer waits for an `access` category; the six structural rules are

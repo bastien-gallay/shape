@@ -100,20 +100,6 @@ EOF
   printf '   ℹ️  mermaid browser: %s\n' "$exe"
 }
 
-run_or_skip() {
-  local tool="$1"; shift
-  if ! command -v "$tool" >/dev/null 2>&1; then
-    printf '⚠️  %-12s NOT RUN (not installed)\n' "$tool"
-    return
-  fi
-  if "$@" >/dev/null 2>&1; then
-    printf '✅ %-12s pass\n' "$tool"
-  else
-    printf '❌ %-12s fail\n' "$tool"
-    failed=1
-  fi
-}
-
 # ⚠️ Markdown linting is cwd-sensitive and tool-sensitive, and BOTH failures
 # report as ❌ fail rather than as NOT RUN — the exact inversion this script
 # exists to prevent.
