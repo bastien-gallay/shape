@@ -188,6 +188,34 @@ than of the documents.
 family. And the claim the protocol cares about — that form costs a *human*
 reader something — remains untouched by any of this.
 
+### Confirmed independently, 2026-08-31 — a fourth document, another chain
+
+⭐ The mechanism above is not a property of the topology fixtures. It reproduces
+on an unrelated document, measured by someone who was not looking for it.
+
+Two `shape` passes (`diagnose` then `restructure`) ran that day on a CN2S-318
+Jira description in a client repo, outside this corpus and with no knowledge of
+the triple result. Three cold Readers were spawned — a baseline, a re-run and a
+third measurement. Their transcripts hold **one tool call each**: a whole-file
+`Read`, no `offset`, no `limit`, and no `grep`. Same behaviour, different
+document family, different operator, different day.
+
+🛑 **And that pass reported a locate cost anyway — 5/5 blocks before, 8/11
+after, 692 → 641 words.** Those numbers are the Reader's *retrospective
+self-report*, produced after ingesting everything: `SKILL.md` §4 asks it to
+"report which sections it had to open", and it answers a question about a
+navigation that never happened. The pass then failed its own locate-cost gate on
+them and recorded the failure as a confound in the block count.
+
+⭐ So the defect is worse than an invalid measure — the instrument **manufactures
+plausible numbers**. A null result invites a second look; a specific, moving,
+self-consistent number does not. This is the sharpest form yet of the entry
+under *A null result can belong to the instrument*: read the transcript of what
+the subject did, never the number it reported about itself.
+
+⚠️ A ledger field that carries a self-report must say so in its name or its
+schema. None currently does.
+
 ### 🛑 Consequence for the protocol
 
 The cold-subagent retrieval loop (brief §F7) grades **fact retrievability**. It
@@ -202,6 +230,12 @@ whose content is identical. Two candidates, neither built:
 1. **A Reader that cannot ingest the whole document** — a corpus large enough,
    or a context budget tight enough, that navigation is forced rather than
    optional. Only then does *blocks opened* count what it is named after.
+   ⭐ Cheapest form of this, added 2026-09-01: **truncate the input** rather
+   than police the Reader. Show it only the blocks that fit in the first
+   `window_lines` and ask the task's acceptance questions. Nothing has to be
+   enforced, because nothing else was ever supplied — and what fits above the
+   fold is a property of form. `V3_first_screen` already occupies this ground
+   and tests only whether ingredients are present.
 2. **A human first-screen test**, which is the population the claim is about,
    and which `docs/shape-validation-protocol.md` §2 already budgets at ~20
    minutes per release.

@@ -376,6 +376,12 @@ record to follow.
   not what did it (`02` has none and still scored perfectly). The exit
   condition is now concrete — a Reader that cannot hold the document, or a human
   first-screen test — and is written in `references/calibration.md`.
+  ⭐ **Confirmed independently 2026-08-31** on a fourth document, in another
+  repo, by an operator not looking for it: three cold Readers, one whole-file
+  `Read` each, no `grep`. That pass still *reported* 5/5 → 8/11 blocks opened —
+  the Reader's retrospective self-report, since `SKILL.md` §4 asks it which
+  sections it had to open. 🛑 The instrument does not merely fail to measure;
+  it manufactures a plausible number, which is harder to catch than a null.
 - 🛑 **The earlier form-blindness entry — measured 2026-08-28.** An `access-only` pass
   scored 35/35 on the access checks and 8/8 on retrieval over a dossier of 7
   documents carrying 27 tables and zero figures; a later non-`shape` pass added
