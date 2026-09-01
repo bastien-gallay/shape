@@ -362,3 +362,41 @@ before it goes in front of the 100 % gate. ⭐ The cheap interim signal is alrea
 available and costs nothing: **the fact count itself**. A tier-2 document
 yielding fewer than ~5 facts is a document the gate is not protecting, and the
 report should say so rather than print a green 2/2.
+
+## ⚠️ The fact-survival denominator counted entries, not facts — 2026-09-01
+
+**What it was.** `verify-facts.sh` reported one line per inventory entry.
+`grep -F` searches the whole document, so N entries carrying the same fragment
+are one verification reported N times: they pass and fail together, and they
+test one string. The gate's own denominator was inflated by repetition.
+
+**Measured across the corpus**, after the same-line fix in `2bcb1ec` made the
+inflation visible:
+
+| Fixture | Entries | Distinct fragments |
+| --- | --- | --- |
+| `T2-topology-01a` | 50 | **9** |
+| `T2-topology-01b` | 33 | **9** |
+| `T2-topology-02a` | 59 | **21** |
+| `T2-topology-02b` | 79 | **21** |
+| `T2-topology-02c` | 29 | **21** |
+| `T2-runbook-01` | 21 | **14** |
+| `T2-adr-01` | 2 | **2** |
+
+🛑 A `50/50 facts survived` was nine strings. ⭐ Only the flattering number was
+removed: deduplication changes nothing about detection, because a fragment
+present anywhere passes and a fragment deleted everywhere fails, exactly as
+before. Control 3 of the seven run on the change exercises precisely that — a
+fragment appearing three times, deleted from all three, still fails.
+
+⚠️ **The ledger entries predate this.** The five `runs/` entries record the old
+denominator. They are not wrong about survival — every one was 100 % — but their
+fact counts are entry counts and are not comparable with anything written after
+this date.
+
+📌 **The count is now also the coverage signal**, which is what makes it worth
+having. Below `SHAPE_MIN_FACTS` (default 5) the run says the gate is protecting
+very little, and names why: the extractor keys on digits and code spans, so
+argued prose yields almost nothing. ⚠️ The threshold is uncalibrated and
+advisory — it changes what is printed, never the exit code — and it is not a
+ninth metric or a seventh check. It reads a number the inventory already emits.

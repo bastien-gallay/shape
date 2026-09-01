@@ -135,8 +135,23 @@ check-fixtures:
             echo "   ⚠️  no fact candidates — skipped"
             continue
         fi
-        skills/shape/scripts/verify-facts.sh "$tmp/facts.json" "$f" | tail -1
-        if [[ ${PIPESTATUS[0]} -ne 0 ]]; then failed=$((failed + 1)); fi
+        # 🛑 Own statement, real file, status read directly. `| tail -1` was
+        # right only while the summary was the last line — a low-coverage
+        # warning now follows it, and tail -1 showed its least informative
+        # line while hiding the count it was warning about.
+        vf_st=0
+        skills/shape/scripts/verify-facts.sh "$tmp/facts.json" "$f" \
+            > "$tmp/verify.txt" 2>&1 || vf_st=$?
+        # From the first loss, or from the summary when there is none, to the
+        # end — so ❌ lines and the coverage warning both survive the filter.
+        awk '/^❌/ || /distinct facts survived/ {p=1} p' "$tmp/verify.txt" > "$tmp/verify-cut.txt"
+        # An exit-4 run prints neither, and must not be summarised as silence.
+        if [[ -s "$tmp/verify-cut.txt" ]]; then
+            sed 's/^/   /' "$tmp/verify-cut.txt"
+        else
+            sed 's/^/   /' "$tmp/verify.txt"
+        fi
+        if [[ $vf_st -ne 0 ]]; then failed=$((failed + 1)); fi
         # ⚠️ 3 is NOT RUN, not a failing document. Counting it as a failure
         # would say the fixture is broken when the machine is.
         render_st=0

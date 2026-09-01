@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+### Changed — 2026-09-01 (the fact gate stops counting repeats)
+
+- `verify-facts.sh` reports **distinct fragments**, not inventory entries. N
+  entries carrying the same fragment were one verification reported N times —
+  `grep -F` searches the whole document, so they pass and fail together.
+- 🛑 The corpus, before and after: `T2-topology-01a` 50 → **9**,
+  `T2-topology-02b` 79 → **21**, `T2-runbook-01` 21 → **14**. A
+  `50/50 facts survived` was nine strings.
+- ⭐ Detection is unchanged. A fragment present anywhere still passes; one
+  deleted everywhere still fails. Seven hand-run controls, including a fragment
+  appearing three times and removed from all three.
+- ⚠️ The five existing `runs/` entries record the old denominator. Their
+  survival figures stand; their fact counts are not comparable with later ones.
+- The summary now names the collapse — `21/21 distinct facts survived
+  (79 inventory entries, 58 repeats collapsed)`.
+- Below `SHAPE_MIN_FACTS` (default 5) the run says the gate is protecting very
+  little of the document and why. ⚠️ Uncalibrated and advisory: it changes what
+  is printed, never the exit code.
+- `justfile` — `check-fixtures` read the verification through `| tail -1`, which
+  showed the warning's least informative line and hid the count it warned about.
+  It now reads the status in its own statement and prints from the first loss,
+  or the summary, to the end.
+
 ### Fixed — 2026-09-01 (a mermaid diagram is finally rendered, not skipped)
 
 - `check-render.sh` **resolves the browser `mmdc` drives** instead of leaving
