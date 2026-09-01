@@ -136,3 +136,14 @@ one issued a `grep`, which makes *blocks opened* an **invalid** measure of
 locate cost rather than an insensitive one. It discharges the two rival
 explanations for the `01` result: the document was not too small, and `01`'s
 prose restatement of its own topology was not the cause.
+
+⭐ **Third result, 2026-09-01 — the first separation this corpus has ever
+produced.** Same three arms, same ten questions, k = 3, but each Reader was
+given **only the slice above the fold** (`scripts/first-window.sh`) instead of
+the document: **a 3/30 · b 30/30 · c 29/30**. Nine Readers, one tool call each.
+🛑 It separates `a → b` — consolidation — and **not** `b → c`: table and graph
+are still indistinguishable, and c's single miss is one Reader adding a fifth
+service to a four-service answer. ⚠️ Read the limit in
+`references/calibration.md` before quoting the number: what is demonstrated is
+that a topology below the fold cannot be retrieved, which is not yet the same
+claim as *this form costs less to read*.

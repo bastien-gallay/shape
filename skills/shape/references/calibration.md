@@ -216,6 +216,44 @@ the subject did, never the number it reported about itself.
 ⚠️ A ledger field that carries a self-report must say so in its name or its
 schema. None currently does.
 
+### ⭐ Measured under truncation, 2026-09-01 — the first separation
+
+The same three arms, the same ten frozen questions, k = 3 — but each Reader was
+handed **only `first-window.sh`'s slice**, never the document. Nine cold
+subagents, isolated directories, the file named `service-map.md` in each.
+
+| Arm | Above the fold | Correct | Tool calls |
+| --- | --- | --- | --- |
+| a — scattered | 7 of 20 service entries | **3 / 30** | 1 each |
+| b — table | the complete 22-row table | **30 / 30** | 1 each |
+| c — graph | all 30 mermaid edges | **29 / 30** | 1 each |
+
+Arm a answered one question per run — the two-hop chain whose both entries
+happen to sit above the fold — and returned `INSUFFICIENT` for the rest rather
+than guessing. Arms b and c answered everything; c's single miss is one Reader
+naming five services where the key has four.
+
+⭐ **The exit condition is met for consolidation.** Two arms of a frozen triple
+whose content is identical, separated 3/30 against 30/30 by an instrument that
+grades nothing itself. `a → b` is now measurable.
+
+🛑 **It is not met for form.** `b → c` is 30/30 against 29/30 — a table and a
+graph carrying the same edges above the fold are still indistinguishable here,
+exactly as they were under the untruncated Reader. The claim *this form reads
+better* remains unmeasured; what is now measurable is *this content is above
+the fold*.
+
+⚠️ **The limit to state whenever this number is quoted.** The questions need the
+topology, and the instrument rewards the arm that put the topology above the
+fold. That is close to tautological, and it is the honest reading: this measures
+**what is above the fold**, not the cost of a form. It is still a real
+instrument — a document can put the wrong thing above the fold, and now that
+shows — but it cannot rank two documents that both put the right thing there.
+
+📌 Also unchanged: one model family, k = 3, one document family, and reader
+token counts within 0.6 % across all nine, so the separation is not a budget
+artefact.
+
 ### 🛑 Consequence for the protocol
 
 The cold-subagent retrieval loop (brief §F7) grades **fact retrievability**. It

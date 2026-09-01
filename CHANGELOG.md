@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Measured — 2026-09-01 (the truncated Reader, #8)
+
+- k = 3 cold subagents per arm of the frozen triple, each handed **only** the
+  slice above the fold and never the document: **a 3/30 · b 30/30 · c 29/30**.
+  Nine Readers, **one tool call each**, reader tokens within 0.6 %.
+- ⭐ **The first separation this corpus has produced**, and the exit condition in
+  `references/calibration.md` is met for **consolidation**: two arms of identical
+  content, 3/30 against 30/30, from an instrument that grades nothing itself.
+- 🛑 **Not met for form.** `b → c` is 30 against 29 — a table and a graph with
+  the same edges above the fold stay indistinguishable, as they were under the
+  untruncated Reader. c's single miss is one Reader naming five services where
+  the key has four.
+- ⚠️ **The limit ships with the number.** The questions need the topology and the
+  instrument rewards the arm that put the topology above the fold, which is
+  close to tautological. What is measured is *what is above the fold*, not the
+  cost of a form. A document can put the wrong thing there, and that now shows;
+  two documents that both put the right thing there cannot be ranked.
+- Arm a returned `INSUFFICIENT` rather than guessing on nine of ten questions,
+  which is why the option was offered — without it the measurement would have
+  scored invention.
+
 ### Added — 2026-09-01 (an instrument that can see form, #8)
 
 - **`scripts/first-window.sh`** emits the source text of the blocks above the

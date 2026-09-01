@@ -308,10 +308,16 @@ cover form.
 
 **Open, ranked.**
 
-1. **No instrument grades form.** The exit condition is written in
-   `references/calibration.md` — a Reader that cannot hold the document whole,
-   or the human first-screen test the validation protocol already budgets for.
-   Neither is built. ⚠️ Not ticketed: this repo has no tracker.
+1. **An instrument now grades what is above the fold — and only that.**
+   `scripts/first-window.sh` hands a cold Reader the slice above the fold and
+   nothing else. Measured 2026-09-01 on the frozen triple: **a 3/30 · b 30/30 ·
+   c 29/30**, the first separation this corpus has produced. ⭐ The exit
+   condition is met for **consolidation**. 🛑 It is **not** met for form: `b → c`
+   stays 30 against 29, so a table and a graph remain indistinguishable, and the
+   claim *this form reads better* is still unmeasured. ⚠️ And the honest reading
+   of the win is narrow — the questions need the topology and the instrument
+   rewards the arm that put it above the fold, which is nearly tautological.
+   Full entry and limits in `references/calibration.md`.
 2. **The corpus is five documents and all five are `locate`.** The idempotence
    regression, the diagnose regression and every `.shape.toml` threshold are
    still blocked on fixtures for the other four tasks.
