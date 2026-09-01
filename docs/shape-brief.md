@@ -129,8 +129,13 @@ The computable analogue of a read-and-locate test:
    from the user.
 2. A **cold subagent** — fresh context, no knowledge of the edit — answers from the
    document alone and reports which sections it had to open.
-3. Score: **answers correct** (comprehension) and **blocks opened** (locate cost).
+3. Score: **answers correct** (comprehension) and **blocks opened**.
 4. Same questions, before and after.
+
+⛔ **Retracted 2026-08-31.** Blocks opened is not a locate-cost measure: the
+cold Reader loads the document whole rather than navigating it, so the number
+is the same whatever the form. Measured over three arms of one topology; see
+`skills/shape/references/calibration.md`. What replaces it is not yet built.
 
 ⚠️ Honesty caveats, to be printed with the result:
 
@@ -244,7 +249,7 @@ lucid-lint measure something no competitor in its comparison table measures.
 | --- | --- | --- |
 | Fact survival | 🛑 100 % | `scripts/verify-facts.sh` |
 | Retrieval accuracy | ≥ baseline | cold subagent (F7) |
-| Locate cost (blocks opened) | < baseline | cold subagent (F7) |
+| Locate cost (blocks opened) | ⛔ withdrawn 2026-08-31, see F7 | — |
 | Idempotence | no semantic diff | second run |
 | lucid-lint `access` score | ≥ baseline | `--format=json` delta |
 | Markdown / links / mermaid | pass or *not run* | existing scripts |

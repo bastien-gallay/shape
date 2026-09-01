@@ -58,8 +58,9 @@ than a word count.
 - **`skills/shape/scripts/access/`** — the structural rules, owned here rather
   than imported from lucid-lint. Rules are promoted *outward* once measured;
   see that directory's README for the promotion bar.
-- **`skills/shape/scripts/ledger.sh`** — writes `runs/<date>-<doc>.json` on
-  every pass, and ⚠️ never overwrites: a same-day rerun takes a `-2` suffix,
+- **`skills/shape/scripts/ledger.sh`** — writes `runs/<date>-<slug>.json` on
+  every pass — the slug is the document path, the fixture id, or the opaque
+  `--external` id — and ⚠️ never overwrites: a same-day rerun takes a `-2` suffix,
   because two passes over one document in one day is the normal loop and the
   second silently replacing the first destroys the evidence. `--facts` requires
   `--facts-survived`. This is the instrument that makes both open questions
@@ -74,9 +75,10 @@ than a word count.
 - **`fixtures/`** — the regression corpus (brief §T6) and the calibration
   corpus (spec §5). Two files per fixture, never one: `<id>.md` is all any
   instrument or Reader sees, `<id>.key.yaml` holds the answers and the frozen
-  `document_sha256`. ⚠️ `T2-topology-01a`/`-01b` are an **A/B pair** — same
-  content, table vs graph — and scoring one arm without the other reintroduces
-  the blindness the pair exists to measure.
+  `document_sha256`. ⚠️ `T2-topology-01a`/`-01b` are an **A/B pair** and
+  `T2-topology-02a`/`-02b`/`-02c` an **A/B/C triple** — same content, differing
+  in one section — and scoring one arm without the others reintroduces the
+  blindness they exist to measure.
 - **`install.sh`** — symlinks (default) or copies `skills/shape` into
   `~/.claude/skills/shape`. Symlink is the intended mode so edits propagate
   live without reinstalling.
@@ -195,7 +197,9 @@ after it closes.
   working, not the increment failing. ⚠️ And when they are calibrated, n ≈ 12
   and one author: a locally useful setting, never a finding.
 - **Both changes carry a written falsification condition.** If the lint score
-  turns out to track locate cost, the gate comes back. If no F12 metric
+  turns out to track locate cost, the gate comes back — ⚠️ **suspended, not
+  dropped, since 2026-08-31**: there is no valid locate-cost measure left to
+  correlate against, so the condition cannot be evaluated until one exists. If no F12 metric
   separates high-cost from low-cost documents, F12 reverts to advisory prose
   and ships no numbers. Neither condition may be quietly dropped — they are
   what makes the increment a claim rather than a preference.
@@ -283,8 +287,7 @@ manifests is a placeholder.
   implemented under `scripts/access/`, each with a positive and a negative
   control. Promotion into lucid-lint is now an outward move gated on corpus
   evidence, not a blocking import.
-- 📌 **`fixtures/` holds an A/B pair and an A/B/C triple; none of the triple is
-  measured yet.** `T2-topology-01a`/`-01b` landed 2026-08-28 with the first two
+- 📌 **`fixtures/` holds an A/B pair and an A/B/C triple, both measured.** `T2-topology-01a`/`-01b` landed 2026-08-28 with the first two
   ledger entries. `T2-topology-02a`/`-02b`/`-02c` landed 2026-08-31: 20 services,
   30 edges, ~950 words, ten frozen questions of which four need a reverse edge.
   ⭐ Its three arms separate the two variables `01` confounded — `a → b` is
@@ -331,4 +334,5 @@ manifests is a placeholder.
   conditions in `references/calibration.md`.
 - 📌 **The cold-subagent retrieval loop (brief §F7) is specified, not
   scripted.** It is the primary metric and the only gate with no script behind
-  it.
+  it. ⛔ And it grades **fact retrievability only** — its locate-cost half was
+  withdrawn 2026-08-31 and `SKILL.md` §5 now says so where the gate stood.

@@ -27,7 +27,7 @@ satisfies the 100 % gate even when the body deleted every occurrence. See
 | Expected classification | catches classifier drift |
 | Known access defects | what `diagnose` must find |
 | `must_preserve` | what must never disappear |
-| `document_sha256` + `frozen_at` | ⚠️ makes "fixtures are frozen" mechanical — `just check-fixtures` exits 4 on a mismatch instead of trusting discipline |
+| `document_sha256` + `frozen_at` | ⚠️ makes "fixtures are frozen" mechanical — `just check-fixtures` counts a mismatch as a failure and exits 1, instead of trusting discipline |
 
 ## Rules
 
@@ -36,9 +36,10 @@ satisfies the 100 % gate even when the body deleted every occurrence. See
   carry someone's identifiers in its own corpus.
 - A fixture is committed with its expected `diagnose` output, so a ruleset
   change shows up as a diff rather than as a judgement call.
-- ⚠️ **An A/B pair is scored as a pair.** `T2-topology-01a` / `-01b` are the
-  same content in two forms. Reporting one arm without the other reintroduces
-  the form-blindness the pair exists to measure.
+- ⚠️ **A pair is scored as a pair, and a triple as a triple.**
+  `T2-topology-01a` / `-01b`, and `T2-topology-02a` / `-02b` / `-02c`, are the
+  same content in two and three forms. Reporting one arm without the others
+  reintroduces the form-blindness they exist to measure.
 
 ## Two regimes, and only one of them lives here
 
@@ -124,5 +125,14 @@ sequence, On call names ownership and not dependencies, and no failure mode name
 a path.
 
 📌 **First result, 2026-08-28.** Both arms scored 24/24 on retrieval at k = 3,
-with identical blocks opened and identical verdicts from all six access checks.
-Only two census numbers moved. See `references/calibration.md`.
+with 2.67 and 3.00 blocks opened — no separation, and marginally the wrong way —
+and identical verdicts from all six access checks. Only two census numbers
+moved. See `references/calibration.md`.
+
+📌 **Second result, 2026-08-31 — and it is about the instrument.** All three
+arms of `02` scored 30/30, with 1.67 / 1.67 / 2.00 blocks opened and reader
+tokens within 0.7 %. ⛔ All nine Readers loaded the **whole document** and not
+one issued a `grep`, which makes *blocks opened* an **invalid** measure of
+locate cost rather than an insensitive one. It discharges the two rival
+explanations for the `01` result: the document was not too small, and `01`'s
+prose restatement of its own topology was not the cause.

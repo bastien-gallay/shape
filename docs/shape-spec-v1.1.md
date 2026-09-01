@@ -75,9 +75,14 @@ the corpus is covered, check whether the two move together.
 | `access`-relevant score tracks locate cost | Promote back to gate, with the correlation and the corpus size stated |
 | No relationship | Keep as signal, or drop from the report |
 | Score improves while locate cost worsens | 🛑 Goodhart confirmed — remove from the report entirely |
+| ⛔ *Blocked since 2026-08-31* | no valid locate-cost measure exists to correlate against; ⚠️ suspended, not dropped |
 
 🔒 **Falsification condition for Change A.** If the score turns out to track locate
 cost on the corpus, this change was wrong and reverts.
+
+⚠️ **Suspended 2026-08-31, not dropped.** There is no valid locate-cost measure
+left to correlate the score against, so the condition cannot be evaluated until
+one exists. See `skills/shape/references/calibration.md`.
 
 ### A4 — Unchanged
 
@@ -205,7 +210,7 @@ How thresholds are earned. This is the deliverable, more than the metrics themse
 | --- | --- | --- |
 | 1 | Assemble 10–15 real documents spanning the five reader tasks | corpus |
 | 2 | Run the census on all of them — **before setting any threshold** | metric distributions |
-| 3 | Run the F7 retrieval test on each: answers correct, blocks opened | locate cost per doc |
+| 3 | Run the F7 retrieval test on each: answers correct | retrieval accuracy per doc — ⛔ locate cost withdrawn 2026-08-31 |
 | 4 | Check which metrics separate high-cost from low-cost documents | surviving metric set |
 | 5 | Set thresholds from the distribution of the survivors, not from §B2 | `.shape.toml` |
 | 6 | Record corpus size and date beside every threshold; print both in reports | provenance |
@@ -224,18 +229,36 @@ at all.
 
 ## 6. Ledger
 
-Every pass appends `runs/<date>-<doc>.json`, whatever the mode. This is what makes
-both open questions answerable by accumulation rather than by argument.
+Every pass appends `runs/<date>-<slug>.json`, whatever the mode. The slug is the
+document path, the fixture id, or the opaque id of an `--external` run. This is
+what makes both open questions answerable by accumulation rather than by
+argument.
 
 | Field | Why |
 | --- | --- |
-| `doc`, `mode`, `task`, `audience`, `target` | Classification actually applied (F1) |
-| `census` | Full metric set, before and after |
-| `retrieval` | Questions, correct answers, blocks opened, before and after |
+| `version`, `at` | Schema version and the UTC timestamp of the pass |
+| `doc` | The document path — or the opaque id when `external` is true |
+| `external` | ⛔ true when `doc` is an opaque id: path, source and every heading are scrubbed |
+| `classification` | `mode`, `task`, `audience`, `target` — the classification actually applied (F1) |
+| `calibration` | `fixture_id`, `ruleset_version`, `run_index`, `reader_family` — what makes a run attributable |
+| `census` | The block census from `census.sh` — `blocks[]` and `source` — before and after |
+| `metrics` | The F12 metric set, before and after, carrying `unvalidated: true` |
+| `retrieval` | `questions`, `correct_per_run`, `accuracy`, `opens_per_run`, `reader_tokens_per_run`, `reader_family` |
 | `lucid_lint` | Score and per-category values, or `not_run` |
-| `facts` | Inventory size, survival count |
+| `facts` | `inventory`, `survived`, `all_survived` — the boolean the 🛑 100 % gate is read from |
 | `word_count` | Informational |
 | `not_measured` | Every check that could not run, and why |
+
+⛔ `retrieval.opens_per_run` is **recorded, never scored** — see the locate-cost
+retraction in §5.
+
+⛔ **The external regime, added 2026-08-31.** A ledger entry built without it
+reconstructs the document: `census.blocks[].path` carries the text of every
+heading, `census.source` an absolute path, `doc` the filename. `--external <id>`
+replaces all three and refuses to write if a path survives anywhere in the
+entry. ⚠️ Such an entry is reproducible by nobody, its author included; the
+counts are kept so a later reader can still say which *kind* of document a
+conclusion came from. See `fixtures/README.md`.
 
 📌 The `not_measured` field is mandatory and may not be empty by omission. A
 verification you skipped is not a verification you passed.

@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Changed — 2026-08-31 (reconciled to the measurement)
+
+- The locate-cost gate is **withdrawn** everywhere it was still enforced or
+  described: `SKILL.md` §5 (where it was a live acceptance gate) and §4,
+  `references/tasks/locate.md` acceptance question 4, `README.md`,
+  `docs/shape-brief.md` F7 and its §6 gate table, `docs/shape-spec-v1.1.md`
+  calibration step 3, `docs/shape-validation-protocol.md` control 5, its
+  measures table and decision rule 5. ⛔ Retracted in place with a dated
+  pointer, never rewritten — a reader arriving with the old claim must be able
+  to recognise it.
+- `SKILL.md` §6 report contract now states that **the gates do not cover form**,
+  which `references/calibration.md` had instructed twice and nothing had done.
+- ⚠️ The lucid-lint falsification condition ("if the score tracks locate cost,
+  the gate comes back") is marked **suspended, not dropped**: there is no valid
+  locate-cost measure left to correlate against.
+- `docs/shape-spec-v1.1.md` §6 ledger schema gains the `calibration` block and
+  the `external` regime, and the filename claim is corrected to
+  `runs/<date>-<slug>.json` there, in `CLAUDE.md` and in `calibration.md`.
+- `fixtures/README.md` reports the `02` result and states the scoring rule for a
+  triple as well as a pair.
+
 ### Measured — 2026-08-31 (the triple)
 
 - k = 3 cold-subagent runs over all three arms of `T2-topology-02`. 30/30 on

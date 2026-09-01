@@ -93,12 +93,11 @@ allows; fallbacks are declared there, never improvised at edit time.
    them from the user. ⭐ User-supplied questions are stronger evidence; prefer
    them whenever offered.
 2. A **cold subagent** — fresh context, no knowledge of the edit — answers from
-   the document alone and reports which sections it had to open.
-3. Score **answers correct** (comprehension) and **blocks opened** (locate cost),
-   before and after, on the same questions.
-4. Print the caveats with the result: a proxy for a human reader, not a human
-   test; questions derived by the same model bias toward what that model finds
-   salient.
+   the document alone and records which sections it opened.
+3. Score **answers correct** only, before and after, same questions. ⛔ Blocks
+   opened goes to the ledger, never to a score — withdrawn 2026-08-31, see §5.
+4. Print the caveats: a proxy for a human reader, not a human test, on
+   questions the same model derived and therefore finds salient.
 
 ## 4b. Visual rhythm — F12, report-only
 
@@ -120,7 +119,7 @@ table, and when a figure is justified.
 | --- | --- | --- |
 | Fact survival | 🛑 100 % | `scripts/verify-facts.sh` |
 | Retrieval accuracy | ≥ baseline | cold subagent (§4) |
-| Locate cost (blocks opened) | < baseline | cold subagent (§4) |
+| Locate cost (blocks opened) | ⛔ withdrawn 2026-08-31 | see `references/calibration.md` |
 | Idempotence | no semantic diff | `scripts/check-idempotence.sh` |
 | Markdown / links / mermaid | pass or *not run* | `scripts/check-render.sh` |
 | Word count | ⚠️ informational | `git show HEAD:<file> \| wc -w` |
@@ -131,7 +130,8 @@ lucid-lint score and every F12 metric are deliberately *not* here.
 ## 6. Report contract
 
 Retrieval before/after · fact-survival list · what was removed, by category ·
-**what could not be measured, and why** · the diff stat.
+**what could not be measured, and why** · the diff stat · 🛑 **the gates do not
+cover form** — §4 grades fact retrievability, not table-versus-figure.
 
 Signals, each labelled as such and none of them a verdict: per-category
 lucid-lint delta · the F12 profile with its wrap width, labelled *unvalidated* ·

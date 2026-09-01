@@ -148,8 +148,8 @@ protocol.
 | 2 | Reader is a **different model family whenever one is available**; ⚠️ record which family ran, every time | Self-preference |
 | 3 | Every transform runs **k = 3** with different seeds | Variance is itself a defect signal |
 | 4 | Referee sees A/B **stripped of provenance**, order randomised and counterbalanced | Position bias |
-| 5 | Reader reports **which sections it opened**, not only the answer | Locate cost |
-| 6 | Fixtures are **frozen**; the harness verifies `document_sha256` and exits 4 on a mismatch | Prevents silent goalpost drift |
+| 5 | Reader records **which sections it opened** — ⛔ for the ledger only, never scored | ⛔ was locate cost — withdrawn 2026-08-31 |
+| 6 | Fixtures are **frozen**; the harness verifies `document_sha256` and fails the run on a mismatch | Prevents silent goalpost drift |
 | 7 | The `.key.yaml` never reaches a Reader context or an instrument input | The answer key is not evidence |
 
 ⚠️ **Control 2 is weaker than it reads, and says so on purpose.** A subagent
@@ -175,7 +175,7 @@ finding, not as noise to average away.
 | Measure | Instrument | Type |
 | --- | --- | --- |
 | Retrieval accuracy | Reader | correct / total, against frozen answers |
-| Locate cost | Reader | sections opened before answering |
+| Locate cost | ⛔ none | withdrawn 2026-08-31 — the Reader ingests rather than navigates |
 | Fact survival | Auditor + script | 🛑 binary, 100 % required |
 | Invented claims | Auditor | count, must be 0 |
 | Refusal correctness | Auditor | T3 only: did it correctly not act |
@@ -200,7 +200,7 @@ Applied in order. First failure stops the evaluation.
 | 2 | 🛑 Zero invented claims | Reject |
 | 3 | 🛑 Every T3 fixture behaves as declared | Reject |
 | 4 | No fixture **regresses** on retrieval accuracy | Reject |
-| 5 | Locate cost improves on ≥ ⅔ of T1/T2 fixtures | Hold, investigate |
+| 5 | ⛔ *Withdrawn 2026-08-31* — locate cost had no valid instrument | — |
 | 6 | Output stable across k = 3 | Hold, tighten the ruleset |
 | 7 | Referee and human agree on direction | If they disagree, ⭐ **human wins** |
 

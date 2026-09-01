@@ -29,7 +29,9 @@ file got.
    be measured, and why** — plus the signals: the lint delta, the visual-rhythm
    profile, the structural findings, the word count.
 7. **Writes a ledger entry**, whatever the mode, so the open questions get
-   answered by accumulation rather than by argument.
+   answered by accumulation rather than by argument. `--external <id>` records a
+   run over a document that may not be described in the repository: the counts
+   and metrics survive, the path and every heading do not.
 
 🛑 A fact that did not survive fails the pass. It is not reported as a
 trade-off.
@@ -96,7 +98,14 @@ advisory prose and ships no numbers at all.
 Not the word count, and not the lint score. A **cold subagent** — fresh
 context, no knowledge of the edit — answers 5–8 retrieval questions from the
 document alone and reports which sections it had to open. Answers correct is
-comprehension; blocks opened is locate cost. Same questions, before and after.
+comprehension. Same questions, before and after.
+
+⛔ **Blocks opened is not locate cost, and this metric does not grade form.**
+Measured 2026-08-31 over three arms of one topology — scattered, table, graph:
+30/30 on every arm, and all nine Readers loaded the whole document without
+issuing a single `grep`. The measure counts navigation; the Reader ingests.
+`skills/shape/references/calibration.md` carries the numbers and the exit
+condition.
 
 ⚠️ Printed with every result: this is a proxy for a human reader, not a human
 test. The agent that transformed the document never grades it. User-supplied

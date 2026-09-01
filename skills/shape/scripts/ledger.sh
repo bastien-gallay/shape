@@ -12,10 +12,14 @@
 #             [--reader-family F] [--out-dir runs] \
 #             [--external ID [--external-map PATH]]
 #
-# Every pass writes one entry, whatever the mode. This is what makes the two
-# open questions — does the lint score track locate cost, do any F12 metrics
-# separate high-cost documents — answerable by accumulation rather than by
-# argument.
+# Every pass writes one entry, whatever the mode. This is what makes the open
+# questions answerable by accumulation rather than by argument — do any F12
+# metrics separate high-cost documents, and how do the census numbers move.
+#
+# ⛔ The other question this file was built for — does the lint score track
+# locate cost — has been unanswerable since 2026-08-31: there is no valid
+# locate-cost measure to correlate against. Suspended, not dropped. See
+# `references/calibration.md`.
 #
 # 🛑 `--not-measured` is mandatory and may not be empty by omission. Pass
 # `none` to state explicitly that everything ran. A verification you skipped is

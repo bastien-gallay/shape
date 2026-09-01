@@ -15,6 +15,9 @@
 #     and raises the score whether or not anything improved. shape would hold a
 #     lever on its own grade.
 #
+# ⚠️ Suspended 2026-08-31, not dropped: no valid locate-cost measure exists to
+# correlate the score against. See `../references/calibration.md`.
+#
 # 🔒 Falsification condition. If the score turns out to track locate cost on the
 # corpus, this change was wrong and the gate comes back — with the correlation
 # and the corpus size stated. The ledger (scripts/ledger.sh) is what makes that

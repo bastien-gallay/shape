@@ -35,4 +35,6 @@ fails.
 1. Can each of the 5–8 retrieval questions be answered by opening one block?
 2. Does every heading carry its scent in the first three words?
 3. Is there a contents or scan line above the first substantive section?
-4. Did the number of blocks opened per question go down?
+4. ⛔ *Withdrawn 2026-08-31.* Blocks opened was the locate-cost question here
+   and it measures nothing: the cold Reader loads the document whole rather
+   than navigating it. See `../calibration.md`.

@@ -9,7 +9,7 @@ is the deliverable of the v1.1 increment, more than the metrics themselves.
 | --- | --- | --- |
 | 1 | Assemble 10–15 real documents spanning the five reader tasks | corpus |
 | 2 | Run the census on all of them — **before setting any threshold** | metric distributions |
-| 3 | Run the F7 retrieval test on each: answers correct, blocks opened | locate cost per doc |
+| 3 | Run the F7 retrieval test on each: answers correct | retrieval accuracy per doc — ⛔ **not** locate cost, see below |
 | 4 | Check which metrics separate high-cost from low-cost documents | surviving metric set |
 | 5 | Set thresholds from the distribution of the survivors, not from the hypotheses | `.shape.toml` |
 | 6 | Record corpus size and date beside every threshold; print both in reports | provenance |
@@ -23,13 +23,14 @@ it as one.
 
 ## What the ledger is for
 
-`scripts/ledger.sh` appends `runs/<date>-<doc>.json` on **every** pass, whatever
-the mode. That is what makes the two open questions answerable by accumulation
+`scripts/ledger.sh` appends `runs/<date>-<slug>.json` on **every** pass,
+whatever the mode — the slug is the document path, the fixture id, or the
+opaque id of an `--external` run. That is what makes the two open questions answerable by accumulation
 rather than by argument:
 
 | Question | Closed by |
 | --- | --- |
-| Does the lucid-lint score track locate cost? | score and retrieval stored side by side, every run |
+| Does the lucid-lint score track locate cost? | ⛔ **unanswerable since 2026-08-31** — no valid locate-cost measure exists |
 | Does any F12 metric separate high-cost documents? | census and retrieval stored side by side, every run |
 
 ## Closing the lucid-lint question
@@ -37,6 +38,7 @@ rather than by argument:
 | Finding | Action |
 | --- | --- |
 | The score tracks locate cost | 🔒 promote back to a gate — stating the correlation and the corpus size |
+| ⛔ *Blocked since 2026-08-31* | no valid locate-cost measure exists to correlate against; ⚠️ suspended, not dropped |
 | No relationship | keep as a signal, or drop it from the report |
 | Score improves while locate cost worsens | 🛑 Goodhart confirmed — remove it from the report entirely |
 
@@ -78,7 +80,9 @@ fill up. This one is not: the instrument that would record the evidence is the
 instrument that cannot perceive it. That is why it is written here rather than
 left to be discovered.
 
-**The candidate companion measure.** Control 5 of the validation protocol
+**The candidate companion measure.** ⛔ *Settled 2026-08-31 — it was not one.
+Read the next two sections before this one; the hypothesis below is recorded as
+it stood, not as it stands.* Control 5 of the validation protocol
 already asks the Reader which sections it opened. **Locate cost may be
 form-sensitive where accuracy is not** — a topology given as a graph may be
 reachable in fewer opened blocks than the same topology given as a table, at
@@ -244,8 +248,12 @@ this repo's own `README.md` and `SKILL.md`, and does not fire on the three
 files in `docs/`, so the disagreement is real and repeated rather than a
 one-off.
 
-**What would settle it.** Retrieval runs on a pair differing only in whether
-the scan table sits above the first heading or inside it. If locate cost is
-identical, the rule is measuring a preference and should be relaxed to *a way
-in within the first section*; if it separates them, the rule is right as
-written and the fixture is the document that is wrong.
+**What would settle it.** ⛔ *Not this, since 2026-08-31.* The experiment as
+written needs a locate-cost measure, and there is none: a pair differing only in
+where the scan table sits would return the same number whatever the answer, for
+the same reason the topology triple did. Settling this rule now waits on the
+instrument named in *Consequence for the protocol* above — a Reader that cannot
+hold the document whole, or a human first-screen test. Recorded as it stood: if
+locate cost were identical the rule would be measuring a preference and should
+relax to *a way in within the first section*; if it separated them the rule
+would be right as written.
