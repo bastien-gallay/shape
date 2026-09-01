@@ -271,6 +271,15 @@ after it closes.
   not add a ninth number or a seventh check before a corpus exists. The
   `table-misfit` definition rule was caught only because a real document set
   was available to run it against; without one, the next bad rule ships.
+- **A null result can belong to the instrument, not to what it measures.**
+  Two documents scored identically on retrieval and the conclusion drawn was
+  "these forms cost the same". The third measurement looked at what the Readers
+  *did*: all nine loaded the whole document and none issued a `grep`. The
+  measure counted navigation from a subject that never navigates. ⭐ So before
+  reading a null result as a fact about the documents, read the transcript of
+  what the instrument's subject actually did — the number alone cannot tell an
+  insensitive measure from an invalid one, and the two call for opposite
+  responses: more data, or a different instrument.
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.
@@ -281,6 +290,47 @@ Scaffolded 2026-08-27 from `docs/shape-brief.md`, then hardened the same day
 after a code review of the initial commit — 11 findings, all fixed, each with a
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
+
+### Start here — as of 2026-08-31
+
+**Settled.** The locate-cost half of the primary metric is withdrawn: *blocks
+opened* counts navigation and the cold Reader ingests instead of navigating, so
+it is an invalid measure rather than an insensitive one. `SKILL.md` §5 says so
+where the gate stood, and the report contract now states that the gates do not
+cover form.
+
+**Open, ranked.**
+
+1. **No instrument grades form.** The exit condition is written in
+   `references/calibration.md` — a Reader that cannot hold the document whole,
+   or the human first-screen test the validation protocol already budgets for.
+   Neither is built. ⚠️ Not ticketed: this repo has no tracker.
+2. **`SKILL.md` is 159 lines against a 🛑 150 ceiling**, since the v1.1
+   increment, and nothing checks it. ⚠️ Not ticketed, same reason.
+3. **The corpus is five documents and all five are `locate`.** The idempotence
+   regression, the diagnose regression and every `.shape.toml` threshold are
+   still blocked on fixtures for the other four tasks.
+
+**What will look like a contradiction and is not.**
+
+- `docs/shape-brief.md`, `docs/shape-spec-v1.1.md` and
+  `docs/shape-validation-protocol.md` still *define* F7 and control 5 with
+  blocks opened as locate cost, each with a dated ⛔ retraction beside it. They
+  are superseded in place, never rewritten, so a reader arriving with the old
+  claim can still recognise it. ⚠️ `SKILL.md` §4 still *collects* the number —
+  for the ledger, never for a score — which is deliberate and says so.
+- `just check-fixtures` can exit non-zero on a corpus with nothing wrong with
+  it. ⚠️ That is a property of the machine, not of the fixtures: any check that
+  reports **NOT RUN** raises the count, and here `mmdc` has no browser, so the
+  two mermaid arms report it. The exit-code contract forbids reading a NOT RUN
+  as a pass.
+- ⚠️ **`runs/` is gitignored.** The five ledger entries exist only on this
+  machine, and they are un-reproducible measurements. Whether the accumulation
+  the ledger exists for should be committed is an open question that the
+  `--external` scrub now makes answerable.
+
+Nothing was deleted in the pass that wrote this, so there is no provenance
+record to follow.
 
 - ✅ **Settled 2026-08-27 — the lucid-lint dependency is inverted.** shape no
   longer waits for an `access` category; the six structural rules are
