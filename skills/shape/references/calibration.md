@@ -276,7 +276,54 @@ whose content is identical. Two candidates, neither built:
    and tests only whether ingredients are present.
 2. **A human first-screen test**, which is the population the claim is about,
    and which `docs/shape-validation-protocol.md` §2 already budgets at ~20
-   minutes per release.
+   minutes per release. ⭐ **Its material is identified — see below.**
+
+### ⭐ The material for the human test, located 2026-09-01
+
+The dossier behind the form-blindness entry above was found by reading the
+session transcripts that produced it, and it is a **better A/B than anything in
+`fixtures/`**. Recorded here because that archaeology cost an hour and the
+pointer would otherwise die with the session that did it.
+
+| | |
+| --- | --- |
+| Repository | `~/Dev/clients/CISAC/CISNET2/tools/knowledge-hub` |
+| Path | `wip/monorepo-review-2026-08/` |
+| Arm **before** | `cc8b573^` — the state `shape` certified 35/35, zero figures |
+| Arm **after** | `cc8b573`, 2026-08-28 — *"15 diagrams where the information is a shape"* |
+
+⭐ **Why it beats the fixtures.** Table counts are identical row for row across
+the two arms — 14, 32, 31, 39, 21, 39, 40 — and the only variable that moves is
+the figure. The diff is 337 insertions against 19 deletions, so it is nearly
+purely additive. And nobody was building an instrument: the pass exists because
+the documents were unreadable, which makes the human verdict *already known* and
+turns the dossier into a **positive control**. If a first-screen test does not
+separate these two arms, the test is what fails, not the documents — which is
+the one thing a null result on `02` could never tell us.
+
+📌 **A signal is already visible without any reader.** Cutting each arm at the
+fold with `first-window.sh`, at comparable screen budgets:
+`branching-model` falls from 829 words above the fold to **533** (−36 %), and
+`three-organisation-models` from 768 to **672**. The diagram does not add
+content, it *replaces* it. ⚠️ No F12 metric reports this.
+
+⭐ **`recommendations.md` is not a no-figure control, and what it actually is
+is more useful.** It is the one document of the seven that got an **ASCII**
+figure instead of a mermaid one — a scatter of the ten recommendations against
+effort — and the commit says why in the page itself: *"deliberately ASCII, not
+mermaid: this is the page most likely to be pasted into Jira or a mail, where
+mermaid does not render."* So the dossier carries a **render-target arm** for
+free: same treatment, different form, chosen for a real constraint rather than
+for a test. It is the closest thing this repo has to a second `b → c`, and it
+bears on `references/render-targets.md` as much as on this page.
+⚠️ First-screen words move on it too — 723 → 617 — so it is not a null arm and
+must not be read as one.
+
+🛑 **The confound to state when it is run.** The obvious subject is the person
+who commissioned the dossier, and a five-second recall test on them measures
+memory as much as the screen. Either recruit a reader who has never seen it, or
+record the run as **protocol rehearsal** rather than as evidence. The key must
+say which.
 
 Until one exists, `V8_table_share` and `V5_figure_mention` remain the only
 instruments here that have ever seen a form difference — measured twice now,

@@ -309,6 +309,15 @@ after it closes.
   what the instrument's subject actually did — the number alone cannot tell an
   insensitive measure from an invalid one, and the two call for opposite
   responses: more data, or a different instrument.
+- **A gate counts distinct things, never occurrences of them.**
+  `verify-facts.sh` reported one line per inventory entry, and `grep -F`
+  searches the whole document — so N entries carrying the same fragment were
+  one verification reported N times. A `50/50 facts survived` was nine strings.
+  ⚠️ The trap is that the inflated number is the *reassuring* one, so nothing
+  downstream ever questions it, and a producer fix that legitimately finds more
+  occurrences makes the gate look stronger while covering exactly as much.
+  Measured 2026-09-01 across the whole corpus; the denominator is distinct
+  fragments and the count doubles as the coverage signal.
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.
@@ -339,6 +348,19 @@ failure, 0 not run**, with fact counts of 9–21 where they read 29–79.
 reports **2 not run** and exits 1, because headless Chrome cannot launch under
 seatbelt — a statement about the sandbox, not about the corpus. `.wrap.md`
 carries the rule.
+
+⚠️ **And changing that denominator broke its consumer, which is the part worth
+remembering.** `ledger.sh` still computed `inventory` as the entry count, so it
+wrote `all_survived: false` on a document where nothing was lost — 21 survived
+against an inventory it called 79. Fixed the same day, with the entry count kept
+beside it as `inventory_entries`. 🛑 The definition of *distinct* now lives in
+two scripts and they must move together.
+
+⭐ **The material for the human first-screen test is identified**, which is the
+one thing standing between the form question and an answer. Not a fixture: a
+real dossier of seven documents in another repo, with a before arm and an after
+arm differing only in the figures, and a human verdict already on record.
+`references/calibration.md`, under *The material for the human test*.
 
 **Open, ranked.**
 
@@ -399,6 +421,21 @@ carries the rule.
   what was true when written, each superseded in place rather than rewritten.
   ⚠️ A changelog is history by construction — reading an old entry as current
   status is the misread to expect, not a defect to fix.
+- **The `runs/` entries and the ones written after 2026-09-01 disagree about
+  what `inventory` counts**, and both are right for their date. Before, entries;
+  after, distinct fragments, with the entry count preserved beside it as
+  `inventory_entries`. An entry holding only `inventory` is a pre-2026-09-01 one.
+
+**Resume block** — paste as the opening message of a fresh session:
+
+```text
+Repo: ~/Dev/oss/skills/shape. Read CLAUDE.md `## State — what is open`,
+`### Start here` first, then skills/shape/references/calibration.md.
+Corpus: 7 fixtures, 3 of 5 reader tasks; `learn` and `comply` have none.
+Next: the human first-screen test. Its material is a real seven-document
+dossier already identified in calibration.md under "The material for the
+human test" — it needs a reader, not more code.
+```
 
 No document was deleted or consolidated in the passes that wrote this, so there
 is no provenance record to follow. The 2026-09-01 wrap removed one dead function

@@ -107,6 +107,14 @@ issuing a single `grep`. The measure counts navigation; the Reader ingests.
 `skills/shape/references/calibration.md` carries the numbers and the exit
 condition.
 
+⭐ **Since 2026-09-01 one instrument does separate those arms — by truncating
+its input.** `scripts/first-window.sh` hands a cold Reader the slice above the
+fold and nothing else; on the same three arms that scored 30/30 each, it scored
+**3/30 · 30/30 · 29/30**. 🛑 That is a result about **consolidation**, not about
+form: the table and the graph are still 30 against 29. And the honest reading is
+narrow — the questions need the topology and the instrument rewards the arm that
+put the topology above the fold.
+
 ⚠️ Printed with every result: this is a proxy for a human reader, not a human
 test. The agent that transformed the document never grades it. User-supplied
 questions beat model-derived ones and are preferred whenever offered.
