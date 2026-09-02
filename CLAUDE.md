@@ -329,7 +329,11 @@ after a code review of the initial commit — 11 findings, all fixed, each with 
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
 
-### Start here — as of 2026-09-01
+### Start here — reconciled 2026-09-02, findings dated 2026-09-01
+
+⚠️ The two dates are not a typo: the wrap that reconciled this section ran past
+midnight. Every finding below was measured on 2026-09-01 and nothing was
+measured on the 2nd.
 
 **Settled.** The locate-cost half of the primary metric is withdrawn: *blocks
 opened* counts navigation and the cold Reader ingests instead of navigating, so
