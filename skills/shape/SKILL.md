@@ -85,7 +85,9 @@ allows; fallbacks are declared there, never improvised at edit time.
 9. **Report** — §6 — and 🛑 always write the ledger, whatever the mode:
    `scripts/ledger.sh … --facts f --facts-survived N --not-measured
    "<reasons>|none"`. Neither is optional: an inventory without its survival
-   count stores the question and discards the answer.
+   count stores the question and discards the answer. ⚠️ `N` is the **distinct**
+   count `verify-facts.sh` prints, not the number of inventory entries — the
+   two differ by a factor of four on a document with repeated fragments.
 
 ## 4. Reader-task verification — the primary metric
 

@@ -30,6 +30,26 @@
 # the answer — and fact survival is the one gate in the protocol that is not
 # tunable.
 #
+# ⚠️ `--facts-survived N` is a count of **distinct fragments**, which is what
+# `verify-facts.sh` prints. `inventory` therefore counts distinct fragments
+# too — an entry count would compare 21 against 79 and write
+# `all_survived: false` on a document where nothing was lost. The raw entry
+# count is kept beside it as `inventory_entries`, because it is what every
+# ledger entry written before 2026-09-01 recorded under `inventory` and the two
+# must stay tellable apart. 🛑 The definition lives in two scripts and they must
+# move together: distinct = `.grep_fragment // .span`, deduplicated.
+#
+# ⚠️ The two dedup on the same field by different machinery, and there are two
+# inputs on which they disagree — both unreachable from `extract-facts.sh`,
+# both reachable from a hand-written `facts.json`. jq's `unique` here separates
+# the number `5` from the string `"5"`; `verify-facts.sh` base64s both to one
+# payload and counts them once, so ledger would call it 3 where the gate
+# checked 2 and then write `all_survived: false` with nothing lost. And a tab
+# or newline inside `.id` or `.kind` shifts or splits a row in that script's
+# TSV while this one is immune. 📌 Neither is a bug in either script; both are
+# the cost of holding one definition in two places, recorded so the next
+# divergence is recognised rather than rediscovered.
+#
 # ⚠️ Calibration keys. `--fixture-id`, `--ruleset-version` and `--run-index`
 # are what make the §9 attribution matrix — ruleset version × fixture × measure
 # — reconstructable. Without them the k = 3 runs of a single fixture land in
@@ -342,9 +362,11 @@ jq -n \
     retrieval: $retrieval,
     lucid_lint: (if $lucid == null then "not_run" else $lucid end),
     facts: (if $facts == null then null else
-             {inventory: ($facts.facts | length),
-              survived: ($survived | tonumber),
-              all_survived: (($survived | tonumber) == ($facts.facts | length))} end),
+             ([$facts.facts[] | (.grep_fragment // .span)] | unique | length) as $distinct
+             | {inventory: $distinct,
+                inventory_entries: ($facts.facts | length),
+                survived: ($survived | tonumber),
+                all_survived: (($survived | tonumber) == $distinct)} end),
     word_count: (if $words == "" then null else ($words | tonumber) end),
     not_measured: (if $not_measured == "none" then [] else ($not_measured | split(";")) end)
   }' > "$tmp"

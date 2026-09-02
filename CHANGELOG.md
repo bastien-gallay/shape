@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Fixed — 2026-09-01 (the ledger compared two different denominators)
+
+- `ledger.sh` computed `inventory` as the number of inventory **entries** while
+  `--facts-survived N` now carries the **distinct** count `verify-facts.sh`
+  prints. It wrote `all_survived: false` on a document where nothing was lost —
+  21 survived against an inventory it called 79. Controlled before and after on
+  `T2-topology-02b`.
+- `inventory` now counts distinct fragments; the raw entry count is kept beside
+  it as `inventory_entries`, because that is what every entry written before
+  2026-09-01 recorded under `inventory` and the two must stay tellable apart.
+- 🛑 The definition now lives in two scripts and they must move together:
+  distinct = `.grep_fragment // .span`, deduplicated. Stated in both headers.
+- `SKILL.md` step 9 said to pass `N` without saying which `N`. It now does.
+- `README.md` presented the 2026-08-31 null result as the last word on those
+  three arms; it now carries the truncated-Reader separation and its limits.
+
 ### Changed — 2026-09-01 (the fact gate stops counting repeats)
 
 - `verify-facts.sh` reports **distinct fragments**, not inventory entries. N
