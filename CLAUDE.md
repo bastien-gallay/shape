@@ -70,7 +70,8 @@ than a word count.
   `--external` id — and ⚠️ never overwrites: a same-day rerun takes a `-2` suffix,
   because two passes over one document in one day is the normal loop and the
   second silently replacing the first destroys the evidence. `--facts` requires
-  `--facts-survived`. This is the instrument that makes both open questions
+  `--facts-survived`, and a `--retrieval` carrying an opens count requires
+  `opens_source: measured | self_report` (2026-09-16, #9). This is the instrument that makes both open questions
   answerable by accumulation instead of by argument, so a pass that skips it
   costs evidence that cannot be recovered later.
   `--external <id>` is the regime for a document that may not be described
@@ -340,11 +341,28 @@ after a code review of the initial commit — 11 findings, all fixed, each with 
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
 
-### Start here — reconciled 2026-09-02, findings dated 2026-09-01
+### Start here — reconciled 2026-09-16
 
-⚠️ The two dates are not a typo: the wrap that reconciled this section ran past
-midnight. Every finding below was measured on 2026-09-01 and nothing was
-measured on the 2nd.
+**Settled 2026-09-16 — six issues closed, four commits, all pushed
+(`42ec0f3`…`0b578f3`).** Nothing was measured; the protocol was widened from
+findings already on record. The report contract (`SKILL.md` §6) gained three
+lines — *allowed transforms of the task applicable and not applied* (#11),
+*numbers in prose → table*, spelled-out quantities included (#3, judgement
+half), *what was relocated, by role* (#5) — and a `diagnose` pass now ends on
+the first of them with one `AskUserQuestion` offering a full or partial
+`restructure`. `ledger.sh` refuses an opens count without
+`opens_source: measured | self_report` (#9). `jira` is a render target and
+`check-render.sh --target jira` fails a cell that starts with `>` (#6).
+`restructure` folds inline correction notes into a `Corrections` table (#2).
+⛔ Two remain open on the tracker: #10, the history metrics, blocked by the
+saturation rule until a corpus exists; #1, a `resume` reader task — a breaking
+change in four places, and not before `learn` and `comply` have a fixture.
+⚠️ **None of the three new report lines has been exercised on a document
+yet.** #11's own acceptance — a `diagnose` on the CN2S plan must list five
+blocks — is replayable only from that repo.
+
+**The findings below are dated 2026-09-01** and were reconciled on the 2nd,
+past midnight; nothing was measured on the 2nd.
 
 **Settled.** The locate-cost half of the primary metric is withdrawn: *blocks
 opened* counts navigation and the cold Reader ingests instead of navigating, so
@@ -401,13 +419,16 @@ arm differing only in the figures, and a human verdict already on record.
    written in words, so `T2-adr-01` yields **2 facts** and the 100 % gate
    reports a green 2/2 over a document whose every number it cannot see. Failing
    towards a pass, again. Entry and the reason it is not patched yet in
-   `references/calibration.md`.
+   `references/calibration.md`. ⚠️ Since 2026-09-16 the *report* names such a
+   block (the §6 numbers-in-prose line, #3); the *extractor* is still blind,
+   and the density metric stays refused.
 3. **What limit, if any, `SKILL.md` should carry — open since the ceiling was
    withdrawn 2026-09-01, and the way in is dogfooding.** Run `shape` on
    `SKILL.md` itself and let the protocol name its own constraint, instead of a
    proxy chosen by the author. 🛑 `diagnose` only, or against a copy: the install
    is a symlink, so a mutating pass edits the protocol while it is executing.
-   ⚠️ Not ticketed, same reason.
+   ⚠️ Not ticketed, same reason — the tracker is GitHub issues since
+   2026-08-31, and this one is deliberately kept out of it.
 
 **What will look like a contradiction and is not.**
 
@@ -416,7 +437,9 @@ arm differing only in the figures, and a human verdict already on record.
   blocks opened as locate cost, each with a dated ⛔ retraction beside it. They
   are superseded in place, never rewritten, so a reader arriving with the old
   claim can still recognise it. ⚠️ `SKILL.md` §4 still *collects* the number —
-  for the ledger, never for a score — which is deliberate and says so.
+  for the ledger, never for a score — which is deliberate and says so; since
+  2026-09-16 (#9) it is counted from the Reader's transcript and `ledger.sh`
+  refuses it without `opens_source`.
 - `just check-fixtures` can exit non-zero on a corpus with nothing wrong with
   it. ⚠️ That is a property of the machine, not of the fixtures: any check that
   reports **NOT RUN** raises the count. The exit-code contract forbids reading a
@@ -447,6 +470,8 @@ arm differing only in the figures, and a human verdict already on record.
 Repo: ~/Dev/oss/skills/shape. Read CLAUDE.md `## State — what is open`,
 `### Start here` first, then skills/shape/references/calibration.md.
 Corpus: 7 fixtures, 3 of 5 reader tasks; `learn` and `comply` have none.
+Tracker: `gh issue list` — #10 blocked, #1 deliberately parked; six closed
+2026-09-16 and their three new report lines are not yet exercised on a document.
 Next: the human first-screen test. Its material is a real seven-document
 dossier already identified in calibration.md under "The material for the
 human test" — it needs a reader, not more code.
@@ -500,8 +525,9 @@ removal leaves no trace in git. Nothing that carried evidence.
   ⭐ **Confirmed independently 2026-08-31** on a fourth document, in another
   repo, by an operator not looking for it: three cold Readers, one whole-file
   `Read` each, no `grep`. That pass still *reported* 5/5 → 8/11 blocks opened —
-  the Reader's retrospective self-report, since `SKILL.md` §4 asks it which
-  sections it had to open. 🛑 The instrument does not merely fail to measure;
+  the Reader's retrospective self-report, since `SKILL.md` §4 asked it which
+  sections it had to open — until 2026-09-16 (#9), when the count moved to
+  the transcript. 🛑 The instrument does not merely fail to measure;
   it manufactures a plausible number, which is harder to catch than a null.
 - 🛑 **The earlier form-blindness entry — measured 2026-08-28.** An `access-only` pass
   scored 35/35 on the access checks and 8/8 on retrieval over a dossier of 7

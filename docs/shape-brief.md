@@ -136,6 +136,9 @@ The computable analogue of a read-and-locate test:
 cold Reader loads the document whole rather than navigating it, so the number
 is the same whatever the form. Measured over three arms of one topology; see
 `skills/shape/references/calibration.md`. What replaces it is not yet built.
+⚠️ **And since 2026-09-16 (#9) step 2 is not read literally**: opens are counted
+from the Reader's transcript, never from what it reports — a Reader that
+ingested the file in one call still answers that question with a number.
 
 ⚠️ Honesty caveats, to be printed with the result:
 
@@ -149,6 +152,11 @@ is the same whatever the form. Measured over three arms of one topology; see
 Per-category lucid-lint delta · retrieval result before/after · fact-survival list ·
 what was removed by category · **what could not be measured, and why** · word count,
 labelled *informational*.
+
+⚠️ **Superseded in place.** `SKILL.md` §6 is the contract in force and carries
+four lines this list predates: *the gates do not cover form* (2026-08-31),
+*allowed transforms applicable and not applied* (#11), *numbers in prose*
+(#3) and *what was relocated, by role* (#5) — the last three dated 2026-09-16.
 
 ### F9 — Render-target awareness
 

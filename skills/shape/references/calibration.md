@@ -424,6 +424,15 @@ available and costs nothing: **the fact count itself**. A tier-2 document
 yielding fewer than ~5 facts is a document the gate is not protecting, and the
 report should say so rather than print a green 2/2.
 
+⚠️ **2026-09-16, issue #3 closed on its judgement half only.** The `SKILL.md`
+§6 line *allowed transforms applicable and not applied* now lists any block
+holding four or more quantities sharing a subject — **spelled out in words
+included** — as *numbers in prose → table*. That is the model reading the
+block, not the extractor. ⛔ `fact_density` and `facts_per_block` stay refused:
+a digit-keyed density would score this document as near fact-free, the wrong
+answer in the direction that reads as a pass, and the saturation rule allows no
+ninth number before a corpus shows one separating anything.
+
 ## ⚠️ The fact-survival denominator counted entries, not facts — 2026-09-01
 
 **What it was.** `verify-facts.sh` reported one line per inventory entry.

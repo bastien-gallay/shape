@@ -148,7 +148,7 @@ protocol.
 | 2 | Reader is a **different model family whenever one is available**; ⚠️ record which family ran, every time | Self-preference |
 | 3 | Every transform runs **k = 3** with different seeds | Variance is itself a defect signal |
 | 4 | Referee sees A/B **stripped of provenance**, order randomised and counterbalanced | Position bias |
-| 5 | Reader records **which sections it opened** — ⛔ for the ledger only, never scored | ⛔ was locate cost — withdrawn 2026-08-31 |
+| 5 | Reader records **which sections it opened** — ⛔ for the ledger only, never scored. ⚠️ Since 2026-09-16 (#9) the count is taken **from the transcript**, never from the Reader's answer, and `ledger.sh` refuses it without `opens_source` | ⛔ was locate cost — withdrawn 2026-08-31 |
 | 6 | Fixtures are **frozen**; the harness verifies `document_sha256` and fails the run on a mismatch | Prevents silent goalpost drift |
 | 7 | The `.key.yaml` never reaches a Reader context or an instrument input | The answer key is not evidence |
 

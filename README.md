@@ -25,9 +25,10 @@ file got.
    TL;DR, contents, informative headings, anchors.
 5. **Verifies** — fact survival at 100 %, a cold-subagent retrieval test before
    and after, idempotence, render checks.
-6. **Reports** what changed, what was removed by category, and **what could not
-   be measured, and why** — plus the signals: the lint delta, the visual-rhythm
-   profile, the structural findings, the word count.
+6. **Reports** what changed, what was removed by category, **what could not
+   be measured, and why**, which allowed transforms of the task ruleset were
+   left unapplied, and what was relocated by role — plus the signals: the lint
+   delta, the visual-rhythm profile, the structural findings, the word count.
 7. **Writes a ledger entry**, whatever the mode, so the open questions get
    answered by accumulation rather than by argument. `--external <id>` records a
    run over a document that may not be described in the repository: the counts
@@ -42,7 +43,7 @@ trade-off.
 | --- | --- | --- |
 | `diagnose` ⭐ default | nothing — read-only report | none |
 | `access-only` | title, purpose, TL;DR, contents, headings, anchors | ⚠️ an alarm |
-| `restructure` | block order and grouping, tables from prose | expected, bounded |
+| `restructure` | block order and grouping, tables from prose, inline correction notes into a `Corrections` table | expected, bounded |
 | `condense` | the above, plus removal of transient prose | expected |
 
 ⭐ On first contact with an unknown document, `diagnose` is the mode. Starting
@@ -97,8 +98,8 @@ advisory prose and ships no numbers at all.
 
 Not the word count, and not the lint score. A **cold subagent** — fresh
 context, no knowledge of the edit — answers 5–8 retrieval questions from the
-document alone and reports which sections it had to open. Answers correct is
-comprehension. Same questions, before and after.
+document alone; which sections it opened is counted from its transcript, not
+from its answer. Answers correct is comprehension. Same questions, before and after.
 
 ⛔ **Blocks opened is not locate cost, and this metric does not grade form.**
 Measured 2026-08-31 over three arms of one topology — scattered, table, graph:
