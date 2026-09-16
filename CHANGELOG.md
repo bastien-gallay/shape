@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Added — 2026-09-16 (inline correction notes fold into a table)
+
+- `SKILL.md` §1: `restructure` gains one task-independent transform — inline
+  correction notes → a `## Corrections` table (date · location · said · now),
+  dates and old wording verbatim, only the location changing. Closes #2, which
+  measured a README carrying 13 `until` layers in its reading path. Each moved
+  fact carries `role: history` (from #5) and lands on the §6 relocation line.
+- ⛔ Not on `comply`, which runs `access-only` at most. ⛔ `history_layers` and
+  `history_share` stay in #10, blocked by the saturation rule.
+
 ### Added — 2026-09-16 (a `jira` render target, and a check for the cell it eats)
 
 - `references/render-targets.md` gains a `jira` row: no mermaid, no footnotes,

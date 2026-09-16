@@ -53,6 +53,18 @@ argument-hint: "<file> [--mode diagnose|access-only|restructure|condense] [--tas
 | `restructure` | block order and grouping, tables from prose | bounded |
 | `condense` | the above, plus transient prose | expected |
 
+**One transform belongs to `restructure` whatever the task** — inline
+correction notes (*this read X until 2026-…*, *corrected 2026-…*) fold into a
+`## Corrections` table, date · location · said · now. The date and the old
+wording are protected classes and move **verbatim**; only their location
+changes, so the gate stays at 100 % — `verify-facts.sh` searches the whole
+document. Every fact so moved carries `role: history` (§3.3) and is listed in
+the report (§6). ⚠️ Measured 2026-08-31: a README carrying **13** `until`
+layers in the reading path, and one list item of 282 words holding five facts,
+a retraction and two notes. ⛔ Not on `comply` — that task runs `access-only`
+at most, and a `normative` fact is checked as a whole line, so a note that
+reflows fails, correctly.
+
 ## 2. Classify before transforming
 
 Two **orthogonal** axes. State the inferred pair *and its evidence*; ask when
