@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### Added — 2026-09-16 (a `jira` render target, and a check for the cell it eats)
+
+- `references/render-targets.md` gains a `jira` row: no mermaid, no footnotes,
+  no anchors, collapsible by macro, tables ✅ ⚠️ with no leading `>` in a cell.
+  Declared fallbacks: a comparison in **words**, never a symbol first in a cell;
+  aligned text in `{code}` only. Closes #6, where `confluence` served as the
+  proxy and a `>0` acceptance criterion rendered as `0` — the inverse — on a
+  shared board.
+- `check-render.sh --target jira` fails on a table cell that starts with `>`
+  (mechanically decidable, so a check rather than a prose warning), reports
+  NOT RUN under its own flag if the scan itself fails, and treats mermaid as
+  unsupported. Controls: a `>0` cell → ❌ exit 1; the same document under
+  `github` → 0; a `>` mid-cell → ✅ 0.
+- `jira` is listed in the `argument-hint`, README and brief.
+
+### Added — 2026-09-16 (facts carry a `role`, so the report can say what moved)
+
+- `assets/facts-schema.json` gains an optional `role ∈ {decision, evidence,
+  provenance, history}`. Closes #5 as corrected: relocation already passes the
+  gate — `verify-facts.sh` searches the whole document — so the missing piece
+  was only the report. `extract-facts.sh` never sets it and `verify-facts.sh`
+  never reads it; the 100 % gate is untouched.
+- `SKILL.md` §3 step 3: in `restructure` and `condense` the model assigns the
+  role and 🛑 the user confirms it before any transform. §6 reports what was
+  relocated by role, with where each `history` / `provenance` fact now lives.
+
 ### Added — 2026-09-16 (an opens count says where it came from)
 
 - `ledger.sh` refuses a `--retrieval` file carrying `opens_per_run`,

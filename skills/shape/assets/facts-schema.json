@@ -31,6 +31,10 @@
             "type": "string",
             "description": "A fragment of span that lives entirely on ONE line — what verify-facts.sh greps for. Defaults to span when span is single-line."
           },
+          "role": {
+            "enum": ["decision", "evidence", "provenance", "history"],
+            "description": "Why the reader needs this fact: it bears on the decision, supports it, says where it came from, or records what used to be true. Set by the model, confirmed by the human before any transform (issue #5). Never set by extract-facts.sh, never read by verify-facts.sh — survival is 100 % whatever the role; the role only lets the report say what was relocated and why."
+          },
           "note": { "type": "string" }
         }
       }

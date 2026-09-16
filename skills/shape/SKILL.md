@@ -10,7 +10,7 @@ description: >
   scannable", "restructure this page", "is this document clear", « rendre ce
   document lisible », « restructurer cette doc », or hands over a document
   that is hard to navigate.
-argument-hint: "<file> [--mode diagnose|access-only|restructure|condense] [--task locate|execute|decide|learn|comply] [--audience dev-doc|public|falc] [--target github|confluence|mdbook|pdf|terminal|plain]"
+argument-hint: "<file> [--mode diagnose|access-only|restructure|condense] [--task locate|execute|decide|learn|comply] [--audience dev-doc|public|falc] [--target github|confluence|jira|mdbook|pdf|terminal|plain]"
 ---
 
 # shape
@@ -73,7 +73,14 @@ allows; fallbacks are declared there, never improvised at edit time.
    The skill carries *method*; the repo carries *policy* — and every threshold.
 2. **Classify** (§2) and announce the pair, the mode, and the target.
 3. **Inventory facts** — `scripts/extract-facts.sh <file> > facts.json`, per
-   `assets/facts-schema.json`. This runs **before** any edit.
+   `assets/facts-schema.json`. This runs **before** any edit. In `restructure`
+   and `condense`, assign each fact a `role` — `decision` · `evidence` ·
+   `provenance` · `history` — and 🛑 have the user confirm the assignment
+   before any transform: a model that may reclassify a fact as `history` may
+   also delete it and call the deletion a relocation. ⚠️ The role changes
+   nothing in the gate — survival stays 100 % for every role; it lets the
+   report say *what* moved and *why*, and it is what stops a dated correction
+   note being kept inline because nothing named it history.
 4. **Census** — `scripts/census.sh <file> > blocks.json`. ⛔ One parse; nothing
    downstream re-parses the document.
 5. **Baseline** — `scripts/metrics.sh` (§4b), the five checks under
@@ -148,7 +155,10 @@ lucid-lint score and every F12 metric are deliberately *not* here.
 
 Retrieval before/after · fact-survival list · what was removed, by category ·
 **what could not be measured, and why** · the diff stat · 🛑 **the gates do not
-cover form** — §4 grades fact retrievability, not table-versus-figure.
+cover form** — §4 grades fact retrievability, not table-versus-figure ·
+**what was relocated**, by `role`, with where each `history` and `provenance`
+fact now lives — a moved fact survives the gate, so this line is the only
+place the move is visible.
 
 **Allowed transforms of `<task>` applicable and not applied** — one line per
 block: the block (census `i`, `path`), the transform from the ruleset's

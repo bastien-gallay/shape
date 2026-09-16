@@ -9,6 +9,7 @@ wrong.
 | --- | --- | --- | --- | --- | --- | --- |
 | `github` | ✅ | ✅ | ✅ | ✅ `[^1]` | ✅ `<details>` | ✅ auto |
 | `confluence` | ⛔ | ✅ | ✅ | ⛔ | ✅ macro | ✅ explicit |
+| `jira` | ⛔ | ✅ ⚠️ no leading `>` in a cell | ✅ | ⛔ | ✅ macro | ⛔ |
 | `mdbook` | ✅ plugin | ✅ | ✅ | ✅ | ⛔ | ✅ auto |
 | `pdf` | ✅ pre-render | ✅ | ⚠️ font-dependent | ✅ | ⛔ | ⛔ |
 | `terminal` | ⛔ | ⚠️ width-bound | ⚠️ width-bound | ⛔ | ⛔ | ⛔ |
@@ -24,6 +25,20 @@ wrong.
 | auto anchor | an explicit anchor/id declared next to the heading |
 | emoji marker | the marker's word form from `markers.md`, in brackets |
 | table | a definition list; if `plain`, a labelled paragraph per row |
+| comparison symbol in a `jira` cell | **words** — *above*, *one or more*, *at most* — never `>`, `<`, `>=` at the start of a cell |
+| aligned text on `jira` | a `{code}` block — nothing else keeps columns |
+
+## `jira` is not `confluence`
+
+Added 2026-09-16 from issue #6. Jira was absent and `confluence` served as the
+nearest proxy; it is wrong on a trap that already cost a real inversion. 🛑 A
+`>` at the start of a Jira table cell is read as a blockquote marker and
+**eaten**: on 2026-07-30 an acceptance criterion *fail = `>0` dead-lettered
+messages* rendered as *fail = `0` …* — the inverse — on a shared board.
+`check-render.sh --target jira` fails on such a cell. Two more, advisory:
+headings beyond two levels render oversized, and the REST API confirms the
+payload you sent, not what the renderer kept of it — ⚠️ re-read the stored
+body after every write.
 
 ## Width
 

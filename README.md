@@ -70,7 +70,7 @@ cd shape && ./install.sh          # symlink — edits propagate live
 | `--mode` | `diagnose` · `access-only` · `restructure` · `condense` | `diagnose` |
 | `--task` | `locate` · `execute` · `decide` · `learn` · `comply` | inferred |
 | `--audience` | `dev-doc` · `public` · `falc` | inferred |
-| `--target` | `github` · `confluence` · `mdbook` · `pdf` · `terminal` · `plain` | `github` |
+| `--target` | `github` · `confluence` · `jira` · `mdbook` · `pdf` · `terminal` · `plain` | `github` |
 
 Drop a `.shape.toml` at your repo root to set defaults, protected names, and
 forbidden transforms — see `skills/shape/templates/shape-config.toml`. The

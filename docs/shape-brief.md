@@ -153,6 +153,7 @@ labelled *informational*.
 ### F9 — Render-target awareness
 
 `--target`: `github` · `confluence` · `mdbook` · `pdf` · `terminal` · `plain`.
+⚠️ `jira` added 2026-09-16 (issue #6) — see `references/render-targets.md`.
 A capability matrix (mermaid · tables · emoji · footnotes · collapsible · anchors)
 decides which constructs are allowed. Fallbacks are declared in the matrix, never
 improvised at edit time — this is the prototype's Confluence/mermaid lesson,

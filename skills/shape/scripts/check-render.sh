@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # check-render.sh — markdown, links and mermaid, per render target.
 #
-# Usage: check-render.sh <file> [--target github|confluence|mdbook|pdf|terminal|plain]
+# Usage: check-render.sh <file> [--target github|confluence|jira|mdbook|pdf|terminal|plain]
 #                               [--out-dir DIR]
 #
 # --out-dir keeps the rendered mermaid SVGs instead of discarding them, so a
@@ -39,6 +39,7 @@ fi
 failed=0
 render_not_run=0
 md_not_run=0
+jira_not_run=0
 
 # ⚠️ `mmdc` is a Node wrapper around headless Chrome, and the Chrome it wants is
 # a revision pinned by the puppeteer bundled inside mermaid-cli — not any Chrome
@@ -259,9 +260,39 @@ else
   fi
 fi
 
+# 🛑 Jira reads a `>` at the start of a table cell as a blockquote marker and
+# eats it. On 2026-07-30 that turned *fail = `>0` dead-lettered messages* into
+# *fail = `0` …* — the inverse — on a shared board (issue #6). Mechanically
+# decidable, so it is a check here, not a prose warning. The awk runs in its
+# own statement into a file; a producer failure is exit 3, never a clean line.
+if [[ "$target" == "jira" ]]; then
+  jira_cells="${TMPDIR:-/tmp}/shape-jira-cells-$$"
+  jira_st=0
+  awk '
+    /^[[:space:]]*\|/ {
+      n = split($0, cells, "|")
+      for (i = 2; i <= n; i++) {
+        c = cells[i]; sub(/^[[:space:]]+/, "", c)
+        if (c ~ /^`?>/) { printf "%d\t%s\n", NR, c; break }
+      }
+    }' "$file" > "$jira_cells" || jira_st=$?
+  if [[ $jira_st -ne 0 ]]; then
+    printf '⚠️  %-12s NOT RUN (awk exited %d)\n' "jira-cells" "$jira_st"
+    jira_not_run=1
+  elif [[ -s "$jira_cells" ]]; then
+    printf '❌ %-12s a table cell starts with `>` — Jira eats it as a blockquote marker\n' "jira-cells"
+    sed 's/^/   line /' "$jira_cells" | head -5
+    echo "   fallback: see references/render-targets.md — words, never a comparison symbol first."
+    failed=1
+  else
+    printf '✅ %-12s no table cell starts with `>`\n' "jira-cells"
+  fi
+  rm -f "$jira_cells"
+fi
+
 if grep -q '```mermaid' "$file"; then
   case "$target" in
-    confluence|terminal|plain)
+    confluence|jira|terminal|plain)
       echo "❌ mermaid   present but unsupported on --target $target"
       echo "   fallback: see references/render-targets.md — a labelled table."
       failed=1
@@ -335,6 +366,10 @@ fi
 
 if [[ $failed -eq 0 && $render_not_run -eq 1 ]]; then
   echo "🛑 a diagram was NOT RENDERED — this is not a clean render report" >&2
+  exit 3
+fi
+if [[ $failed -eq 0 && $jira_not_run -eq 1 ]]; then
+  echo "🛑 the Jira cell scan did not run — this is not a clean render report" >&2
   exit 3
 fi
 if [[ $failed -eq 0 && $md_not_run -eq 1 ]]; then
