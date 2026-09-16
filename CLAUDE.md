@@ -392,8 +392,9 @@ against an inventory it called 79. Fixed the same day, with the entry count kept
 beside it as `inventory_entries`. 🛑 The definition of *distinct* now lives in
 two scripts and they must move together.
 
-⭐ **The material for the human first-screen test is identified**, which is the
-one thing standing between the form question and an answer. Not a fixture: a
+⭐ **The material for the human first-screen test is identified**, ⛔ which was
+the one thing standing between the form question and an answer until the
+re-rank below. Not a fixture: a
 real dossier of seven documents in another repo, with a before arm and an after
 arm differing only in the figures, and a human verdict already on record.
 `references/calibration.md`, under *The material for the human test*.
@@ -532,6 +533,8 @@ removal leaves no trace in git. Nothing that carried evidence.
   not what did it (`02` has none and still scored perfectly). The exit
   condition is now concrete — a Reader that cannot hold the document, or a human
   first-screen test — and is written in `references/calibration.md`.
+  ⚠️ Re-ranked 2026-09-16: the operator verdict accumulated by daily use comes
+  first; the human test is its positive control.
   ⭐ **Confirmed independently 2026-08-31** on a fourth document, in another
   repo, by an operator not looking for it: three cold Readers, one whole-file
   `Read` each, no `grep`. That pass still *reported* 5/5 → 8/11 blocks opened —

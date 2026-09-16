@@ -269,7 +269,8 @@ does not have.
 
 ⭐ The exit condition, stated so it can be met rather than argued: an instrument
 earns the right to grade form when it separates two arms of a frozen A/B pair
-whose content is identical. Two candidates, neither built:
+whose content is identical. Two candidates, neither built — and since
+2026-09-16 a third, built and ranked first:
 
 1. **A Reader that cannot ingest the whole document** — a corpus large enough,
    or a context budget tight enough, that navigation is forced rather than
@@ -283,6 +284,12 @@ whose content is identical. Two candidates, neither built:
 2. **A human first-screen test**, which is the population the claim is about,
    and which `docs/shape-validation-protocol.md` §2 already budgets at ~20
    minutes per release. ⭐ **Its material is identified — see below.**
+3. **The operator verdict, accumulated by daily use** — added 2026-09-16 and
+   ranked **first**: `ledger.sh --operator-verdict`, one human line per real
+   `restructure`/`condense`, read at fifteen entries. Text, not a measure, so
+   it does not *grade* form; it records the verdict the two candidates above
+   were built to elicit. Candidate 2 is demoted to its positive control. See
+   *Re-ranked 2026-09-16* below.
 
 ### ⭐ The material for the human test, located 2026-09-01
 
@@ -332,8 +339,9 @@ record the run as **protocol rehearsal** rather than as evidence. The key must
 say which.
 
 Until one exists, `V8_table_share` and `V5_figure_mention` remain the only
-instruments here that have ever seen a form difference — measured twice now,
-across five documents — and they are census numbers, not gates.
+*metrics* here that have ever seen a form difference — measured twice now,
+across five documents — and they are census numbers, not gates. Since
+2026-09-16 the operator verdict, below, sees form as text.
 
 ### ⭐ Re-ranked 2026-09-16 — the dogfood accumulates the verdict
 
@@ -396,7 +404,8 @@ written needs a locate-cost measure, and there is none: a pair differing only in
 where the scan table sits would return the same number whatever the answer, for
 the same reason the topology triple did. Settling this rule now waits on the
 instrument named in *Consequence for the protocol* above — a Reader that cannot
-hold the document whole, or a human first-screen test. Recorded as it stood: if
+hold the document whole, or a human first-screen test — or, since 2026-09-16,
+fifteen operator verdicts read together. Recorded as it stood: if
 locate cost were identical the rule would be measuring a preference and should
 relax to *a way in within the first section*; if it separated them the rule
 would be right as written.
