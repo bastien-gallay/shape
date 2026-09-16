@@ -78,11 +78,20 @@ allows; fallbacks are declared there, never improvised at edit time.
    downstream re-parses the document.
 5. **Baseline** — `scripts/metrics.sh` (§4b), the five checks under
    `scripts/access/`, `lint-delta.sh --baseline` as a signal, and the retrieval
-   run (§4). Stop here in `diagnose`.
-6. **Branch** — one branch or worktree, one commit. Reviewable and reversible.
-7. **Outline pass, then section edits** — never the whole file at once.
-8. **Verify** — every gate in §5, each by its script, each exit status read.
-9. **Report** — §6 — and 🛑 always write the ledger, whatever the mode:
+   run (§4).
+6. **Unapplied transforms** — walk the census blocks against the ruleset's
+   *allowed* list (§6, second paragraph). ⭐ In `diagnose` this is the list of what a
+   `restructure` would touch, and the pass ends on it: report (§6), ledger
+   (step 10), then **ask** — one `AskUserQuestion`, blocks named, with these
+   options: restructure **every** listed block · restructure a **subset** (the
+   user picks the blocks) · `access-only` · stop here. ⚠️ Never ask when the
+   list is empty — say so in the report and stop. 🛑 A *yes* is the user
+   choosing a mode (§0.1); it does not waive a forbidden transform or a
+   protected span named in the list.
+7. **Branch** — one branch or worktree, one commit. Reviewable and reversible.
+8. **Outline pass, then section edits** — never the whole file at once.
+9. **Verify** — every gate in §5, each by its script, each exit status read.
+10. **Report** — §6 — and 🛑 always write the ledger, whatever the mode:
    `scripts/ledger.sh … --facts f --facts-survived N --not-measured
    "<reasons>|none"`. Neither is optional: an inventory without its survival
    count stores the question and discards the answer. ⚠️ `N` is the **distinct**
@@ -134,6 +143,17 @@ lucid-lint score and every F12 metric are deliberately *not* here.
 Retrieval before/after · fact-survival list · what was removed, by category ·
 **what could not be measured, and why** · the diff stat · 🛑 **the gates do not
 cover form** — §4 grades fact retrievability, not table-versus-figure.
+
+**Allowed transforms of `<task>` applicable and not applied** — one line per
+block: the block (census `i`, `path`), the transform from the ruleset's
+*allowed* list, and what stops it (*nothing* / a forbidden transform / a
+protected span). In `diagnose` it is what a `restructure` would touch; in
+`access-only` and `restructure` it is what was left. ⚠️ Empty is a valid
+answer and is printed as such, never omitted. ⛔ The model produces it from the
+ruleset it already loaded — no detector: a regex for *option prose* is the
+abstract rule `scripts/access/README.md` refuses. Measured 2026-09-15 on a
+`decide` document: every check ✅, retrieval 8/8, and five blocks the ruleset
+named as convertible that the report never mentioned.
 
 Signals, each labelled as such and none of them a verdict: per-category
 lucid-lint delta · the F12 profile with its wrap width, labelled *unvalidated* ·

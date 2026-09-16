@@ -12,7 +12,7 @@ when a pass feels finished.
 | Headings that name topics (`Analysis`, `Details`) | a heading must answer a reader's question |
 | The editing agent scoring its own retrieval | §0.7 |
 | An F12 number reported without `unvalidated` | §4b — it is a hypothesis |
-| A ledger entry with an empty `not_measured` | §3.9 — empty by omission is a lie |
+| A ledger entry with an empty `not_measured` | §3.10 — empty by omission is a lie |
 
 ## The one that keeps coming back
 

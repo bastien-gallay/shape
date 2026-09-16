@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Added — 2026-09-16 (the report names the transforms it left on the table)
+
+- `SKILL.md` §6 gains one line: *allowed transforms of `<task>` applicable and
+  not applied*, one entry per census block, with the transform from the
+  ruleset and what stops it. Empty is printed, never omitted. Closes #11: a
+  `decide` document returned every check ✅ and retrieval 8/8 while five blocks
+  of option prose sat exactly where `decide.md` lists *turn option prose into a
+  table* — the ruleset knew and the report never said.
+- ⛔ A report line, not a detector: the model produces it from the ruleset it
+  already loaded. The saturation rule stands — once a corpus exists, the lines
+  accumulated across passes are what would earn a check, or refuse one.
+- `SKILL.md` §3 step 6: a `diagnose` pass now ends on that list with one
+  `AskUserQuestion` — restructure every listed block, a subset the user
+  picks, `access-only`, or stop. It is not asked when the list is empty, and
+  a *yes* chooses a mode without waiving a forbidden transform. Steps 6–9
+  became 7–10; `anti-patterns.md` follows.
+
 ### Fixed — 2026-09-01 (the ledger compared two different denominators)
 
 - `ledger.sh` computed `inventory` as the number of inventory **entries** while

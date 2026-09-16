@@ -318,6 +318,17 @@ after it closes.
   occurrences makes the gate look stronger while covering exactly as much.
   Measured 2026-09-01 across the whole corpus; the denominator is distinct
   fragments and the count doubles as the coverage signal.
+- **Unapplied allowed transforms are a report line, not a ninth number and
+  not a seventh check.** Issue #11, 2026-09-15: a `decide` document passed
+  every check and retrieval 8/8 with five blocks of option prose the ruleset
+  already names as convertible. The instruments that *did* move on the hand
+  restructure were the ones §0.6 says not to credit, and retrieval did not
+  separate the versions — a fact is as retrievable from a paragraph as from a
+  row when the Reader quotes spans. So the model lists them from the ruleset
+  it loaded, and `diagnose` ends by offering the restructure on that list.
+  ⛔ Not a regex for *option prose*: that is the abstract rule
+  `access/README.md` refuses, and the accumulated report lines are the corpus
+  that would earn one.
 - **Markers are a closed set with a density budget.** A marker is an eye-catch,
   and eye-catch is a budget. Markers that drift into decoration are a defect
   even when they are in the table.
