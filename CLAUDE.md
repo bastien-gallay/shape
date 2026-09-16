@@ -71,7 +71,10 @@ than a word count.
   because two passes over one document in one day is the normal loop and the
   second silently replacing the first destroys the evidence. `--facts` requires
   `--facts-survived`, and a `--retrieval` carrying an opens count requires
-  `opens_source: measured | self_report` (2026-09-16, #9). This is the instrument that makes both open questions
+  `opens_source: measured | self_report` (2026-09-16, #9).
+  `--operator-verdict "<one line>"` carries the user's verdict on form —
+  kept or changed, and why — the one instrument here that sees form, and
+  🛑 never written by the model (2026-09-16). This is the instrument that makes both open questions
   answerable by accumulation instead of by argument, so a pass that skips it
   costs evidence that cannot be recovered later.
   `--external <id>` is the regime for a document that may not be described
@@ -394,6 +397,12 @@ one thing standing between the form question and an answer. Not a fixture: a
 real dossier of seven documents in another repo, with a before arm and an after
 arm differing only in the figures, and a human verdict already on record.
 `references/calibration.md`, under *The material for the human test*.
+⚠️ **Re-ranked 2026-09-16: the test is demoted to a positive control.** It was
+postponed two weeks by the only person who could run it, and daily use already
+yields the verdict it was after. `ledger.sh --operator-verdict` now records
+that verdict on every real `restructure`/`condense`; the dossier is run only
+if **fifteen** such entries separate nothing. `references/calibration.md`,
+under *Re-ranked 2026-09-16*.
 
 **Open, ranked.**
 
@@ -472,9 +481,10 @@ Repo: ~/Dev/oss/skills/shape. Read CLAUDE.md `## State — what is open`,
 Corpus: 7 fixtures, 3 of 5 reader tasks; `learn` and `comply` have none.
 Tracker: `gh issue list` — #10 blocked, #1 deliberately parked; six closed
 2026-09-16 and their three new report lines are not yet exercised on a document.
-Next: the human first-screen test. Its material is a real seven-document
-dossier already identified in calibration.md under "The material for the
-human test" — it needs a reader, not more code.
+Next: use shape on real documents and pass `--operator-verdict` on every
+restructure/condense; at 15 verdicts, read them (calibration.md, "Re-ranked
+2026-09-16"). The human test on the CISAC dossier is a positive control, not
+the next step. Then a `learn` or `comply` fixture.
 ```
 
 No document was deleted or consolidated in the passes that wrote this, so there

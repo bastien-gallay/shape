@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Added — 2026-09-16 (the ledger records the human verdict on form)
+
+- `ledger.sh --operator-verdict "<one line>"` — form kept or changed, and
+  why, written by the user at the end of `restructure`/`condense` and never
+  by the model. Stored as `{text, source: "operator"}`, `null` when absent,
+  refused when given empty; the `--external` leak scan covers it (a path in
+  the verdict is refused, controlled). Text, not a metric.
+- Why: the form question cannot be answered by the cold Reader, and the
+  scheduled human test was postponed for two weeks by the only person able
+  to run it. Every real pass already yields the verdict; this stops it
+  evaporating. The CISAC dossier becomes a positive control, run only if
+  fifteen accumulated verdicts separate nothing — `calibration.md`,
+  *Re-ranked 2026-09-16*.
+
 ### Added — 2026-09-16 (inline correction notes fold into a table)
 
 - `SKILL.md` §1: `restructure` gains one task-independent transform — inline

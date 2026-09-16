@@ -335,6 +335,24 @@ Until one exists, `V8_table_share` and `V5_figure_mention` remain the only
 instruments here that have ever seen a form difference — measured twice now,
 across five documents — and they are census numbers, not gates.
 
+### ⭐ Re-ranked 2026-09-16 — the dogfood accumulates the verdict
+
+The scheduled test above was postponed for two weeks by the one person who
+could run it, and the postponement is its cost, measured. What it was meant to
+produce — a human verdict on form over a before/after pair — every real pass
+already produces: the operator keeps a table or turns it into a figure, and
+knows why. That verdict evaporated for lack of a field; the 2026-08-28 dossier
+above is the proof, recorded here only as narrative.
+
+So `ledger.sh` takes `--operator-verdict "<one line>"`, filled by the user at
+the end of `restructure` and `condense` (`SKILL.md` §3 step 10), stored as
+`{text, source: "operator"}`, and covered by the `--external` leak scan. It is
+text, not a metric — the saturation rule is untouched. ⚠️ **What it cannot
+give:** a positive control. The dossier above keeps that role — the one case
+where the expected answer is known before the test — and is run only if ten to
+fifteen accumulated verdicts do not separate anything. 🛑 Exit condition, so
+it cannot drift: **fifteen entries carrying a verdict**, then read them.
+
 ## Falsified — `table-misfit`, the definition rule, 2026-08-28
 
 **Hypothesis.** A two-column table whose second column averages ≥ 10 words is a

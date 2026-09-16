@@ -10,6 +10,7 @@
 #             [--word-count N] --not-measured "<reason>|none" \
 #             [--fixture-id ID] [--ruleset-version V] [--run-index K] \
 #             [--reader-family F] [--out-dir runs] \
+#             [--operator-verdict "<one line>"] \
 #             [--external ID [--external-map PATH]]
 #
 # Every pass writes one entry, whatever the mode. This is what makes the open
@@ -72,6 +73,16 @@
 # 2026-08-31). Entries written before 2026-09-16 carry no `opens_source`; every
 # one of them counted transcript calls, and its `note` says so.
 #
+# ⭐ `--operator-verdict` is the human verdict on form, one line, written by
+# the person who ran the pass and never by the model: *form kept* or *form
+# changed*, and why. Added 2026-09-16 because the form question — table
+# against figure — cannot be answered by the cold Reader (invalid measure,
+# 2026-08-31) and the scheduled human test kept being postponed, which is its
+# cost measured. Every real pass already produces this verdict; without a
+# field it evaporates, as the 2026-08-28 fifteen-diagram dossier did. It is
+# text, not a metric — no ninth number — and it accumulates under `--external`
+# too, where the leak scan covers it like every other field.
+#
 # ⚠️ Never overwrites. Two passes over the same document on the same day are
 # the normal iteration loop, and the second silently replacing the first would
 # destroy exactly the evidence this file exists to accumulate; later entries
@@ -112,7 +123,7 @@ doc=""; mode=""; task=""; audience=""; target=""
 census_before=""; census_after=""; metrics_before=""; metrics_after=""
 retrieval=""; lucid=""; facts=""; survived=""; words=""; not_measured=""; out_dir="runs"
 fixture_id=""; ruleset_version=""; run_index=""; reader_family=""
-external=""; external_map=""
+external=""; external_map=""; operator_verdict=""; verdict_given=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -137,6 +148,7 @@ while [[ $# -gt 0 ]]; do
     --reader-family) reader_family="$2"; shift 2 ;;
     --external) external="$2"; shift 2 ;;
     --external-map) external_map="$2"; shift 2 ;;
+    --operator-verdict) operator_verdict="$2"; verdict_given=1; shift 2 ;;
     --out-dir) out_dir="$2"; shift 2 ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
@@ -167,6 +179,12 @@ fi
 # like evidence in the pile.
 if [[ -n "$fixture_id" && -z "$ruleset_version" ]]; then
   echo "🛑 --fixture-id requires --ruleset-version — an unattributable run is not evidence" >&2
+  exit 2
+fi
+# 🛑 An empty verdict is the flag passed and nothing said. Refused rather than
+# written as "", which would later count as a pass that had a verdict.
+if [[ $verdict_given -eq 1 && -z "${operator_verdict//[[:space:]]/}" ]]; then
+  echo "🛑 --operator-verdict given and empty — say what was kept or changed, or omit the flag" >&2
   exit 2
 fi
 if [[ -n "$external_map" && -z "$external" ]]; then
@@ -373,6 +391,7 @@ jq -n \
   --arg survived "$survived" \
   --arg fixture_id "$fixture_id" --arg ruleset_version "$ruleset_version" \
   --arg run_index "$run_index" --arg reader_family "$reader_family" \
+  --arg operator_verdict "$operator_verdict" \
   --arg not_measured "$not_measured" '
   {
     version: 1,
@@ -397,6 +416,8 @@ jq -n \
                 survived: ($survived | tonumber),
                 all_survived: (($survived | tonumber) == $distinct)} end),
     word_count: (if $words == "" then null else ($words | tonumber) end),
+    operator_verdict: (if $operator_verdict == "" then null
+                       else {text: $operator_verdict, source: "operator"} end),
     not_measured: (if $not_measured == "none" then [] else ($not_measured | split(";")) end)
   }' > "$tmp"
 

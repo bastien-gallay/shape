@@ -255,6 +255,7 @@ argument.
 | `facts` | `inventory`, `survived`, `all_survived` — the boolean the 🛑 100 % gate is read from |
 | `word_count` | Informational |
 | `not_measured` | Every check that could not run, and why |
+| `operator_verdict` | `{text, source: "operator"}` or `null` — the user's one line on form, kept or changed and why; added 2026-09-16, never model-written |
 
 ⛔ `retrieval.opens_per_run` is **recorded, never scored** — see the locate-cost
 retraction in §5. 🛑 And it is recorded *with its provenance*: `ledger.sh`
