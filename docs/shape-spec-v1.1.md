@@ -250,14 +250,18 @@ argument.
 | `calibration` | `fixture_id`, `ruleset_version`, `run_index`, `reader_family` — what makes a run attributable |
 | `census` | The block census from `census.sh` — `blocks[]` and `source` — before and after |
 | `metrics` | The F12 metric set, before and after, carrying `unvalidated: true` |
-| `retrieval` | `questions`, `correct_per_run`, `accuracy`, `opens_per_run`, `reader_tokens_per_run`, `reader_family` |
+| `retrieval` | `questions`, `correct_per_run`, `accuracy`, `opens_per_run`, `reader_tokens_per_run`, `reader_family` — and `opens_source: "measured" \| "self_report"`, mandatory beside any opens count since 2026-09-16 |
 | `lucid_lint` | Score and per-category values, or `not_run` |
 | `facts` | `inventory`, `survived`, `all_survived` — the boolean the 🛑 100 % gate is read from |
 | `word_count` | Informational |
 | `not_measured` | Every check that could not run, and why |
 
 ⛔ `retrieval.opens_per_run` is **recorded, never scored** — see the locate-cost
-retraction in §5.
+retraction in §5. 🛑 And it is recorded *with its provenance*: `ledger.sh`
+refuses the entry without `opens_source`, because a Reader that ingested the
+whole file in one call still answers "which sections did you open" with a
+number, and that number is indistinguishable from a measurement once written.
+Prefer `coverage_words_per_run` for a self-report; blocks move with granularity.
 
 ⛔ **The external regime, added 2026-08-31.** A ledger entry built without it
 reconstructs the document: `census.blocks[].path` carries the text of every

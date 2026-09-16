@@ -214,7 +214,13 @@ under *A null result can belong to the instrument*: read the transcript of what
 the subject did, never the number it reported about itself.
 
 ⚠️ A ledger field that carries a self-report must say so in its name or its
-schema. None currently does.
+schema. ✅ Enforced 2026-09-16: `ledger.sh` refuses a `--retrieval` file that
+carries `opens_per_run` or `coverage_words_per_run` without
+`opens_source: "measured" | "self_report"` (issue #9). *Measured* means counted
+from the transcript; a self-report is recorded in **words** where possible,
+because block counts move with granularity — the 5 → 11 above was a finer
+split over less text. The five entries written before that date carry no
+`opens_source`; each counted transcript calls and says so in its `note`.
 
 ### ⭐ Measured under truncation, 2026-09-01 — the first separation
 

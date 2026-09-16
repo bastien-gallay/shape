@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+### Added — 2026-09-16 (an opens count says where it came from)
+
+- `ledger.sh` refuses a `--retrieval` file carrying `opens_per_run`,
+  `coverage_words_per_run` or `blocks_opened` without
+  `opens_source: "measured" | "self_report"` — exit 2, not a default: a default
+  of *measured* is the misread the guard exists to prevent. Closes #9, where
+  three Readers each issued one whole-file read and reported 5/5 then 8/11
+  blocks opened anyway. Six hand-run controls: missing, invalid and valid
+  source, words-only self-report, no opens field, invalid JSON.
+- `SKILL.md` §4: opens are counted from the transcript, never from the
+  Reader's answer; a self-report is recorded in words covered, because block
+  counts move with granularity. ⛔ Still not a gate.
+- ⚠️ The five `runs/` entries predate the field; each counted transcript calls
+  and says so in its `note`. Not backfilled — `runs/` is gitignored and the
+  entries are frozen evidence.
+
+### Changed — 2026-09-16 (numbers in prose join the unapplied-transforms line)
+
+- The §6 line added for #11 now carries a task-independent case: a block with
+  four or more quantities sharing a subject is listed as *numbers in prose →
+  table* unless the ruleset forbids the table, and a quantity written in words
+  counts. Closes the judgement half of #3. ⛔ The metric half —
+  `fact_density`, `facts_per_block` — stays refused by the saturation rule, and
+  #3's own comment records why a digit-keyed density would fail towards a pass
+  on `T2-adr-01`.
+
 ### Added — 2026-09-16 (the report names the transforms it left on the table)
 
 - `SKILL.md` §6 gains one line: *allowed transforms of `<task>` applicable and

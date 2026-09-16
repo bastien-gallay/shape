@@ -59,6 +59,19 @@
 # same-family evidence, and numbers pooled without the label cannot be re-read
 # when a second family becomes available.
 #
+# 🛑 `--retrieval` carrying `opens_per_run` or `coverage_words_per_run` must
+# also carry `opens_source: "measured" | "self_report"`. A self-report and a
+# measurement are indistinguishable once they are two numbers in the same
+# JSON object — and on 2026-09-01 three Readers each issued one whole-file
+# read, opened nothing, and reported 5/5 then 8/11 anyway. `measured` means
+# counted from the transcript (read/grep calls issued against the document);
+# `self_report` means the Reader described its own behaviour. Where a
+# self-report is kept, prefer `coverage_words_per_run` to blocks: block counts
+# move with granularity, and 5 → 11 blocks read as a regression while the
+# reported coverage went 692 → 641 words. ⛔ Neither is a gate (withdrawn
+# 2026-08-31). Entries written before 2026-09-16 carry no `opens_source`; every
+# one of them counted transcript calls, and its `note` says so.
+#
 # ⚠️ Never overwrites. Two passes over the same document on the same day are
 # the normal iteration loop, and the second silently replacing the first would
 # destroy exactly the evidence this file exists to accumulate; later entries
@@ -191,6 +204,22 @@ for pair in "census-before:$census_before" "census-after:$census_after" \
     exit 4
   fi
 done
+
+# 🛑 An opens count with no provenance is refused, not defaulted: a default
+# of `measured` is exactly the misread this guard exists to prevent.
+if [[ -n "$retrieval" ]]; then
+  opens_st=0
+  jq -e '(has("opens_per_run") or has("coverage_words_per_run") or has("blocks_opened"))
+         and ((.opens_source // "") | IN("measured", "self_report") | not)' \
+     "$retrieval" >/dev/null 2>&1 || opens_st=$?
+  if [[ $opens_st -eq 0 ]]; then
+    echo "🛑 --retrieval carries an opens count without opens_source (measured | self_report) — a self-report must say so" >&2
+    exit 2
+  elif [[ $opens_st -ne 1 ]]; then
+    echo "🛑 could not inspect --retrieval for opens_source (jq exit $opens_st) — ledger entry not written" >&2
+    exit 4
+  fi
+fi
 
 tmp_base="${TMPDIR:-/tmp}/shape-ledger-$$"
 

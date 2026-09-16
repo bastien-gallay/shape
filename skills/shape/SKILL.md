@@ -104,9 +104,15 @@ allows; fallbacks are declared there, never improvised at edit time.
    them from the user. ⭐ User-supplied questions are stronger evidence; prefer
    them whenever offered.
 2. A **cold subagent** — fresh context, no knowledge of the edit — answers from
-   the document alone and records which sections it opened.
+   the document alone. ⚠️ Count what it opened **from its transcript** — the
+   read and grep calls it issued — not from what it says it opened: a Reader
+   that ingested the file in one call still answers that question with a
+   number.
 3. Score **answers correct** only, before and after, same questions. ⛔ Blocks
-   opened goes to the ledger, never to a score — withdrawn 2026-08-31, see §5.
+   opened goes to the ledger, never to a score — withdrawn 2026-08-31, see §5 —
+   and 🛑 always with `opens_source: measured | self_report`; `ledger.sh`
+   refuses the entry without it. A self-report is recorded in words covered,
+   not blocks.
 4. Print the caveats: a proxy for a human reader, not a human test, on
    questions the same model derived and therefore finds salient.
 
@@ -154,6 +160,13 @@ ruleset it already loaded — no detector: a regex for *option prose* is the
 abstract rule `scripts/access/README.md` refuses. Measured 2026-09-15 on a
 `decide` document: every check ✅, retrieval 8/8, and five blocks the ruleset
 named as convertible that the report never mentioned.
+⭐ Whatever the task, a block holding **four or more quantities that share a
+subject** belongs on this list as *numbers in prose → table*, unless the
+ruleset forbids the table — and a quantity **spelled out in words** counts:
+`extract-facts.sh` keys on digits, so a document arguing from *two hundred and
+forty euros* and *one batch in fifty* inventories two facts and reads as
+fact-free. ⛔ No density number: `fact_density` stays refused until a corpus
+shows it separating anything (issue #3, `references/calibration.md`).
 
 Signals, each labelled as such and none of them a verdict: per-category
 lucid-lint delta · the F12 profile with its wrap width, labelled *unvalidated* ·
