@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Fixed — 2026-10-06 (the split fallback reported a cut made of substrings)
+
+- `verify-facts.sh`: the ⚠️ SPLIT fallback of the entry below searched each
+  value with `grep -F`, so `485 s` matched inside `2 485 s`, and it tried the
+  finest cut first. On the 960-line rewrite of issue #14 it reported
+  `2 s · 485 s · 936 s · 3 s · 093 s`, 4 cuts matched. A value now counts only
+  where no digit, digit and space, comma or dot precedes it and no letter or
+  digit follows it, no group but a lone `0` opens on a `0`, and cuts are tried
+  coarsest first: the same fact reports `2 485 s · 936 s · 3 093 s`, 1 cut.
+  The repro of the entry below is unchanged.
+
 ### Added — 2026-10-06 (a glued run of numbers passes as a flagged split)
 
 - `verify-facts.sh`: a lost `measurement` whose fragment is a run of numbers

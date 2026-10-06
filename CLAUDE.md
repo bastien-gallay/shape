@@ -346,6 +346,18 @@ manifests is a placeholder.
 
 ### Start here — reconciled 2026-09-16
 
+**Settled 2026-10-06 — the fact gate's false losses on a real rewrite, 10 →
+0, one of them now a flagged ⚠️ SPLIT; the gate still exits 1 there, on two
+deliberate renames.** Measured on a 960-line rewrite with tables and charts (not in the
+corpus, client document): #12 stripped the terminator from a measurement
+fragment (10 → 1 false losses); #14 passes a glued run of numbers as
+⚠️ SPLIT when every value of one thousands-group cut survives, and the
+wrap pass that followed tightened that fallback (`CHANGELOG.md`, both
+2026-10-06 entries). On that document the gate now reports one ⚠️ SPLIT
+(the right cut) and two `❌` that are deliberate renames. ⚠️ The SPLIT path
+is exercised on that document and on the issue's repro only; no fixture
+carries a glued run.
+
 **Settled 2026-09-16 — six issues closed, four commits, all pushed
 (`42ec0f3`…`0b578f3`).** Nothing was measured; the protocol was widened from
 findings already on record. The report contract (`SKILL.md` §6) gained three
@@ -481,7 +493,8 @@ Repo: ~/Dev/oss/skills/shape. Read CLAUDE.md `## State — what is open`,
 `### Start here` first, then skills/shape/references/calibration.md.
 Corpus: 7 fixtures, 3 of 5 reader tasks; `learn` and `comply` have none.
 Tracker: `gh issue list` — #10 blocked, #1 deliberately parked; six closed
-2026-09-16 and their three new report lines are not yet exercised on a document.
+2026-09-16 and their three new report lines are not yet exercised on a document;
+#12 and #14 (fact-gate false losses) closed 2026-10-06.
 Next: use shape on real documents and pass `--operator-verdict` on every
 restructure/condense; at 15 verdicts, read them (calibration.md, "Re-ranked
 2026-09-16"). The human test on the CISAC dossier is a positive control, not
