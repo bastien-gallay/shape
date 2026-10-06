@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Changed — 2026-10-06 (the mermaid fallback allows fenced ASCII, and points to `show`)
+
+- `references/render-targets.md`: the mermaid fallback no longer says *Never
+  ASCII art*. ASCII is allowed inside a monospace block (terminal, Jira
+  `{code}`, Slack code block) and refused in proportional text, where its
+  alignment breaks. On `confluence`, which drops `alt` on images, the caption
+  goes in the text.
+- Why: the rule contradicted `flow-lean` and `glance` (*Flow → ASCII
+  diagram*), and on a terminal ASCII is the only diagram there is. The new
+  `show` skill settles it and holds the wider render matrix; this file keeps
+  what the gates check and points there.
+
 ### Added — 2026-09-16 (the ledger records the human verdict on form)
 
 - `ledger.sh --operator-verdict "<one line>"` — form kept or changed, and

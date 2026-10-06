@@ -5,6 +5,10 @@ prototype's Confluence/mermaid lesson, generalised: an editor that discovers at
 write time that mermaid does not render will invent a workaround and get it
 wrong.
 
+This file holds what `shape`'s gates check. Choosing a visual and rendering it
+on more targets (colour, red/green, SVG, interactive charts, GitLab, Typst,
+Slack) belongs to the `show` skill, `references/render-targets.md`.
+
 | Target | mermaid | tables | emoji | footnotes | collapsible | anchors |
 | --- | --- | --- | --- | --- | --- | --- |
 | `github` | ✅ | ✅ | ✅ | ✅ `[^1]` | ✅ `<details>` | ✅ auto |
@@ -19,7 +23,7 @@ wrong.
 
 | Construct | Unavailable → use |
 | --- | --- |
-| mermaid | a labelled table of the same relation, or a pre-rendered image with alt text. Never ASCII art. |
+| mermaid | a pre-rendered image with alt text (on `confluence`, which drops `alt`, a caption in the text), or a labelled table of the same relation. ASCII only inside a monospace block, never in proportional text. |
 | footnote | an inline parenthetical, or a `Notes` section with explicit back-links |
 | collapsible | a subheading — the content stays visible |
 | auto anchor | an explicit anchor/id declared next to the heading |
