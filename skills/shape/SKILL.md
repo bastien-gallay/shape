@@ -116,6 +116,8 @@ allows; fallbacks are declared there, never improvised at edit time.
    count stores the question and discards the answer. ⚠️ `N` is the **distinct**
    count `verify-facts.sh` prints, not the number of inventory entries — the
    two differ by a factor of four on a document with repeated fragments.
+   A ⚠️ SPLIT line counts as survived but is a guess: check that its values
+   were moved, not dropped, before reporting.
    ⭐ After `restructure` or `condense`, ask the user for **one line** — form
    kept or changed, and why — and pass it as `--operator-verdict`. 🛑 Written
    by the user, never by the model: it is the only instrument in this protocol

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Added — 2026-10-06 (a glued run of numbers passes as a flagged split)
+
+- `verify-facts.sh`: a lost `measurement` whose fragment is a run of numbers
+  separated by spaces (`1 250 740 2 980 s`, labels packed under a stacked
+  ASCII bar) is cut into thousands groups, each given the unit. If every
+  value of one cut is present, the fact passes as `⚠️ SPLIT`, with the cut
+  taken and the number of cuts that matched; the summary counts these apart.
+  A dropped value still fails. Runs with a comma or a dot, or over 12 tokens,
+  keep the plain `❌` (issue #14).
+- Measured on the issue's repro: `❌ LOST` → `⚠️ SPLIT … 1 250 s · 740 s ·
+  2 980 s`, exit 0; with `740 s` deleted, `❌ LOST`, exit 1. Fixtures: same
+  report.
+
 ### Added — 2026-10-06 (anti-pattern: a pandoc copy that lost its table)
 
 - `references/anti-patterns.md`: facts "lost" on an HTML page can be a
