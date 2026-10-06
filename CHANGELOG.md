@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Fixed — 2026-10-06 (a measurement fragment no longer keeps its terminator)
+
+- `extract-facts.sh`: the unit patterns end on the character after the unit,
+  so that `5 m` does not match `5 min`. That character went into the
+  fragment: `24 h,` was protected, and `24 h` moved into a table cell read as
+  lost. `emit()` now strips one trailing non-alphanumeric character and the
+  trailing spaces from a `measurement` fragment (issue #12).
+- Measured on a 960-line rewrite with tables: false losses 10 → 1. The one
+  left is another class: a run of numbers separated by spaces in an ASCII
+  block glues into one fragment. Fixtures: same report; `docs/shape-brief.md`
+  79/79.
+
 ### Changed — 2026-10-06 (the mermaid fallback allows fenced ASCII, and points to `show`)
 
 - `references/render-targets.md`: the mermaid fallback no longer says *Never
