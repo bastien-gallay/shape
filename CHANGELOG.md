@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added — 2026-10-06 (anti-pattern: a pandoc copy that lost its table)
+
+- `references/anti-patterns.md`: facts "lost" on an HTML page can be a
+  conversion artefact. A `<br>` inside a cell makes pandoc emit the table as
+  raw HTML, which `-raw_html` strips (pandoc 3.11 prints `[TABLE]`); an
+  inline separator keeps the pipe table. Seen 2026-09-18: 35/39, then 39/39.
+  Diagnose the copy before the document.
+
 ### Fixed — 2026-10-06 (a measurement fragment no longer keeps its terminator)
 
 - `extract-facts.sh`: the unit patterns end on the character after the unit,

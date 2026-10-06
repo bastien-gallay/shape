@@ -13,6 +13,7 @@ when a pass feels finished.
 | The editing agent scoring its own retrieval | §0.7 |
 | An F12 number reported without `unvalidated` | §4b — it is a hypothesis |
 | A ledger entry with an empty `not_measured` | §3.10 — empty by omission is a lie |
+| Facts "lost" on an HTML page because the pandoc copy has no table | §7 v1 format scope — a `<br>` (any block content) inside a cell makes pandoc emit the table as raw HTML, which `-raw_html` strips; the gate then reads a conversion artefact, not a loss (2026-09-18: 35/39, then 39/39 once the `<br>` became an inline separator). Diagnose the copy before the document |
 
 ## The one that keeps coming back
 
