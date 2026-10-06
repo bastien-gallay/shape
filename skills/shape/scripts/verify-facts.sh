@@ -38,11 +38,16 @@
 # three values from one long number and glues them. When the values are later
 # set apart, the glued fragment exists nowhere. The fallback cuts the run
 # into thousands groups (a group of several tokens = 1 to 3 digits, then
-# exactly 3 per token), gives each group the unit, and passes the fact as ⚠️
-# SPLIT if every value of one cut is present. A split is a guess: two cuts
-# can both match, and a value found elsewhere in the document counts. So the
-# run says which cut it took and how many matched; a reviewer checks those
-# lines. Only digits separated by single spaces qualify, and at most 12
+# exactly 3 per token, no group but a lone 0 opening on a 0), gives each group the unit,
+# and passes the fact as ⚠️ SPLIT if every value of one cut is present. A
+# value counts only where no digit, digit and space, comma or dot precedes it
+# and no letter or digit follows it: grep -F found `485 s` inside
+# `2 485 s`, and on the 960-line rewrite of issue #14 the first cut reported
+# was `2 s · 485 s · 936 s · 3 s · 093 s`. Cuts are tried coarsest first, so
+# the one reported is the fewest values that all survive. A split is still a
+# guess: two cuts can both match, and a value found elsewhere in the document
+# counts. So the run says which cut it took and how many matched; a reviewer
+# checks those lines. Only digits separated by single spaces qualify, and at most 12
 # tokens (2^11 cuts); a comma or a dot in the run keeps the plain ❌.
 #
 # Exit: 0 all survived · 1 at least one lost · 2 usage/unreadable
@@ -111,9 +116,10 @@ fi
 split_candidates() {
   awk -v f="$1" '
     function rec(i, acc, k,    j, m, g, ok) {
-      if (i > n) { if (k >= 2) print acc; return }
+      if (i > n) { if (k >= 2) print k "\t" acc; return }
       for (j = i; j <= n; j++) {
         ok = (j == i) || (length(t[i]) <= 3)
+        if (t[i] ~ /^0/ && (length(t[i]) > 1 || j > i)) ok = 0
         for (m = i + 1; ok && m <= j; m++) if (length(t[m]) != 3) ok = 0
         if (!ok) continue
         g = t[i]; for (m = i + 1; m <= j; m++) g = g " " t[m]
@@ -153,17 +159,21 @@ while IFS=$'\t' read -r id kind fragment_b64; do
   else
     first="" matched=0
     if [[ "$kind" == measurement ]]; then
-      while IFS= read -r cut; do
+      while IFS=$'\t' read -r _ cut; do
         all=1
         IFS=$'\t' read -r -a values <<< "$cut"
         for v in "${values[@]}"; do
-          grep -qF -- "$v" "$target" || { all=0; break; }
+          # Not preceded by a digit, a digit and a space, a comma or a dot;
+          # not followed by a letter or a digit. `+` is the one ERE
+          # metacharacter a value can carry.
+          grep -qE -- "(^|^ |[^0-9 ,.]|[^0-9] )${v//+/\\+}([^A-Za-z0-9]|\$)" "$target" \
+            || { all=0; break; }
         done
         if [[ $all -eq 1 ]]; then
           matched=$((matched + 1))
           [[ -n "$first" ]] || first="$(printf '%s' "$cut" | sed $'s/\t/ · /g')"
         fi
-      done < <(split_candidates "$fragment")
+      done < <(split_candidates "$fragment" | sort -t $'\t' -k1,1n -s)
     fi
     if [[ $matched -gt 0 ]]; then
       printf '⚠️  %s (%s) SPLIT: %s → %s (%d cut(s) matched; check the values were moved, not dropped)\n' \
