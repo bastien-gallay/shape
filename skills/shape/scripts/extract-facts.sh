@@ -42,6 +42,10 @@ candidates="$(
       off  = 0
       while (rest != "" && match(rest, re)) {
         s = substr(rest, RSTART, RLENGTH)
+        # A unit pattern ends on the character after the unit, to stop "5 m"
+        # matching "5 min": keep it out of the fragment, or "24 h," is
+        # protected and "24 h" in a table cell reads as lost (issue #12).
+        if (kind == "measurement") { sub(/[^A-Za-z0-9%]$/, "", s); sub(/ +$/, "", s) }
         printf "%d\t%s\t%s\t%s\n", NR, kind, $0, s
         off  = (RLENGTH > 0) ? RSTART + RLENGTH : RSTART + 1
         rest = substr(rest, off)
