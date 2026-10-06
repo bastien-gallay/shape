@@ -344,7 +344,7 @@ after a code review of the initial commit — 11 findings, all fixed, each with 
 regression exercised by hand. Nothing released; version `0.1.0` in both
 manifests is a placeholder.
 
-### Start here — reconciled 2026-09-16
+### Start here — reconciled 2026-10-06
 
 **Settled 2026-10-06 — the fact gate's false losses on a real rewrite, 10 →
 0, one of them now a flagged ⚠️ SPLIT; the gate still exits 1 there, on two
@@ -352,8 +352,8 @@ deliberate renames.** Measured on a 960-line rewrite with tables and charts (not
 corpus, client document): #12 stripped the terminator from a measurement
 fragment (10 → 1 false losses); #14 passes a glued run of numbers as
 ⚠️ SPLIT when every value of one thousands-group cut survives, and the
-wrap pass that followed tightened that fallback (`CHANGELOG.md`, both
-2026-10-06 entries). On that document the gate now reports one ⚠️ SPLIT
+wrap pass that followed tightened that fallback (PR #15, then PR #16;
+`CHANGELOG.md`, the 2026-10-06 entries). On that document the gate now reports one ⚠️ SPLIT
 (the right cut) and two `❌` that are deliberate renames. ⚠️ The SPLIT path
 is exercised on that document and on the issue's repro only; no fixture
 carries a glued run.
