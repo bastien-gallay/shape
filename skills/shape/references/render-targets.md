@@ -7,7 +7,7 @@ wrong.
 
 This file holds what `shape`'s gates check. Choosing a visual and rendering it
 on more targets (colour, red/green, SVG, interactive charts, GitLab, Typst,
-Slack) belongs to the `show` skill, `references/render-targets.md`.
+Slack) belongs to the `show-me` skill (formerly `show`), `references/render-targets.md`.
 
 | Target | mermaid | tables | emoji | footnotes | collapsible | anchors |
 | --- | --- | --- | --- | --- | --- | --- |

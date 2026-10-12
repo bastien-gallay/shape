@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed — 2026-10-12 (`show` is renamed `show-me`)
+
+- `references/render-targets.md` points to `show-me`, the new name of the
+  `show` skill (github.com/bastien-gallay/show-me, 0.4.0).
+
 ### Fixed — 2026-10-06 (the split fallback reported a cut made of substrings)
 
 - `verify-facts.sh`: the ⚠️ SPLIT fallback of the entry below searched each
